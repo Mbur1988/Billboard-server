@@ -3,6 +3,7 @@ import java.io.*;
 import java.text.*;
 import java.util.*;
 import java.net.*;
+import java.util.UUID;
 
 // Server class
 public class Server
@@ -10,6 +11,7 @@ public class Server
     public static void main(String[] args) throws IOException
     {
         int port = 5056;
+        ClientTracker clientTracker = new ClientTracker();
 
         // server is listening on port 5056
         ServerSocket serverSocket = new ServerSocket(port);
@@ -34,12 +36,17 @@ public class Server
 
                 System.out.println("Assigning new thread for this client");
 
+                // generate a random uuid for new thread
+                String uuid = UUID.randomUUID().toString();
+
                 // create a new thread object
-                Thread t = new ClientHandler(socket, dis, dos);
+                ClientHandler thread = new ClientHandler(socket, dis, dos, uuid);
+
+                // add this client to active clients list
+                clientTracker.Add(uuid, thread);
 
                 // Invoking the start() method
-                t.start();
-
+                thread.start();
             }
             catch (Exception e){
                 socket.close();

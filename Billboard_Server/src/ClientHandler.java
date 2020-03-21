@@ -6,18 +6,21 @@ import java.net.*;
 
 class ClientHandler extends Thread
 {
+    ClientTracker clientTracker = new ClientTracker();
     DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
     DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
     final DataInputStream dis;
     final DataOutputStream dos;
-    final Socket s;
+    final Socket socket;
+    final String uuid;
 
     // Constructor
-    public ClientHandler(Socket s, DataInputStream dis, DataOutputStream dos)
+    public ClientHandler(Socket socket, DataInputStream dis, DataOutputStream dos, String uuid)
     {
-        this.s = s;
+        this.socket = socket;
         this.dis = dis;
         this.dos = dos;
+        this.uuid = uuid;
     }
 
     @Override
@@ -40,17 +43,19 @@ class ClientHandler extends Thread
                 }
                 catch (IOException e)
                 {
-                    System.out.println("Client " + this.s + " disconnected...");
-                    this.s.close();
+                    System.out.println("Client " + socket + " disconnected...");
+                    clientTracker.Remove(this.uuid);
+                    this.socket.close();
                     System.out.println("Connection closed");
                     break;
                 }
 
                 if(received.equals("Exit"))
                 {
-                    System.out.println("Client " + this.s + " sends exit...");
+                    System.out.println("Client " + this.socket + " sends exit...");
                     System.out.println("Closing this connection.");
-                    this.s.close();
+                    clientTracker.Remove(this.uuid);
+                    this.socket.close();
                     System.out.println("Connection closed");
                     break;
                 }
