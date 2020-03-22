@@ -10,6 +10,7 @@ class ClientTracker {
 
     /**
      * Add a new client to the vector of client handlers and increment numConnected count
+     * @param uuid
      * @param client
      */
     public void Add(String uuid, ClientHandler client) {
