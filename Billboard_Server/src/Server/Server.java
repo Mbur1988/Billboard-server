@@ -1,21 +1,21 @@
-import static java.lang.System.*;
+package Server;
+
 import java.io.*;
-import java.text.*;
-import java.util.*;
 import java.net.*;
 import java.util.UUID;
 
-// Server class
+// Server.Server class
 public class Server
 {
+    static int port = 5056;
+
     public static void main(String[] args) throws IOException
     {
-        int port = 5056;
         ClientTracker clientTracker = new ClientTracker();
 
         // server is listening on port 5056
         ServerSocket serverSocket = new ServerSocket(port);
-        System.out.println("Server created on port " + port + "\nServer running...");
+        System.out.println("Server.Server created on port " + port + "\nServer.Server running...");
 
         // running infinite loop for getting
         // client request
@@ -53,5 +53,13 @@ public class Server
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void setPort(int port) {
+        Server.port = port;
+    }
+
+    public static int getPort() {
+        return port;
     }
 }

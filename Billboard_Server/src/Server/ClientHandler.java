@@ -1,11 +1,11 @@
-import static java.lang.System.*;
+package Server;
 import java.io.*;
 import java.text.*;
 import java.util.*;
 import java.net.*;
 
-class ClientHandler extends Thread
-{
+class ClientHandler extends Thread {
+
     ClientTracker clientTracker = new ClientTracker();
     DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
     DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
@@ -15,8 +15,7 @@ class ClientHandler extends Thread
     final String uuid;
 
     // Constructor
-    public ClientHandler(Socket socket, DataInputStream dis, DataOutputStream dos, String uuid)
-    {
+    public ClientHandler(Socket socket, DataInputStream dis, DataOutputStream dos, String uuid) {
         this.socket = socket;
         this.dis = dis;
         this.dos = dos;
@@ -41,8 +40,7 @@ class ClientHandler extends Thread
                     // receive the answer from client
                     received = dis.readUTF();
                 }
-                catch (IOException e)
-                {
+                catch (IOException e) {
                     System.out.println("Client " + socket + " disconnected...");
                     clientTracker.Remove(this.uuid);
                     this.socket.close();
@@ -86,13 +84,12 @@ class ClientHandler extends Thread
             }
         }
 
-        try
-        {
+        try {
             // closing resources
             this.dis.close();
             this.dos.close();
-
-        }catch(IOException e){
+        }
+        catch(IOException e) {
             e.printStackTrace();
         }
     }
