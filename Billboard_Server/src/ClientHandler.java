@@ -77,6 +77,10 @@ class ClientHandler extends Thread
                         dos.writeUTF(toreturn);
                         break;
 
+                    case "Ping" :
+                        dos.writeUTF("Pong..");
+                        break;
+
                     default:
                         dos.writeUTF("Invalid input");
                         break;
