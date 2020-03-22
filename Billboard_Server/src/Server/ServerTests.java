@@ -10,7 +10,7 @@ public class ServerTests {
 
     @BeforeEach
     public void newServer() throws IOException {
-        server = new Server();
+        server.port = 5056;
     }
 
     @Test

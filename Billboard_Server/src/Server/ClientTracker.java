@@ -10,8 +10,13 @@ class ClientTracker {
      * Add a new client to the vector of client handlers and increment numConnected count
      * @param client
      */
-    public void Add(String uuid, ClientHandler client) {
-        activeClients.put(uuid, client);
+    public void Add(String uuid, ClientHandler client) throws ClientTrackerException {
+        if (activeClients.containsKey(uuid)) {
+            throw new ClientTrackerException("UUID: " + uuid + " already exists");
+        }
+            else {
+            activeClients.put(uuid, client);
+        }
     }
 
     /**

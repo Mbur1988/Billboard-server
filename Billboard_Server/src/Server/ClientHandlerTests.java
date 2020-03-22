@@ -4,18 +4,17 @@ import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
 import java.util.UUID;
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.*;
-
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocketFactory;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.*;
 
 public class ClientHandlerTests {
 
     private ClientHandler clientHandler;
+    private Socket socket;
     private DataInputStream dis;
     private DataOutputStream dos;
-    private Socket socket;
     private String uuid;
     private SocketFactory factory;
 
