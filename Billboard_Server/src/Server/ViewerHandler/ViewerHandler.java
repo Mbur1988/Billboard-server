@@ -1,12 +1,14 @@
-import static java.lang.System.*;
+package Server.ViewerHandler;
+
+import Server.ViewerTracker.ViewerTracker;
 import java.io.*;
 import java.text.*;
 import java.util.*;
 import java.net.*;
 
-class ClientHandler extends Thread
-{
-    ClientTracker clientTracker = new ClientTracker();
+public class ViewerHandler extends Thread {
+
+    ViewerTracker viewerTracker = new ViewerTracker();
     DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
     DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
     final DataInputStream dis;
@@ -15,8 +17,7 @@ class ClientHandler extends Thread
     final String uuid;
 
     // Constructor
-    public ClientHandler(Socket socket, DataInputStream dis, DataOutputStream dos, String uuid)
-    {
+    public ViewerHandler(Socket socket, DataInputStream dis, DataOutputStream dos, String uuid) {
         this.socket = socket;
         this.dis = dis;
         this.dos = dos;
@@ -41,10 +42,9 @@ class ClientHandler extends Thread
                     // receive the answer from client
                     received = dis.readUTF();
                 }
-                catch (IOException e)
-                {
+                catch (IOException e) {
                     System.out.println("Client " + socket + " disconnected...");
-                    clientTracker.Remove(this.uuid);
+                    viewerTracker.Remove(this.uuid);
                     this.socket.close();
                     System.out.println("Connection closed");
                     break;
@@ -54,7 +54,7 @@ class ClientHandler extends Thread
                 {
                     System.out.println("Client " + this.socket + " sends exit...");
                     System.out.println("Closing this connection.");
-                    clientTracker.Remove(this.uuid);
+                    viewerTracker.Remove(this.uuid);
                     this.socket.close();
                     System.out.println("Connection closed");
                     break;
@@ -90,13 +90,12 @@ class ClientHandler extends Thread
             }
         }
 
-        try
-        {
+        try {
             // closing resources
             this.dis.close();
             this.dos.close();
-
-        }catch(IOException e){
+        }
+        catch(IOException e) {
             e.printStackTrace();
         }
     }
