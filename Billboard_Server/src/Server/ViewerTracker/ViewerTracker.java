@@ -1,21 +1,23 @@
-package Server;
+package Server.ViewerTracker;
+
+import Server.ViewerHandler.ViewerHandler;
 
 import java.util.*;
 
-class ClientTracker {
+public class ViewerTracker {
 
-    static Map<String, ClientHandler> activeClients = new TreeMap<String, ClientHandler>();
+    static Map<String, ViewerHandler> activeViewers = new TreeMap<String, ViewerHandler>();
 
     /**
      * Add a new client to the vector of client handlers and increment numConnected count
      * @param client
      */
-    public void Add(String uuid, ClientHandler client) throws ClientTrackerException {
-        if (activeClients.containsKey(uuid)) {
-            throw new ClientTrackerException("UUID: " + uuid + " already exists");
+    public void Add(String uuid, ViewerHandler client) throws ViewerTrackerException {
+        if (activeViewers.containsKey(uuid)) {
+            throw new ViewerTrackerException("UUID: " + uuid + " already exists");
         }
             else {
-            activeClients.put(uuid, client);
+            activeViewers.put(uuid, client);
         }
     }
 
@@ -24,7 +26,7 @@ class ClientTracker {
      * @param uuid
      */
     public void Remove(String uuid) {
-        activeClients.remove(uuid);
+        activeViewers.remove(uuid);
     }
 
     /**
@@ -33,6 +35,6 @@ class ClientTracker {
      */
     public int Number() {
         //return numConnected;
-        return activeClients.size();
+        return activeViewers.size();
     }
 }

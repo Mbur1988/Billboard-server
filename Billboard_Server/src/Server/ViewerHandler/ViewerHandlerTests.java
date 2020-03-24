@@ -1,4 +1,4 @@
-package Server;
+package Server.ViewerHandler;
 
 import java.io.*;
 import java.net.*;
@@ -9,9 +9,9 @@ import javax.net.ssl.SSLSocketFactory;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 
-public class ClientHandlerTests {
+public class ViewerHandlerTests {
 
-    private ClientHandler clientHandler;
+    private ViewerHandler viewerHandler;
     private Socket socket;
     private DataInputStream dis;
     private DataOutputStream dos;
@@ -29,23 +29,23 @@ public class ClientHandlerTests {
 
     @Test
     public void testConstructor() {
-        clientHandler = new ClientHandler(socket, dis, dos, uuid);
-        assertEquals(dis, clientHandler.dis);
-        assertEquals(dos, clientHandler.dos);
-        assertEquals(socket, clientHandler.socket);
-        assertEquals(uuid, clientHandler.uuid);
+        viewerHandler = new ViewerHandler(socket, dis, dos, uuid);
+        assertEquals(dis, viewerHandler.dis);
+        assertEquals(dos, viewerHandler.dos);
+        assertEquals(socket, viewerHandler.socket);
+        assertEquals(uuid, viewerHandler.uuid);
     }
 
     @Test
     public void testConstructorFail() throws IOException {
-        clientHandler = new ClientHandler(socket, dis, dos, uuid);
+        viewerHandler = new ViewerHandler(socket, dis, dos, uuid);
         InputStream is = new ByteArrayInputStream("hi I am test".getBytes(Charset.forName("UTF-8")));
         dis = new DataInputStream(is);
         factory = SSLSocketFactory.getDefault();
         socket = factory.createSocket();
         uuid = UUID.randomUUID().toString();
-        assertNotEquals(dis, clientHandler.dis);
-        assertNotEquals(socket, clientHandler.socket);
-        assertNotEquals(uuid, clientHandler.uuid);
+        assertNotEquals(dis, viewerHandler.dis);
+        assertNotEquals(socket, viewerHandler.socket);
+        assertNotEquals(uuid, viewerHandler.uuid);
     }
 }
