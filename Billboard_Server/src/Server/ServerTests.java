@@ -1,6 +1,5 @@
 package Server;
 
-import java.io.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 
@@ -9,7 +8,7 @@ public class ServerTests {
     private Server server;
 
     @BeforeEach
-    public void newServer() throws IOException {
+    public void newServer() {
         server.port = 5056;
     }
 

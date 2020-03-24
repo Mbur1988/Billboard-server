@@ -2,18 +2,26 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-// Client class 
-public class Client
+// Viewer class 
+public class Viewer
 {
-    public static void main(String[] args) throws IOException
-    {
+    static int port;
+
+    public static int getPort() { return port; }
+
+    public static void setPort(int port) { Viewer.port = port; }
+
+    public static void main(String[] args) {
         try
         {
             Scanner scn = new Scanner(System.in);
 
-            // getting localhost ip 
+            // setting localhost ip 
             InetAddress ip = InetAddress.getByName("localhost");
-
+            
+            // setting port
+            port = 5056;
+            
             // establish the connection with server port 5056 
             Socket s = new Socket(ip, 5056);
 
@@ -22,14 +30,14 @@ public class Client
             DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
             // the following loop performs the exchange of 
-            // information between client and client handler 
+            // information between Viewer and Viewer handler 
             while (true)
             {
                 System.out.println(dis.readUTF());
                 String tosend = scn.nextLine();
                 dos.writeUTF(tosend);
 
-                // If client sends exit,close this connection  
+                // If Viewer sends exit,close this connection  
                 // and then break from the while loop 
                 if(tosend.equals("Exit"))
                 {
@@ -39,7 +47,7 @@ public class Client
                     break;
                 }
 
-                // printing date or time as requested by client 
+                // printing date or time as requested by Viewer 
                 String received = dis.readUTF();
                 System.out.println(received);
             }

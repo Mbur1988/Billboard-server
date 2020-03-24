@@ -1,17 +1,27 @@
 package Server;
 
+import Server.ViewerHandler.ViewerHandler;
+import Server.ViewerTracker.ViewerTracker;
+
 import java.io.*;
 import java.net.*;
 import java.util.UUID;
 
-// Server.Server class
 public class Server
 {
     static int port = 5056;
 
+    public static void setPort(int port) {
+        Server.port = port;
+    }
+
+    public static int getPort() {
+        return port;
+    }
+
     public static void main(String[] args) throws IOException
     {
-        ClientTracker clientTracker = new ClientTracker();
+        ViewerTracker viewerTracker = new ViewerTracker();
 
         // server is listening on port 5056
         ServerSocket serverSocket = new ServerSocket(port);
@@ -19,12 +29,10 @@ public class Server
 
         // running infinite loop for getting
         // client request
-        while (true)
-        {
+        while (true) {
             Socket socket = null;
 
-            try
-            {
+            try {
                 // socket object to receive incoming client requests
                 socket = serverSocket.accept();
 
@@ -40,26 +48,18 @@ public class Server
                 String uuid = UUID.randomUUID().toString();
 
                 // create a new thread object
-                ClientHandler thread = new ClientHandler(socket, dis, dos, uuid);
+                ViewerHandler thread = new ViewerHandler(socket, dis, dos, uuid);
 
                 // add this client to active clients list
-                clientTracker.Add(uuid, thread);
+                viewerTracker.Add(uuid, thread);
 
                 // Invoking the start() method
                 thread.start();
-            }
-            catch (Exception e){
+            } catch (Exception e) {
+                assert socket != null;
                 socket.close();
                 e.printStackTrace();
             }
         }
-    }
-
-    public static void setPort(int port) {
-        Server.port = port;
-    }
-
-    public static int getPort() {
-        return port;
     }
 }
