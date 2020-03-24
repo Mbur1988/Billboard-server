@@ -1,4 +1,3 @@
-import java.io.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 
@@ -7,7 +6,7 @@ public class ViewerTests {
     private Viewer viewer;
 
     @BeforeEach
-    public void newServer() throws IOException {
+    public void newServer() {
         viewer.port = 5056;
     }
 

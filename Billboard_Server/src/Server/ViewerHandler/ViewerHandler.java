@@ -1,7 +1,6 @@
 package Server.ViewerHandler;
 
 import Server.ViewerTracker.ViewerTracker;
-
 import java.io.*;
 import java.text.*;
 import java.util.*;
@@ -76,6 +75,10 @@ public class ViewerHandler extends Thread {
                     case "Time" :
                         toreturn = fortime.format(date);
                         dos.writeUTF(toreturn);
+                        break;
+
+                    case "Ping" :
+                        dos.writeUTF("Pong..");
                         break;
 
                     default:
