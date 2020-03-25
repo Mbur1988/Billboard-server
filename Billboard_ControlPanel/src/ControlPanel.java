@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
+import Basic_GUI.*;
 
 // Client class 
 public class ControlPanel
@@ -12,6 +13,7 @@ public class ControlPanel
     public static void setPort(int port) { ControlPanel.port = port; }
 
     public static void main(String[] args) {
+        Basic_GUI.loginScreen();
         try
         {
             Scanner scn = new Scanner(System.in);
