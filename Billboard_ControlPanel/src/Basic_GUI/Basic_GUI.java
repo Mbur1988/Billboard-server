@@ -15,7 +15,7 @@ public class Basic_GUI {
     /**
      * The login screen.
      */
-    public static void Screen() {
+    public static void loginScreen() {
 
         /**
          * May be able to use a dialog window instead of a frame.
@@ -62,17 +62,20 @@ public class Basic_GUI {
                 String enteredPassword = new String(pw.getPassword());
 
                 if (correctPassword.equals(enteredPassword)){
-                    String data = "Username " + un.getText();
-                data += ", Password: "
+                    String credentials = "Username " + un.getText();
+                    credentials += ", Password: "
                         + enteredPassword;
-                labelTest.setText(data);
+                labelTest.setText(credentials);
                 }
+
                 else {
                     labelTest.setText("Incorrect password"); // This label is mainly for testing purposes.
                 }
+
             }
+
         });
 
     }
 
-    }
+}
