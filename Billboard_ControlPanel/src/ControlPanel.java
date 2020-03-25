@@ -6,7 +6,7 @@ import Basic_GUI.*;
 // Client class 
 public class ControlPanel
 {
-    static int port;
+    static int port = 5056;
 
     public static int getPort() { return port; }
 
