@@ -1,17 +1,19 @@
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
+import Basic_GUI.*;
 
 // Client class 
 public class ControlPanel
 {
-    static int port;
+    static int port = 5056;
 
     public static int getPort() { return port; }
 
     public static void setPort(int port) { ControlPanel.port = port; }
 
     public static void main(String[] args) {
+        Basic_GUI.loginScreen();
         try
         {
             Scanner scn = new Scanner(System.in);
