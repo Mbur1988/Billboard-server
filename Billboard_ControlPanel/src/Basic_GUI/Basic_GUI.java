@@ -63,9 +63,8 @@ public class Basic_GUI {
 
                 if (correctPassword.equals(enteredPassword)){
                     String credentials = "Username " + un.getText();
-                    credentials += ", Password: "
-                        + enteredPassword;
-                labelTest.setText(credentials);
+                    credentials += ", Password: " + enteredPassword;
+                    labelTest.setText(credentials);
                 }
 
                 else {
