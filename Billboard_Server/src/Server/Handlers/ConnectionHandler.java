@@ -1,7 +1,5 @@
 package Server.Handlers;
 
-import Server.Handlers.ViewerHandler;
-
 import java.io.*;
 import java.net.*;
 
@@ -19,11 +17,9 @@ public class ConnectionHandler extends Thread {
 
     @Override
     public void run() {
-        String received;
         try {
             // Attempt to read client data input stream and handle any exceptions
-            received = dis.readUTF();
-
+            String received = dis.readUTF();
             switch (received) {
 
                 case "viewer":
@@ -42,6 +38,7 @@ public class ConnectionHandler extends Thread {
                     this.dos.close();
                     break;
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
