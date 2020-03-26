@@ -1,32 +1,21 @@
-package Server.ViewerHandler;
+package Server.Handlers;
 
-import Server.ViewerTracker.ViewerTracker;
 import java.io.*;
+import java.net.Socket;
 import java.text.*;
 import java.util.*;
-import java.net.*;
 
-public class ViewerHandler extends Thread {
+public class ViewerHandler extends ConnectionHandler {
 
-    ViewerTracker viewerTracker = new ViewerTracker();
-    DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
-    DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
-    final DataInputStream dis;
-    final DataOutputStream dos;
-    final Socket socket;
-    final String uuid;
-
-    // Constructor
-    public ViewerHandler(Socket socket, DataInputStream dis, DataOutputStream dos, String uuid) {
-        this.socket = socket;
-        this.dis = dis;
-        this.dos = dos;
-        this.uuid = uuid;
+    public ViewerHandler(Socket socket, DataInputStream dis, DataOutputStream dos) {
+        super(socket, dis, dos);
     }
 
+    DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
+    DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
+
     @Override
-    public void run()
-    {
+    public void run() {
         String received;
         String toreturn;
         while (true)
@@ -44,7 +33,6 @@ public class ViewerHandler extends Thread {
                 }
                 catch (IOException e) {
                     System.out.println("Client " + socket + " disconnected...");
-                    viewerTracker.Remove(this.uuid);
                     this.socket.close();
                     System.out.println("Connection closed");
                     break;
@@ -54,7 +42,6 @@ public class ViewerHandler extends Thread {
                 {
                     System.out.println("Client " + this.socket + " sends exit...");
                     System.out.println("Closing this connection.");
-                    viewerTracker.Remove(this.uuid);
                     this.socket.close();
                     System.out.println("Connection closed");
                     break;

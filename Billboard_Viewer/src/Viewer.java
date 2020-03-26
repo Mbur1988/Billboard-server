@@ -29,6 +29,7 @@ public class Viewer
             DataInputStream dis = new DataInputStream(s.getInputStream());
             DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
+            dos.writeUTF("viewer");
             // the following loop performs the exchange of 
             // information between Viewer and Viewer handler 
             while (true)
