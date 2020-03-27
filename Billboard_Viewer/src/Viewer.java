@@ -1,63 +1,67 @@
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+
+import static java.lang.Thread.sleep;
 
 // Viewer class 
-public class Viewer
-{
-    static int port;
+public class Viewer {
+    static int port = 5056;
 
-    public static int getPort() { return port; }
+    static InetAddress ip;
 
-    public static void setPort(int port) { Viewer.port = port; }
+    public static void setPort(int port) {
+        Viewer.port = port;
+    }
+
+    public static int getPort() {
+        return port;
+    }
+
+    public static void setIp(InetAddress ip) {
+        Viewer.ip = ip;
+    }
+
+    public static InetAddress getIp() {
+        return ip;
+    }
 
     public static void main(String[] args) {
-        try
-        {
+
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(Viewer::RequestUpdate, 0, 15, TimeUnit.SECONDS);
+//        while (true) {
+//
+//        }
+    }
+
+    public static void RequestUpdate() {
+        try {
             Scanner scn = new Scanner(System.in);
 
-            // setting localhost ip 
-            InetAddress ip = InetAddress.getByName("localhost");
-            
-            // setting port
-            port = 5056;
-            
-            // establish the connection with server port 5056 
+            // setting localhost ip
+            ip = InetAddress.getByName("localhost");
+
+            // establish the connection with server port 5056
             Socket s = new Socket(ip, port);
 
-            // obtaining input and out streams 
+            // obtaining input and out streams
             DataInputStream dis = new DataInputStream(s.getInputStream());
             DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
             dos.writeUTF("viewer");
-            // the following loop performs the exchange of 
-            // information between Viewer and Viewer handler 
-            while (true)
-            {
-                System.out.println(dis.readUTF());
-                String tosend = scn.nextLine();
-                dos.writeUTF(tosend);
 
-                // If Viewer sends exit,close this connection  
-                // and then break from the while loop 
-                if(tosend.equals("Exit"))
-                {
-                    System.out.println("Closing this connection : " + s);
-                    s.close();
-                    System.out.println("Connection closed");
-                    break;
-                }
+            System.out.println(dis.readUTF());
 
-                // printing date or time as requested by Viewer 
-                String received = dis.readUTF();
-                System.out.println(received);
-            }
-
-            // closing resources 
             scn.close();
             dis.close();
             dos.close();
-        }catch(Exception e){
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
