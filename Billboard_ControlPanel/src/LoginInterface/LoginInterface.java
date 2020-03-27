@@ -1,25 +1,17 @@
-package Basic_GUI;
+package LoginInterface;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+ // The Billboard Control Panel Login Interface.
 
-/**
- * The Billboard Control Panel.
- */
+public class LoginInterface {
 
-public class Basic_GUI {
-
-    private JPanel panel1;
-
-    /**
-     * The login screen.
-     */
     public static void loginScreen() {
 
-        /**
-         * May be able to use a dialog window instead of a frame.
-         */
+
+         // May be able to use a dialog window instead of a frame. *****
+         
 
         JFrame loginScreen = new JFrame("Billboard Control Panel"); // Login window.
 
