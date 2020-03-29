@@ -1,25 +1,40 @@
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
+import Basic_GUI.*;
 
 // Client class 
-public class Client
+public class ControlPanel
 {
-    public static void main(String[] args) throws IOException
-    {
+    static int port = 5056;
+
+    static InetAddress ip;
+
+    public static int getPort() { return port; }
+
+    public static void setPort(int port) { ControlPanel.port = port; }
+
+    public static void setIp(InetAddress ip) { ControlPanel.ip = ip; }
+
+    public static InetAddress getIp() { return ip; }
+
+    public static void main(String[] args) {
+        Basic_GUI.loginScreen();
         try
         {
             Scanner scn = new Scanner(System.in);
 
             // getting localhost ip 
-            InetAddress ip = InetAddress.getByName("localhost");
+            ip = InetAddress.getByName("localhost");
 
             // establish the connection with server port 5056 
-            Socket s = new Socket(ip, 5056);
+            Socket s = new Socket(ip, port);
 
             // obtaining input and out streams 
             DataInputStream dis = new DataInputStream(s.getInputStream());
             DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
+            dos.writeUTF("controlpanel");
 
             // the following loop performs the exchange of 
             // information between client and client handler 

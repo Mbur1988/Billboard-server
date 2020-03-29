@@ -1,31 +1,21 @@
-import static java.lang.System.*;
+package Server.Handlers;
+
 import java.io.*;
+import java.net.Socket;
 import java.text.*;
 import java.util.*;
-import java.net.*;
 
-class ClientHandler extends Thread
-{
-    ClientTracker clientTracker = new ClientTracker();
-    DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
-    DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
-    final DataInputStream dis;
-    final DataOutputStream dos;
-    final Socket socket;
-    final String uuid;
+public class CPHandler extends ConnectionHandler {
 
-    // Constructor
-    public ClientHandler(Socket socket, DataInputStream dis, DataOutputStream dos, String uuid)
-    {
-        this.socket = socket;
-        this.dis = dis;
-        this.dos = dos;
-        this.uuid = uuid;
+    public CPHandler(Socket socket, DataInputStream dis, DataOutputStream dos) {
+        super(socket, dis, dos);
     }
 
+    DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
+    DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
+
     @Override
-    public void run()
-    {
+    public void run() {
         String received;
         String toreturn;
         while (true)
@@ -41,10 +31,8 @@ class ClientHandler extends Thread
                     // receive the answer from client
                     received = dis.readUTF();
                 }
-                catch (IOException e)
-                {
+                catch (IOException e) {
                     System.out.println("Client " + socket + " disconnected...");
-                    clientTracker.Remove(this.uuid);
                     this.socket.close();
                     System.out.println("Connection closed");
                     break;
@@ -54,7 +42,6 @@ class ClientHandler extends Thread
                 {
                     System.out.println("Client " + this.socket + " sends exit...");
                     System.out.println("Closing this connection.");
-                    clientTracker.Remove(this.uuid);
                     this.socket.close();
                     System.out.println("Connection closed");
                     break;
@@ -77,6 +64,10 @@ class ClientHandler extends Thread
                         dos.writeUTF(toreturn);
                         break;
 
+                    case "Ping" :
+                        dos.writeUTF("Pong..");
+                        break;
+
                     default:
                         dos.writeUTF("Invalid input");
                         break;
@@ -86,13 +77,12 @@ class ClientHandler extends Thread
             }
         }
 
-        try
-        {
+        try {
             // closing resources
             this.dis.close();
             this.dos.close();
-
-        }catch(IOException e){
+        }
+        catch(IOException e) {
             e.printStackTrace();
         }
     }
