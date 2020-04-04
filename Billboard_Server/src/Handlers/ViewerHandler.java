@@ -1,6 +1,6 @@
 package Handlers;
 
-import SerializableObjects.TestObject;
+import SerializableObjects.User;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,21 +13,22 @@ public class ViewerHandler extends ConnectionHandler {
 
     @Override
     public void run() {
+        ObjectStreamHandler stream = new ObjectStreamHandler(socket);
         while (true)
         {
             try {
-                // Stream object for sending object
-                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                User user = new User("test", "test");
+                stream.Send(user);
 
-                TestObject object1 = new TestObject(12,"username","password");
-                oos.writeObject(object1);
-                oos.flush();
+                Object received = stream.Receive();
+                if (received instanceof User)
+                {
+                    User test = (User) received;
+                    test.showDetails();
+                }
 
-                dos.writeUTF("Does this work???");
-
-                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                TestObject testObject = (TestObject) ois.readObject();
-                testObject.showDetails();
+                dos.writeUTF("DataInputStream Test");
+                System.out.println(dis.readUTF());
 
                 socket.close();
                 dis.close();

@@ -1,4 +1,4 @@
-import SerializableObjects.TestObject;
+import SerializableObjects.User;
 
 import java.io.*;
 import java.net.*;
@@ -6,9 +6,6 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-
-import static java.lang.Thread.sleep;
 
 // Viewer class 
 public class Viewer {
@@ -58,14 +55,15 @@ public class Viewer {
             dos.writeUTF("viewer");
 
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            TestObject testObject = (TestObject) ois.readObject();
-            testObject.showDetails();
-
-            System.out.println(dis.readUTF());
+            User user = (User) ois.readObject();
+            user.showDetails();
 
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            oos.writeObject(testObject);
+            oos.writeObject(user);
             oos.flush();
+
+            System.out.println(dis.readUTF());
+            dos.writeUTF("DataOutputStream Test");
 
             scn.close();
             dis.close();

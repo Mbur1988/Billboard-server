@@ -1,5 +1,4 @@
 import Handlers.ConnectionHandler;
-import SerializableObjects.TestObject;
 
 import java.io.*;
 import java.net.*;
