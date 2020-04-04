@@ -1,3 +1,5 @@
+import SerializableObjects.TestObject;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -47,11 +49,16 @@ public class Viewer {
             ip = InetAddress.getByName("localhost");
 
             // establish the connection with server port 5056
-            Socket s = new Socket(ip, port);
+            Socket socket = new Socket(ip, port);
+
+            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            TestObject testObject = (TestObject) ois.readObject();
+            testObject.showDetails();
+            //ois.close();
 
             // obtaining input and out streams
-            DataInputStream dis = new DataInputStream(s.getInputStream());
-            DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+            DataInputStream dis = new DataInputStream(socket.getInputStream());
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
             dos.writeUTF("viewer");
 
