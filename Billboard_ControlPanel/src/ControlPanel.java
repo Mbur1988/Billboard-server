@@ -1,7 +1,9 @@
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
-import Basic_GUI.*;
+
+import ControlPanelInterface.ControlPanelInterface;
+import LoginInterface.*;
 
 // Client class 
 public class ControlPanel
@@ -19,7 +21,8 @@ public class ControlPanel
     public static InetAddress getIp() { return ip; }
 
     public static void main(String[] args) {
-        Basic_GUI.loginScreen();
+        ControlPanelInterface.controlPanelScreen();
+        //LoginInterface.loginScreen();            // Don't forget to uncomment LOL
         try
         {
             Scanner scn = new Scanner(System.in);
