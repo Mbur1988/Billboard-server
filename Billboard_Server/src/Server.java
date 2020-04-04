@@ -29,12 +29,6 @@ public class Server
                 // socket object to receive incoming client requests
                 socket = serverSocket.accept();
 
-                // Stream object for sending object
-                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-
-                TestObject object1 = new TestObject(12,"username","password");
-                oos.writeObject(object1);
-
                 // obtaining input and out streams
                 DataInputStream dis = new DataInputStream(socket.getInputStream());
                 DataOutputStream dos = new DataOutputStream(socket.getOutputStream());

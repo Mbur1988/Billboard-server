@@ -51,18 +51,21 @@ public class Viewer {
             // establish the connection with server port 5056
             Socket socket = new Socket(ip, port);
 
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            TestObject testObject = (TestObject) ois.readObject();
-            testObject.showDetails();
-            //ois.close();
-
             // obtaining input and out streams
             DataInputStream dis = new DataInputStream(socket.getInputStream());
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
             dos.writeUTF("viewer");
 
+            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            TestObject testObject = (TestObject) ois.readObject();
+            testObject.showDetails();
+
             System.out.println(dis.readUTF());
+
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            oos.writeObject(testObject);
+            oos.flush();
 
             scn.close();
             dis.close();
