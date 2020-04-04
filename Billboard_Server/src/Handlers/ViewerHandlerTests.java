@@ -1,10 +1,8 @@
-package Server.Handlers;
+package Handlers;
 
 import java.io.*;
 import java.net.*;
 import javax.net.SocketFactory;
-
-import Server.Handlers.ViewerHandler;
 
 public class ViewerHandlerTests {
 

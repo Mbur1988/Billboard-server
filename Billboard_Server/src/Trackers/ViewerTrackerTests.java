@@ -1,6 +1,6 @@
-package Server.ViewerTracker;
+package Trackers;
 
-import Server.ViewerTracker.ViewerTracker;
+import Trackers.ViewerTracker;
 
 import java.io.*;
 import java.net.*;

@@ -1,6 +1,7 @@
-package Server.ViewerTracker;
+package Trackers;
 
-import Server.Handlers.ViewerHandler;
+import Handlers.ViewerHandler;
+
 import java.util.*;
 
 public class ViewerTracker {

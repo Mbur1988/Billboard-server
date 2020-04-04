@@ -1,6 +1,4 @@
-package Server;
-
-import Server.Handlers.ConnectionHandler;
+import Handlers.ConnectionHandler;
 
 import java.io.*;
 import java.net.*;

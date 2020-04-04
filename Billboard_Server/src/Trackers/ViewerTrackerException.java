@@ -1,4 +1,4 @@
-package Server.ViewerTracker;
+package Trackers;
 
 public class ViewerTrackerException extends Exception {
 
