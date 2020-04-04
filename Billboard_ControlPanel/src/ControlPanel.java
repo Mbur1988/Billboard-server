@@ -8,17 +8,24 @@ import LoginInterface.*;
 // Client class 
 public class ControlPanel
 {
-    static int port = 5056;
+    private static InetAddress ip;
+    private static int port;
 
-    static InetAddress ip;
+    public static void setPort(int port) {
+        ControlPanel.port = port;
+    }
 
-    public static int getPort() { return port; }
+    public static int getPort() {
+        return port;
+    }
 
-    public static void setPort(int port) { ControlPanel.port = port; }
+    public static void setIp(String ip) throws UnknownHostException {
+        ControlPanel.ip = InetAddress.getByName(ip);
+    }
 
-    public static void setIp(InetAddress ip) { ControlPanel.ip = ip; }
-
-    public static InetAddress getIp() { return ip; }
+    public static String getIp() {
+        return ip.getHostAddress();
+    }
 
     public static void main(String[] args) {
         ControlPanelInterface.controlPanelScreen();
@@ -27,8 +34,10 @@ public class ControlPanel
         {
             Scanner scn = new Scanner(System.in);
 
-            // getting localhost ip 
-            ip = InetAddress.getByName("localhost");
+            // setting ip
+            setIp("localhost");
+            // setting port
+            setPort(5056);
 
             // establish the connection with server port 5056 
             Socket s = new Socket(ip, port);

@@ -10,6 +10,14 @@ public class User implements Serializable {
     private String password;
     private int access;
 
+    public User() {
+        this.verified = false;
+        this.id = null;
+        this.username = "";
+        this.password = "";
+        this.access = 0;
+    }
+
     public User(String username, String password) {
         this.verified = false;
         this.id = null;
@@ -67,4 +75,3 @@ public class User implements Serializable {
         System.out.println("Access:"+access);
     }
 }
-

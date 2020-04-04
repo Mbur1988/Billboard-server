@@ -23,5 +23,4 @@ public class ObjectStreamHandler {
         ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
         return ois.readObject();
     }
-
 }

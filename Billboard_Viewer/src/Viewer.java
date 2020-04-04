@@ -1,3 +1,4 @@
+import Handlers.ObjectStreamHandler;
 import SerializableObjects.User;
 
 import java.io.*;
@@ -9,9 +10,9 @@ import java.util.concurrent.TimeUnit;
 
 // Viewer class 
 public class Viewer {
-    static int port = 5056;
 
-    static InetAddress ip;
+    private static InetAddress ip;
+    private static int port;
 
     public static void setPort(int port) {
         Viewer.port = port;
@@ -21,12 +22,12 @@ public class Viewer {
         return port;
     }
 
-    public static void setIp(InetAddress ip) {
-        Viewer.ip = ip;
+    public static void setIp(String ip) throws UnknownHostException {
+        Viewer.ip = InetAddress.getByName(ip);
     }
 
-    public static InetAddress getIp() {
-        return ip;
+    public static String getIp() {
+        return ip.getHostAddress();
     }
 
     public static void main(String[] args) {
@@ -42,11 +43,15 @@ public class Viewer {
         try {
             Scanner scn = new Scanner(System.in);
 
-            // setting localhost ip
-            ip = InetAddress.getByName("localhost");
+            // setting ip
+            setIp("localhost");
+            // setting port
+            setPort(5056);
 
             // establish the connection with server port 5056
             Socket socket = new Socket(ip, port);
+
+            ObjectStreamHandler stream = new ObjectStreamHandler(socket);
 
             // obtaining input and out streams
             DataInputStream dis = new DataInputStream(socket.getInputStream());
@@ -54,13 +59,15 @@ public class Viewer {
 
             dos.writeUTF("viewer");
 
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            User user = (User) ois.readObject();
-            user.showDetails();
+            User test = null;
+            Object received = stream.Receive();
+            if (received instanceof User)
+            {
+                test = (User) received;
+                test.showDetails();
+            }
 
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            oos.writeObject(user);
-            oos.flush();
+            stream.Send(test);
 
             System.out.println(dis.readUTF());
             dos.writeUTF("DataOutputStream Test");
