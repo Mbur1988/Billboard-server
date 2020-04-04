@@ -1,4 +1,4 @@
-package Server.Handlers;
+package Handlers;
 
 import java.io.*;
 import java.net.*;
