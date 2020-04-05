@@ -1,6 +1,7 @@
 import CustomExceptions.InvalidPortException;
 import Handlers.ObjectStreamHandler;
 import SerializableObjects.User;
+import Tools.PropertyReader;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -16,7 +17,7 @@ public class Viewer {
     // Declare port variable to be used by server
     private static int port;
 
-    /**
+     /**
      * Sets the port number to be used by the server
      * @param port The port number
      * @throws InvalidPortException
@@ -63,12 +64,9 @@ public class Viewer {
         return ip.getHostAddress();
     }
 
-    public static void main(String[] args) throws InvalidPortException {
+    public static void main(String[] args) {
 
-        // setting ip
-        setIp("localhost");
-        // setting port
-        setPort(5056);
+        SetNetworkConfig();
 
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(Viewer::RequestUpdate, 0, 15, TimeUnit.SECONDS);
@@ -76,6 +74,21 @@ public class Viewer {
         // This is loop can be used as the main loop for the GUI and will be unaffected by the executor service
         while (true) {
             // Add main loop contents here
+        }
+    }
+
+    /**
+     * Updates network variables with configurations defined in .props file
+     */
+    private static void SetNetworkConfig() {
+        try {
+            // setting ip
+            setIp(PropertyReader.GetProperty("IpAddress"));
+            // setting port
+            String Port = PropertyReader.GetProperty(("Port"));
+            setPort(Integer.parseInt(Port));
+        } catch (IOException | InvalidPortException e) {
+            e.printStackTrace();
         }
     }
 
