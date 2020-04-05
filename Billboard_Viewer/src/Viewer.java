@@ -2,7 +2,6 @@ import CustomExceptions.InvalidPortException;
 import Handlers.ObjectStreamHandler;
 import SerializableObjects.User;
 import Tools.PropertyReader;
-
 import java.io.*;
 import java.net.*;
 import java.util.*;
