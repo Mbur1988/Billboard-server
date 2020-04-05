@@ -1,3 +1,4 @@
+import CustomExceptions.InvalidPortException;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -7,22 +8,17 @@ public class ServerTests {
 
     @BeforeEach
     public void newServer() {
-        server.port = 5056;
+        server = new Server();
     }
 
     @Test
-    public void testSetPort() {
-        assertEquals(server.port, 5056);
-        server.setPort(99999);
-        assertNotEquals(server.port, 5056);
-        assertEquals(server.port, 99999);
+    public void getPort() {
+        assertEquals(server.getPort(), 0);
     }
 
     @Test
-    public void testGetPort() {
-        assertEquals(server.getPort(), 5056);
+    public void setPort() throws InvalidPortException {
         server.setPort(99999);
-        assertNotEquals(server.getPort(), 5056);
         assertEquals(server.getPort(), 99999);
     }
 }

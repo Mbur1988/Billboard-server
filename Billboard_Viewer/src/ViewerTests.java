@@ -1,4 +1,6 @@
 import static org.junit.jupiter.api.Assertions.*;
+
+import CustomExceptions.InvalidPortException;
 import org.junit.jupiter.api.*;
 import java.net.UnknownHostException;
 
@@ -17,7 +19,7 @@ public class ViewerTests {
     }
 
     @Test
-    public void setPort() {
+    public void setPort() throws InvalidPortException {
         viewer.setPort(99999);
         assertEquals(viewer.getPort(), 99999);
     }

@@ -1,22 +1,42 @@
+import CustomExceptions.InvalidPortException;
 import Handlers.ConnectionHandler;
-
 import java.io.*;
 import java.net.*;
 
 public class Server
 {
-    static int port = 5056;
+    // Declare port variable to be used by server
+    static int port;
 
-    public static void setPort(int port) {
-        Server.port = port;
+    /**
+     * Sets the port number to be used by the server
+     * @param port The port number
+     * @throws InvalidPortException
+     */
+    public static void setPort(int port) throws InvalidPortException {
+        if (port <= 0) {
+            throw new InvalidPortException("port number invalid");
+        }
+        else if (port > 0 && port < 1024 || port == 3306) {
+            throw new InvalidPortException("port number reserved");
+        }
+        else {
+            Server.port = port;
+        }
     }
 
+    /**
+     * Returns the port number that is currently been used by the server
+     * @return the port number as an integer
+     */
     public static int getPort() {
         return port;
     }
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException, InvalidPortException {
+        // Set the port to be used by the server
+        setPort(5056);
+
         // server is listening on port 5056
         ServerSocket serverSocket = new ServerSocket(port);
 
