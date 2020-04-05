@@ -5,6 +5,7 @@ import java.util.Scanner;
 import ControlPanelInterface.ControlPanelInterface;
 import LoginInterface.*;
 import  CustomExceptions.InvalidPortException;
+import Tools.PropertyReader;
 
 // Client class 
 public class ControlPanel {
@@ -62,23 +63,22 @@ public class ControlPanel {
     }
 
     public static void main(String[] args) {
+
+        SetNetworkConfig();
+
         ControlPanelInterface.controlPanelScreen();
         LoginInterface.loginScreen();
+
         try
         {
             Scanner scn = new Scanner(System.in);
 
-            // setting ip
-            setIp("localhost");
-            // setting port
-            setPort(5056);
-
-            // establish the connection with server port 5056 
-            Socket s = new Socket(ip, port);
+            // establish the connection with server port 5056
+            Socket socket = new Socket(ip, port);
 
             // obtaining input and out streams 
-            DataInputStream dis = new DataInputStream(s.getInputStream());
-            DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+            DataInputStream dis = new DataInputStream(socket.getInputStream());
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
             dos.writeUTF("controlpanel");
 
@@ -94,8 +94,8 @@ public class ControlPanel {
                 // and then break from the while loop 
                 if(tosend.equals("Exit"))
                 {
-                    System.out.println("Closing this connection : " + s);
-                    s.close();
+                    System.out.println("Closing this connection : " + socket);
+                    socket.close();
                     System.out.println("Connection closed");
                     break;
                 }
@@ -110,6 +110,21 @@ public class ControlPanel {
             dis.close();
             dos.close();
         }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Updates network variables with configurations defined in .props file
+     */
+    private static void SetNetworkConfig() {
+        try {
+            // setting ip
+            setIp(PropertyReader.GetProperty("IpAddress"));
+            // setting port
+            String Port = PropertyReader.GetProperty(("Port"));
+            setPort(Integer.parseInt(Port));
+        } catch (IOException | InvalidPortException e) {
             e.printStackTrace();
         }
     }
