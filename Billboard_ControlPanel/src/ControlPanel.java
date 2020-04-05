@@ -123,7 +123,8 @@ public class ControlPanel {
             // setting port
             String Port = PropertyReader.GetProperty(("Port"));
             setPort(Integer.parseInt(Port));
-        } catch (IOException | InvalidPortException e) {
+        }
+        catch (IOException | InvalidPortException e) {
             e.printStackTrace();
         }
     }
