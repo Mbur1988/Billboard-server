@@ -7,6 +7,18 @@ import java.util.Properties;
 public class PropertyReader {
 
     /**
+     * Retreives all properties from the configuration .props file
+     * @return Properties
+     * @throws IOException
+     */
+    public static Properties GetProperties() throws IOException {
+        Properties properties = new Properties();
+        FileInputStream ip= new FileInputStream("Resources/client.props");
+        properties.load(ip);
+        return properties;
+    }
+
+    /**
      * Retreives the requested property from the configuration .props file
      * @param property Requested property
      * @return Property value
