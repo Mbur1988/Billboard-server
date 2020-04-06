@@ -20,7 +20,7 @@ public class ControlPanel
 
     public static InetAddress getIp() { return ip; }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ControlPanelInterface.controlPanelScreen();
         //LoginInterface.loginScreen();            // Don't forget to uncomment LOL
         try

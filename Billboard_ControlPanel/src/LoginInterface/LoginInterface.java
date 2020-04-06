@@ -51,7 +51,9 @@ public class LoginInterface {
         loginScreen.setVisible(true);
 
         String correctPassword = "0000"; // Mock password for testing comparison of input.
+
         String userName = un.getText();
+
 
         b_Login.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
