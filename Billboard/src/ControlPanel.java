@@ -119,9 +119,9 @@ public class ControlPanel {
     private static void SetNetworkConfig() {
         try {
             // setting ip
-            setIp(PropertyReader.GetProperty("IpAddress"));
+            setIp(PropertyReader.GetProperty("client", "IpAddress"));
             // setting port
-            String Port = PropertyReader.GetProperty(("Port"));
+            String Port = PropertyReader.GetProperty("client", "Port");
             setPort(Integer.parseInt(Port));
         }
         catch (IOException | InvalidPortException e) {

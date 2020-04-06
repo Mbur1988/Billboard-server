@@ -11,9 +11,9 @@ public class PropertyReader {
      * @return Properties
      * @throws IOException
      */
-    public static Properties GetProperties() throws IOException {
+    public static Properties GetProperties(String file) throws IOException {
         Properties properties = new Properties();
-        FileInputStream ip= new FileInputStream("Resources/server.props");
+        FileInputStream ip= new FileInputStream("Resources/"+file+".props");
         properties.load(ip);
         return properties;
     }
@@ -24,9 +24,9 @@ public class PropertyReader {
      * @return Property value
      * @throws IOException
      */
-    public static String GetProperty(String property) throws IOException {
+    public static String GetProperty(String file, String property) throws IOException {
         Properties prop = new Properties();
-        FileInputStream ip= new FileInputStream("Resources/client.props");
+        FileInputStream ip= new FileInputStream("Resources/"+file+".props");
         prop.load(ip);
         return prop.getProperty(property);
     }

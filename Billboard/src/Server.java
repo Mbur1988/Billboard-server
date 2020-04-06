@@ -72,7 +72,7 @@ public class Server {
     private static void SetNetworkConfig() {
         try {
             // setting port
-            String Port = PropertyReader.GetProperty(("Port"));
+            String Port = PropertyReader.GetProperty("Server", "Port");
             setPort(Integer.parseInt(Port));
         } catch (IOException | InvalidPortException e) {
             e.printStackTrace();
