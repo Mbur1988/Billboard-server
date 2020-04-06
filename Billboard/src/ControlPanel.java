@@ -61,12 +61,12 @@ public class ControlPanel {
         return ip.getHostAddress();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         SetNetworkConfig();
 
         ControlPanelInterface.controlPanelScreen();
-        LoginInterface.loginScreen();
+        //LoginInterface.loginScreen();
 
         try
         {
