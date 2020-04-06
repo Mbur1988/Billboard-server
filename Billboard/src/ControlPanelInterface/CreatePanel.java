@@ -48,10 +48,7 @@ public class CreatePanel extends ControlPanelInterface {
         colour.setBounds(0,100,500,300);    // I think all this is wrong but it seems to work lol
         createPanel.add(colour);
 
-        //      This whole section is meant to add the picture to the preview window.
-        //      Doesn't work...
-
-        BufferedImage img = ImageIO.read(new File("F:/Uni Files/QUT/2020/Semester 1 2020/CAB302 Software Development/Assignment 1/cab302_assignment/Billboard/src/Images/cat.jpg"));
+        BufferedImage img = ImageIO.read(new File("E:\\cab302_assignment_reclone\\cab302_assignment\\Billboard\\src\\Images\\cat.jpg"));
         ImageIcon icon = new ImageIcon(img);
         JLabel pic = new JLabel();
         pic.setIcon(icon);

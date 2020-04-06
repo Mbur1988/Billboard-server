@@ -21,18 +21,14 @@ public class ControlPanelInterface {
     static int screenWidth = screenSize.width;
     static int screenHeight = screenSize.height;
 
-    public static void controlPanelScreen() throws IOException {
+    public static void controlPanelScreen() {
 
         //Create the Control Panel Screen window and set it the size of the screen.
-//        JFrame controlPanelScreen = new JFrame();
+
         controlPanelScreen.setExtendedState(JFrame.MAXIMIZED_BOTH);
         controlPanelScreen.setResizable(false);
 
         // Create the individual panels.
-
-
-
-
 
         // Create the tabbed pane.
         JTabbedPane tabs = new JTabbedPane();
@@ -40,25 +36,23 @@ public class ControlPanelInterface {
 
         // Elements for each pane:
 
-        CreatePanel.createPanelScreen();
-        ListPanel.listPanelScreen();
-        SchedulePanel.schedulePanelScreen();
-        ChangePWPanel.changePWScreen();
-        EditUsersPanel.editUserScreen();
-
-        // Schedule Billboards Panel:
-        JLabel label_Schedule = new JLabel("What's on when");
-
-        // Edit Users panel:
-        JLabel label_EditUsers = new JLabel("Edit Users");
-
-
         // Add the tabs to the tab pane.
         tabs.add("Create Billboard",createPanel);
         tabs.add("List Billboards",listPanel);
         tabs.add("Schedule Billboard",schedulePanel);
         tabs.add("Change Password",passwordPanel);
         tabs.add("Edit Users", editUserPanel);
+
+        try {
+            CreatePanel.createPanelScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ListPanel.listPanelScreen();
+        SchedulePanel.schedulePanelScreen();
+        ChangePWPanel.changePWScreen();
+        EditUsersPanel.editUserScreen();
 
         controlPanelScreen.add(tabs);
         controlPanelScreen.setLayout(null);

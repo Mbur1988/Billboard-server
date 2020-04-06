@@ -10,6 +10,10 @@ public class SchedulePanel extends ControlPanelInterface {
 
         schedulePanel.setLayout(null);
 
+        JLabel label_Schedule = new JLabel("Billboard Schedule");
+        label_Schedule.setBounds(0,0,300,300);
+        schedulePanel.add(label_Schedule);
+
         JButton b_Exit = new JButton("Exit"); // Exit button.
         b_Exit.setBounds(screenWidth - 105, screenHeight - 60, 100, 30);
 

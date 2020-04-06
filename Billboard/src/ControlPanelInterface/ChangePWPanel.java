@@ -10,8 +10,8 @@ public class ChangePWPanel extends ControlPanelInterface {
 
         passwordPanel.setLayout(null);
 
-        JLabel label_changePW = new JLabel("Don't forget to change your pw every 12 years!!!");
-        label_changePW.setBounds(0,0,300,300);
+        JLabel label_changePW = new JLabel("Don't forget to change your password every 12 years!!!");
+        label_changePW.setBounds(0,0,500,300);
         passwordPanel.add(label_changePW);
 
         JButton b_Exit = new JButton("Exit"); // Exit button.

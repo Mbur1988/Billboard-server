@@ -63,7 +63,7 @@ public class ControlPanel {
         return ip.getHostAddress();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         SetNetworkConfig();
 
