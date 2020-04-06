@@ -1,68 +1,11 @@
-import CustomExceptions.InvalidPortException;
 import Handlers.ObjectStreamHandler;
 import SerializableObjects.User;
-import Tools.PropertyReader;
-import java.io.*;
-import java.net.*;
-import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 // Viewer class 
-public class Viewer {
-
-    // Declare InetAddress variable to be used by server
-    private static InetAddress ip;
-    // Declare port variable to be used by server
-    private static int port;
-
-    /**
-     * Sets the port number to be used by the server
-     * @param port The port number
-     * @throws InvalidPortException
-     */
-    public static void setPort(int port) throws InvalidPortException {
-        if (port <= 0) {
-            throw new InvalidPortException("port number invalid");
-        }
-        else if (port > 0 && port < 1024 || port == 3306) {
-            throw new InvalidPortException("port number reserved");
-        }
-        else {
-            Viewer.port = port;
-        }
-    }
-
-    /**
-     * Returns the port number that is currently been used by the server
-     * @return the port number as an integer
-     */
-    public static int getPort() {
-        return port;
-    }
-
-    /**
-     * Sets the port number to be used by the viewer
-     * @param ip the ip address or hostname as a string
-     * @throws UnknownHostException
-     */
-    public static void setIp(String ip)  {
-        try {
-            Viewer.ip = InetAddress.getByName(ip);
-        }
-        catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Returns the ip address or hostname that is currently set as a string
-     * @return ip address or hostname as string
-     */
-    public static String getIp() {
-        return ip.getHostAddress();
-    }
+public class Viewer extends Client {
 
     public static void main(String[] args) {
 
@@ -78,58 +21,44 @@ public class Viewer {
     }
 
     /**
-     * Updates network variables with configurations defined in .props file
-     */
-    private static void SetNetworkConfig() {
-        try {
-            // setting ip
-            setIp(PropertyReader.GetProperty("client", "IpAddress"));
-            // setting port
-            String Port = PropertyReader.GetProperty("client", "Port");
-            setPort(Integer.parseInt(Port));
-        } catch (IOException | InvalidPortException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Called by the executor service every 15 seconds.
      * This method creates a new connection to the server and will request the current billboard to display
      */
     public static void RequestUpdate() {
         try {
-            Scanner scn = new Scanner(System.in);
+            if (AttemptConnect()) {
 
-            // establish the connection with server port 5056
-            Socket socket = new Socket(ip, port);
+                // create object stream handler
+                ObjectStreamHandler stream = new ObjectStreamHandler(socket);
 
-            ObjectStreamHandler stream = new ObjectStreamHandler(socket);
+                // send connection type
+                dos.writeUTF("viewer");
 
-            // obtaining input and out streams
-            DataInputStream dis = new DataInputStream(socket.getInputStream());
-            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+                // test object stream
+                User test = null;
+                Object received = stream.Receive();
+                if (received instanceof User) {
+                    test = (User) received;
+                    test.showDetails();
+                }
+                stream.Send(test);
 
-            dos.writeUTF("viewer");
+                // test data stream with handshake
+                System.out.println(dis.readUTF());
+                dos.writeUTF("handshake from viewer");
 
-            User test = null;
-            Object received = stream.Receive();
-            if (received instanceof User)
-            {
-                test = (User) received;
-                test.showDetails();
+                scn.close();
+                dis.close();
+                dos.close();
             }
 
-            stream.Send(test);
-
-            System.out.println(dis.readUTF());
-            dos.writeUTF("DataOutputStream Test");
-
-            scn.close();
-            dis.close();
-            dos.close();
+            else {
+                System.out.println("Connection failed... Retry in 15s");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }
