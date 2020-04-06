@@ -51,7 +51,7 @@ public class CreatePanel extends ControlPanelInterface {
         //      This whole section is meant to add the picture to the preview window.
         //      Doesn't work...
 
-        BufferedImage img = ImageIO.read(new File("F://Uni Files/QUT/2020/Semester 1 2020/CAB302 Software Development/Assignment 1/cab302_assignment/Billboard_ControlPanel/src/Images/cat.jpg"));
+        BufferedImage img = ImageIO.read(new File("F:/Uni Files/QUT/2020/Semester 1 2020/CAB302 Software Development/Assignment 1/cab302_assignment/Billboard/src/Images/cat.jpg"));
         ImageIcon icon = new ImageIcon(img);
         JLabel pic = new JLabel();
         pic.setIcon(icon);

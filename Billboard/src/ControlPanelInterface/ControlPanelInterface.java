@@ -5,16 +5,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import ControlPanelInterface.*;
-/*
-    To who ever lay eyes upon this code...
-    I do so humbly apologise for my not so epic coding.
- */
+
 
 public class ControlPanelInterface {
 
-    static JPanel createPanel = new JPanel();
     static JFrame controlPanelScreen = new JFrame();
+    static JPanel createPanel = new JPanel();
+    static JPanel listPanel = new JPanel();
+
 
     // Get the size of the screen.
     static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -32,7 +30,7 @@ public class ControlPanelInterface {
 //        JPanel createPanel = new JPanel();
 //        createPanel.setLayout(null);
 
-        JPanel listPanel = new JPanel();
+//        JPanel listPanel = new JPanel();
         listPanel.setLayout(null);
 
         JPanel schedulePanel = new JPanel();
@@ -44,7 +42,6 @@ public class ControlPanelInterface {
         JPanel editUserPanel = new JPanel();
         editUserPanel.setLayout(null);
 
-        JPanel createPanel = new JPanel();
 
         // Create the tabbed pane.
         JTabbedPane tabs = new JTabbedPane();
@@ -54,9 +51,9 @@ public class ControlPanelInterface {
         // This one is getting a bit big.
 
         // Elements for each pane:
-        CreatePanel.createPanelScreen(); // Following commented code moved to CreatePanel.java.
+        //CreatePanel.createPanelScreen(); // Following commented code moved to CreatePanel.java.
         // Also doesn't work...
-
+        CreatePanel.createPanelScreen();
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //        JPanel previewPanel = new JPanel();
 //        previewPanel.setBounds((screenWidth / 2) -450,25,900,screenHeight - 100);

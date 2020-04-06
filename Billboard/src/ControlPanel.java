@@ -2,6 +2,8 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 import ControlPanelInterface.ControlPanelInterface;
+import ControlPanelInterface.CreatePanel;
+
 import LoginInterface.*;
 import  CustomExceptions.InvalidPortException;
 import Tools.PropertyReader;
