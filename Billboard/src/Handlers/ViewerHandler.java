@@ -1,7 +1,6 @@
 package Handlers;
 
 import SerializableObjects.User;
-
 import java.io.*;
 import java.net.Socket;
 
@@ -44,7 +43,7 @@ public class ViewerHandler extends ConnectionHandler {
                 }
 
                 // Test data input and output streams
-                dos.writeUTF("DataInputStream Test");
+                dos.writeUTF("handshake from server");
                 System.out.println(dis.readUTF());
 
                 // Close connection nicely
