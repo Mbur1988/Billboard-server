@@ -9,14 +9,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 public class CreatePanel extends ControlPanelInterface {
 
+    public static void createPanelScreen() throws IOException {
 
-
-    public void createPanelScreen() {
-        JPanel createPanel = new JPanel();
-        createPanel.setLayout(null);
+       createPanel.setLayout(null);
 
         JPanel previewPanel = new JPanel();
         previewPanel.setBounds((screenWidth / 2) -450,25,900,screenHeight - 100);

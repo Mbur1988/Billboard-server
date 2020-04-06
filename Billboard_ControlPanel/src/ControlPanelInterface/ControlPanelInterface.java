@@ -1,31 +1,30 @@
 package ControlPanelInterface;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
-
-import static java.awt.Color.getColor;
-import static javax.imageio.ImageIO.read;
-
+import ControlPanelInterface.*;
 /*
     To who ever lay eyes upon this code...
     I do so humbly apologise for my not so epic coding.
  */
 
 public class ControlPanelInterface {
-    // Get the size of the screen.
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    int screenWidth = screenSize.width;
-    int screenHeight = screenSize.height;
 
-    public void controlPanelScreen() throws IOException {
+    static JPanel createPanel = new JPanel();
+    static JFrame controlPanelScreen = new JFrame();
+
+    // Get the size of the screen.
+    static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    static int screenWidth = screenSize.width;
+    static int screenHeight = screenSize.height;
+
+    public static void controlPanelScreen() throws IOException {
 
         //Create the Control Panel Screen window and set it the size of the screen.
-        JFrame controlPanelScreen = new JFrame();
+//        JFrame controlPanelScreen = new JFrame();
         controlPanelScreen.setExtendedState(JFrame.MAXIMIZED_BOTH);
         controlPanelScreen.setResizable(false);
 
@@ -45,7 +44,7 @@ public class ControlPanelInterface {
         JPanel editUserPanel = new JPanel();
         editUserPanel.setLayout(null);
 
-
+        JPanel createPanel = new JPanel();
 
         // Create the tabbed pane.
         JTabbedPane tabs = new JTabbedPane();
@@ -55,6 +54,8 @@ public class ControlPanelInterface {
         // This one is getting a bit big.
 
         // Elements for each pane:
+        CreatePanel.createPanelScreen(); // Following commented code moved to CreatePanel.java.
+                                         // Also doesn't work...
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //        JPanel previewPanel = new JPanel();
@@ -248,6 +249,7 @@ public class ControlPanelInterface {
 
         // Edit Users panel:
         JLabel label_EditUsers = new JLabel("Edit Users");
+
 
         // Add the tabs to the tab pane.
         tabs.add("Create Billboard",createPanel);

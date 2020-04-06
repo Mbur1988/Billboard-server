@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-import ControlPanelInterface.ControlPanelInterface;
+import ControlPanelInterface.*;
 import LoginInterface.*;
 
 // Client class 
@@ -22,6 +22,7 @@ public class ControlPanel
 
     public static void main(String[] args) throws IOException {
         ControlPanelInterface.controlPanelScreen();
+
         //LoginInterface.loginScreen();            // Don't forget to uncomment LOL
         try
         {
