@@ -19,7 +19,7 @@ public class ViewerHandler extends ConnectionHandler {
     //Override of the run function of parent class
     @Override
     public void run() {
-        Log.Message(socket.toString() + " viewer handler started");
+        Log.Message(socket + " viewer handler started");
 
         // Create a new ObjectStreamHandler to send billboards to the viewer
         ObjectStreamHandler stream = new ObjectStreamHandler(socket);
@@ -33,7 +33,7 @@ public class ViewerHandler extends ConnectionHandler {
             socket.close();
             dis.close();
             dos.close();
-            Log.Confirmation(socket.toString() + " closed successfully");
+            Log.Confirmation(socket + " closed successfully");
         }
         catch (IOException e) {
             e.printStackTrace();

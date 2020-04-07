@@ -12,20 +12,14 @@ import java.util.Scanner;
 
 public class Client {
 
-    // Declare InetAddress variable to be used by server
+    // Declare static variables to be used
     protected static InetAddress ip;
-    // Declare port variable to be used by server
     protected static int port;
-
-    protected static Scanner scn;
-
+    protected static Scanner scanner;
     protected static Socket socket;
-
     protected static DataInputStream dis;
-
     protected static DataOutputStream dos;
-
-    protected static ObjectStreamHandler stream;
+    protected static ObjectStreamHandler objectStream;
 
     /**
      * Sets the port number to be used by the server
@@ -92,7 +86,7 @@ public class Client {
     protected static boolean Connect() {
 
         // create new scanner
-        scn = new Scanner(System.in);
+        scanner = new Scanner(System.in);
 
         // establish the connection with server port
         try {
@@ -104,7 +98,7 @@ public class Client {
             dos = new DataOutputStream(socket.getOutputStream());
 
             // create object stream handler
-            stream = new ObjectStreamHandler(socket);
+            objectStream = new ObjectStreamHandler(socket);
 
             return true;
         }
@@ -123,7 +117,7 @@ public class Client {
             socket.close();
             dis.close();
             dos.close();
-            Log.Confirmation(socket.toString() + " closed successfully");
+            Log.Confirmation(socket + " closed successfully");
         }
         catch (IOException e) {
             e.printStackTrace();

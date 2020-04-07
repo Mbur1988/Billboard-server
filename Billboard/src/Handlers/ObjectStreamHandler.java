@@ -1,6 +1,7 @@
 package Handlers;
 
 import SerializableObjects.User;
+import Tools.Log;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,7 +15,6 @@ public class ObjectStreamHandler {
 
     /**
      * Class constructor
-     *
      * @param socket the socket reference to use
      */
     public ObjectStreamHandler(Socket socket) {
@@ -23,7 +23,6 @@ public class ObjectStreamHandler {
 
     /**
      * Sends a serializable object over a socket connection using an ObjectOutputStream
-     *
      * @param object the serializable object to send
      * @throws IOException
      */
@@ -31,17 +30,19 @@ public class ObjectStreamHandler {
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
         oos.writeObject(object);
         oos.flush();
+        Log.Confirmation("Object sent on " + socket);
     }
 
     /**
      * Receives a serializable object over a socket connection using an ObjectInputStream
-     *
      * @return the received serializable object
      * @throws IOException
      * @throws ClassNotFoundException
      */
     public Object Receive() throws IOException, ClassNotFoundException {
+        Log.Message("Attempting to receive object on " + socket);
         ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+        Log.Confirmation("Object received on " + socket);
         return ois.readObject();
     }
 }

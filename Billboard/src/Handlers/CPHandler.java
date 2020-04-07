@@ -19,7 +19,7 @@ public class CPHandler extends ConnectionHandler {
     //Override of the run function of parent class
     @Override
     public void run() {
-        Log.Message(socket.toString() + " control panel handler started");
+        Log.Message(socket + " control panel handler started");
 
         // Create a new ObjectStreamHandler to send billboards to the viewer
         ObjectStreamHandler stream = new ObjectStreamHandler(socket);

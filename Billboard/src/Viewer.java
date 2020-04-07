@@ -50,7 +50,7 @@ public class Viewer extends Client {
     private static boolean AttemptConnect() {
         try {
             if (Connect()) {
-                Log.Confirmation("Connected to server on: " + socket.toString());
+                Log.Confirmation("Connected to server on: " + socket);
                 // send connection type
                 dos.writeUTF("viewer");
                 return true;

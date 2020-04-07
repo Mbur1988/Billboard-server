@@ -34,13 +34,13 @@ public class ConnectionHandler extends Thread {
             switch (received) {
                 // If the new connection is a viewer then create and start new viewer handler
                 case "viewer":
-                    Log.Message(socket.toString() + " identified as viewer");
+                    Log.Message(socket + " identified as viewer");
                     ViewerHandler viewerHandler = new ViewerHandler(socket, dis, dos);
                     viewerHandler.start();
                     break;
                 // If the new connection is a control panel then create and start new control panel handler
                 case "controlpanel":
-                    Log.Message(socket.toString() + " identified as control panel");
+                    Log.Message(socket + " identified as control panel");
                     CPHandler cpHandler = new CPHandler(socket, dis, dos);
                     cpHandler.start();
                     break;
@@ -50,7 +50,7 @@ public class ConnectionHandler extends Thread {
                     this.socket.close();
                     this.dis.close();
                     this.dos.close();
-                    Log.Confirmation(socket.toString() + " closed successfully");
+                    Log.Confirmation(socket + " closed successfully");
                     break;
             }
         // Catch and exceptions
