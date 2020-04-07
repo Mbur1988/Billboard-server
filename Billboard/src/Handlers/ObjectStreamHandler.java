@@ -1,5 +1,7 @@
 package Handlers;
 
+import SerializableObjects.User;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,6 +14,7 @@ public class ObjectStreamHandler {
 
     /**
      * Class constructor
+     *
      * @param socket the socket reference to use
      */
     public ObjectStreamHandler(Socket socket) {
@@ -20,6 +23,7 @@ public class ObjectStreamHandler {
 
     /**
      * Sends a serializable object over a socket connection using an ObjectOutputStream
+     *
      * @param object the serializable object to send
      * @throws IOException
      */
@@ -31,6 +35,7 @@ public class ObjectStreamHandler {
 
     /**
      * Receives a serializable object over a socket connection using an ObjectInputStream
+     *
      * @return the received serializable object
      * @throws IOException
      * @throws ClassNotFoundException
@@ -40,3 +45,27 @@ public class ObjectStreamHandler {
         return ois.readObject();
     }
 }
+
+/*
+    ///// This is an example using this class /////
+
+    // Create new User class to send as a test
+    User user = new User("test", "test");
+
+    // Send newly created user class
+    stream.Send(user);
+
+    // Receive class
+    // Note: the Receive method will hang if there is no object waiting to be received on the socket
+    Object received = stream.Receive();
+
+    // If statement to identify the received object as an instance of User class
+    if(received instanceof User) {
+
+        // Cast the received object to its correct class
+        User test = (User) received;
+
+        // Not that the object is cast to its correct class, it's methods can be used
+        test.showDetails();
+    }
+*/

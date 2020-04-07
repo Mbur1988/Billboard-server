@@ -1,4 +1,6 @@
 import CustomExceptions.InvalidPortException;
+import Handlers.ObjectStreamHandler;
+import Tools.Log;
 import Tools.PropertyReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -22,6 +24,8 @@ public class Client {
     protected static DataInputStream dis;
 
     protected static DataOutputStream dos;
+
+    protected static ObjectStreamHandler stream;
 
     /**
      * Sets the port number to be used by the server
@@ -85,7 +89,7 @@ public class Client {
         }
     }
 
-    protected static boolean AttemptConnect() {
+    protected static boolean Connect() {
 
         // create new scanner
         scn = new Scanner(System.in);
@@ -99,10 +103,30 @@ public class Client {
             dis = new DataInputStream(socket.getInputStream());
             dos = new DataOutputStream(socket.getOutputStream());
 
+            // create object stream handler
+            stream = new ObjectStreamHandler(socket);
+
             return true;
         }
         catch (IOException e) {
         return false;
+        }
+    }
+
+    /**
+     * Closes the connection nicely
+     * logs confirmation to console if disconnection successful
+     */
+    protected static void Disconnect() {
+        // closing resources
+        try {
+            socket.close();
+            dis.close();
+            dos.close();
+            Log.Confirmation(socket.toString() + " closed successfully");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

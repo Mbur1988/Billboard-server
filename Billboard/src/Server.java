@@ -35,7 +35,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-
+        Log.Message("Server started");
         SetNetworkConfig();
 
         try {
@@ -48,19 +48,18 @@ public class Server {
                 try {
                     // socket object to receive incoming client requests
                     socket = serverSocket.accept();
-
                     // obtaining input and out streams
                     DataInputStream dis = new DataInputStream(socket.getInputStream());
                     DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+
+                    Log.Confirmation(socket.toString() + " connected to server");
 
                     ConnectionHandler connectionHandler = new ConnectionHandler(socket, dis, dos);
                     connectionHandler.start();
 
                 } catch (Exception e) {
                     assert socket != null;
-
                     socket.close();
-
                     e.printStackTrace();
                 }
             }

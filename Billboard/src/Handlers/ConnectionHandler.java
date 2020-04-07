@@ -1,5 +1,7 @@
 package Handlers;
 
+import Tools.Log;
+
 import java.io.*;
 import java.net.*;
 
@@ -32,19 +34,23 @@ public class ConnectionHandler extends Thread {
             switch (received) {
                 // If the new connection is a viewer then create and start new viewer handler
                 case "viewer":
+                    Log.Message(socket.toString() + " identified as viewer");
                     ViewerHandler viewerHandler = new ViewerHandler(socket, dis, dos);
                     viewerHandler.start();
                     break;
                 // If the new connection is a control panel then create and start new control panel handler
                 case "controlpanel":
+                    Log.Message(socket.toString() + " identified as control panel");
                     CPHandler cpHandler = new CPHandler(socket, dis, dos);
                     cpHandler.start();
                     break;
                 // If the new connection type is unrecognised then neatly close the connection
                 default:
+                    Log.Message("Connection could not be identified");
                     this.socket.close();
                     this.dis.close();
                     this.dos.close();
+                    Log.Confirmation(socket.toString() + " closed successfully");
                     break;
             }
         // Catch and exceptions

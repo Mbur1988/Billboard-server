@@ -1,14 +1,12 @@
-import Handlers.ObjectStreamHandler;
-import SerializableObjects.User;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
+import java.util.concurrent.*;
+import Tools.Log;
 
 // Viewer class 
 public class Viewer extends Client {
 
     public static void main(String[] args) {
-
+        Log.Message("Viewer started");
         SetNetworkConfig();
 
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -16,7 +14,9 @@ public class Viewer extends Client {
 
         // This is loop can be used as the main loop for the GUI and will be unaffected by the executor service
         while (true) {
-            // Add main loop contents here
+            //
+            // Add any main loop contents here
+            //
         }
     }
 
@@ -25,40 +25,43 @@ public class Viewer extends Client {
      * This method creates a new connection to the server and will request the current billboard to display
      */
     public static void RequestUpdate() {
-        try {
+
             if (AttemptConnect()) {
 
-                // create object stream handler
-                ObjectStreamHandler stream = new ObjectStreamHandler(socket);
+                //
+                // Receive current billboard here
+                //
 
-                // send connection type
-                dos.writeUTF("viewer");
-
-                // test object stream
-                User test = null;
-                Object received = stream.Receive();
-                if (received instanceof User) {
-                    test = (User) received;
-                    test.showDetails();
-                }
-                stream.Send(test);
-
-                // test data stream with handshake
-                System.out.println(dis.readUTF());
-                dos.writeUTF("handshake from viewer");
-
-                scn.close();
-                dis.close();
-                dos.close();
+                // closing resources
+                Disconnect();
             }
 
             else {
-                System.out.println("Connection failed... Retry in 15s");
+                Log.Warning("Connection failed... Retry in 15s");
             }
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+    /**
+     * Attempts to connect to the server
+     * logs confirmation to console if connection successful
+     * logs error to console if connection failed
+     * @return True if connection successful otherwise false
+     */
+    private static boolean AttemptConnect() {
+        try {
+            if (Connect()) {
+                Log.Confirmation("Connected to server on: " + socket.toString());
+                // send connection type
+                dos.writeUTF("viewer");
+                return true;
+            }
+            else {
+                return false;
+            }
         }
-
+        catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
