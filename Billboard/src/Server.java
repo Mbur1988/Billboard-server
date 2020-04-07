@@ -1,9 +1,9 @@
-import CustomExceptions.InvalidPortException;
-import Handlers.ConnectionHandler;
-import Tools.PropertyReader;
-
 import java.io.*;
 import java.net.*;
+import Tools.Log;
+import Tools.PropertyReader;
+import CustomExceptions.InvalidPortException;
+import Handlers.ConnectionHandler;
 
 public class Server {
     // Declare port variable to be used by server
