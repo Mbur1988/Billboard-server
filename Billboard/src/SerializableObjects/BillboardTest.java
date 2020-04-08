@@ -4,19 +4,23 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
+
 
 /**
  ******************* This is the test class for the Billboards**********
  * before each the tester will create a new billboard  using the constructor with...
  * (String msg, String info, String picURL, String picDATA, String MsgColour,String BackColour, String InfoColour)
  * Test 1 to 7 are to test if all fields have been filled - consider adding more for other constructors made ase we go. (uses underTestFull)
- * Test 8-**** are for inserting then reading each field using their functions. (uses underTestEmpty)
+ * Test 8-21 are for testing if initialised as all null, inserting params then reading each field using their functions. (uses underTestEmpty)
+ * Test 21 - **** is for converting to to correct type be it from JPG to base 64 String or V V, and converting hex to string or V V.
  * as this continues we will add functionality to display image etc
  */
 
 public class BillboardTest {
     Billboard underTestEmpty;
     Billboard underTestFull;
+    int red,green,blue;
 
     @BeforeEach @Test
     // Billboard = newBillboard(String msg, String info, String picURL, String picDATA, String MsgColour,String BackColour, String InfoColour)
@@ -27,6 +31,9 @@ public class BillboardTest {
 
     }
 
+//--------------------------------------------------------------------------------------------//
+//                                  Testing all fields                                        //
+//--------------------------------------------------------------------------------------------//
     /**
      *
      * Test 1,
@@ -60,7 +67,8 @@ public class BillboardTest {
     @Test
     public void picURLInserted () throws Exception{
         //uses getPicUrl func
-        assertEquals(underTestFull.getPicUrl(),"https://dazedimg-dazedgroup.netdna-ssl.com/830/azure/dazed-prod/1150/0/1150228.jpg");
+        assertEquals(underTestFull.getPicUrl(),
+                "https://dazedimg-dazedgroup.netdna-ssl.com/830/azure/dazed-prod/1150/0/1150228.jpg");
     }
     /**
      *
@@ -119,6 +127,9 @@ public class BillboardTest {
         assertNull(underTestEmpty.getPicUrl());
     }
 
+//--------------------------------------------------------------------------------------------//
+//                                    Inserters                                               //
+//--------------------------------------------------------------------------------------------//
     /**
      * Test 9,
      *      Checks if set msg funct is setting a new function over the OG
@@ -269,8 +280,68 @@ public class BillboardTest {
         assertEquals(underTestEmpty.getInfoColour(),"Test 21");
     }
 
+//--------------------------------------------------------------------------------------------//
+//                                    Conversions                                             //
+//--------------------------------------------------------------------------------------------//
 
+    /**
+     * Test 22,
+     *      Checks conversion from string to RGB
+     *      Store in MSGColour
+     * @throws Exception
+     */
+    @Test
+    public void ConvertStringToRGB() throws Exception {
+        //uses ConvertStringToRGB funct
+        underTestEmpty.ConvertStringToRGB("#FFFFFF");
 
+        assertEquals(underTestEmpty.getMsgColour(),"255255255");  //this is r= 255 g= 255 b= 255;
+    }
+
+    /**
+     * Test 23,
+     *      Checks conversion from RGB to string
+     *       Store in MSGColour
+     * @throws Exception
+     */
+    @Test
+    public void ConvertStringToRGB() throws Exception {
+        //uses ConvertRGBtoString funct
+        underTestEmpty.ConvertRGBtoString(255,255,255);
+
+        assertEquals(underTestEmpty.getMsgColour(),"#FFFFFF");
+    }
+
+    /**
+     * Test 24,
+     *      Checks conversion from JPG to Data (base64)
+     *       Store in pic data
+     * @throws Exception
+     */
+    @Test
+    public void ConvertImageToData() throws Exception {
+        //uses ConvertImageToData funct
+        underTestEmpty.ConvertImageToData("C://Uni/image.jpg");
+        //In this test we will need to convert to data and see what it says then change im and then see differences and try to make one back using next test
+        assertEquals(underTestEmpty.getMsgColour(),"I have no idea.");
+    }
+
+    /**
+     * Test 25,
+     *      Checks conversion from Data (base64) JPG
+     *       Store in pic data
+     *       !!!!!!!!!!====this is needing to be run after we get result of above.====!!!!!!!!
+     * @throws Exception
+     */
+    /*
+    @Test
+    public void ConvertDataToImage() throws Exception {
+        //uses ConvertDataToImage funct
+        underTestEmpty.ConvertDataToImage("C://Uni/image.jpg");
+        //In this test we will need to convert to data and see what it says then change im and then see differences and try to make one back using next test
+        assertEquals(underTestEmpty.getMsgColour(),"I have no idea.");
+    }
+    */
 
 
 }
