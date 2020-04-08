@@ -18,7 +18,7 @@ public class CreatePanel extends ControlPanelInterface {
         createPanel.setLayout(null);
 
         JPanel previewPanel = new JPanel();
-        previewPanel.setBounds((screenWidth / 2) -450,25,900,screenHeight - 100);
+        previewPanel.setBounds((screenWidth / 2),35,(screenWidth / 2)  - 10,screenHeight - 100);
         previewPanel.setBackground(Color.white);
         previewPanel.setLayout(null);
 
@@ -57,7 +57,7 @@ public class CreatePanel extends ControlPanelInterface {
         // Upper billboard text.
         String default_UpperText = "Text to be displayed at the top of the billboard...";
         JTextArea upperText = new JTextArea(default_UpperText);
-        upperText.setBounds(0, 430, 500, 200);
+        upperText.setBounds(0, 405, 500, 100);
         createPanel.add(upperText);
         //String topText = upperText.getText();
 
@@ -79,7 +79,7 @@ public class CreatePanel extends ControlPanelInterface {
         // Lower billboard text.
         String default_LowerText = "Text to be displayed at the bottom of the billboard...";
         JTextArea lowerText = new JTextArea(default_LowerText);
-        lowerText.setBounds(0, 680, 500, 200);
+        lowerText.setBounds(0, 515, 500, 100);
         createPanel.add(lowerText);
         //String bottomText = lowerText.getText();
 
@@ -100,7 +100,7 @@ public class CreatePanel extends ControlPanelInterface {
 
         // Preview button.
         JButton b_Preview = new JButton("Preview");
-        b_Preview.setBounds((screenWidth / 2) - 450 ,  screenHeight - 60, 900, 30);
+        b_Preview.setBounds((screenWidth / 2) ,  0, screenWidth/2 - 10, 30);
         createPanel.add(b_Preview);
 
         b_Preview.addActionListener(new ActionListener() {
@@ -116,15 +116,15 @@ public class CreatePanel extends ControlPanelInterface {
 
 
         JButton b_Save = new JButton("Export"); // Export (save) button.
-        b_Save.setBounds(105, screenHeight - 60, 100, 30);
+        b_Save.setBounds(screenWidth - 435, screenHeight - 60, 100, 30);
         createPanel.add(b_Save);
 
         JButton b_Import = new JButton("Import"); // Import button.
-        b_Import.setBounds(0, screenHeight - 60, 100, 30);
+        b_Import.setBounds(screenWidth - 325, screenHeight - 60, 100, 30);
         createPanel.add(b_Import);
 
         JButton b_Clear = new JButton("Clear"); // Clear button.
-        b_Clear.setBounds(210, screenHeight - 60, 100, 30);
+        b_Clear.setBounds(screenWidth - 215, screenHeight - 60, 100, 30);
         createPanel.add(b_Clear);
 
         b_Clear.addActionListener(new ActionListener() {
