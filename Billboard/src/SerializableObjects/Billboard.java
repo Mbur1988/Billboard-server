@@ -1,6 +1,11 @@
 package SerializableObjects;
 
+import javax.imageio.stream.FileImageInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.Serializable;
+import java.util.Base64;
+
 
 public class Billboard implements Serializable {
 
@@ -137,4 +142,54 @@ public class Billboard implements Serializable {
      */
 
     public void setInfoColour(String infoColour) { this.infoColour = infoColour;}
+
+
+    //   converters    //
+
+    /**
+     * Converts a String in a Hex form and spits out a 9 number string representing rrrgggbbb
+     *
+     * @param string String that represents a hex colour Ex %FFFFFF
+     * @return String representing red green blue Ex 255255255
+     */
+    public String ConvertStringToRGB(String string) {
+        String Out;
+        int R =(Integer.parseInt(string.substring(1,3),16));
+        int G =(Integer.parseInt(string.substring(3,5),16));
+        int B =(Integer.parseInt(string.substring(5,7),16));
+        return Out = "" + R + G + B;
+    }
+
+    /**
+     * Converts a RGB 9 number string into a Hex String.
+     *
+     * @param r = red   (0-255)
+     * @param g = green (0-255)
+     * @param b = blue  (0-255)
+     * @return String of the entered RGB as a Hex representation in a string. Ex #FFFFFF
+     */
+    public String ConvertRGBtoString(int r, int g, int b) {
+        String hex = String.format("#%02X%02X%02X", r, g, b);
+        return hex;
+    }
+     /*   //Needs to be completed.
+    public String ConvertImageToData(File filePath) throws Exception {
+        String PicData;
+        try{
+            FileInputStream streamReader = new FileInputStream(filePath);
+            byte[] ImageBytes = new byte[(int)filePath.length()];
+            streamReader.read(ImageBytes);
+            PicData = new String(Base64.getEncoder().encodeToString(ImageBytes));
+            return PicData;
+        }
+        catch(Exception e){
+            // check exceptions
+            return "exception hit";
+        }
+
+
+
+    }
+
+      */
 }
