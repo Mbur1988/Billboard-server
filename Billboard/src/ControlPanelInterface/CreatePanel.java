@@ -18,9 +18,10 @@ public class CreatePanel extends ControlPanelInterface {
         createPanel.setLayout(null);
 
         JPanel previewPanel = new JPanel();
-        previewPanel.setBounds((screenWidth / 2),35,(screenWidth / 2)  - 10,screenHeight - 100);
+        previewPanel.setBounds((screenWidth / 2),35,(screenWidth / 2) ,screenHeight - 100);
         previewPanel.setBackground(Color.white);
         previewPanel.setLayout(null);
+        Dimension previewSize = previewPanel.getSize();
 
         // Create new Billboard Panel:
         JLabel label_nameBoard = new JLabel("Set Billboard Name: ");
@@ -52,19 +53,23 @@ public class CreatePanel extends ControlPanelInterface {
         ImageIcon icon = new ImageIcon(img);
         JLabel pic = new JLabel();
         pic.setIcon(icon);
-        pic.setBounds(300,0,600,900);
+        pic.setBounds(300,0,previewSize.width,previewSize.height - 200);
 
         // Upper billboard text.
-        String default_UpperText = "Text to be displayed at the top of the billboard...";
+        String default_UpperText = "Click here to enter text...";
         JTextArea upperText = new JTextArea(default_UpperText);
-        upperText.setBounds(0, 405, 500, 100);
-        createPanel.add(upperText);
+        upperText.setOpaque(false);
+        upperText.setFont(new Font("Courier", Font.BOLD,40));
+        upperText.setBounds(0, 0, previewSize.width, 100);
+        upperText.setLineWrap(true);
+        previewPanel.add(upperText);
         //String topText = upperText.getText();
 
         // This label will be placed at the top of the preview window to display the upper billboard text.
-        JLabel label_upperText = new JLabel();
-        label_upperText.setBounds(100,100,100,100);
-        previewPanel.add(label_upperText);
+//        JLabel label_upperText = new JLabel();
+//        label_upperText.setBounds(100,100,100,100);
+//        label_upperText.setFont(new Font("Courier", Font.BOLD,40));
+//        previewPanel.add(label_upperText);
 
         // Clear the hint text when the field is clicked.
         upperText.addMouseListener(new MouseAdapter(){
@@ -84,9 +89,9 @@ public class CreatePanel extends ControlPanelInterface {
         //String bottomText = lowerText.getText();
 
         // This label will be placed at the bottom of the preview window to display the lower billboard text.
-        JLabel label_lowerText = new JLabel();
-        label_lowerText.setBounds(100,300,100,100);
-        previewPanel.add(label_lowerText);
+//        JLabel label_lowerText = new JLabel();
+//        label_lowerText.setBounds(100,300,100,100);
+//        previewPanel.add(label_lowerText);
 
         // Clear the hint text when the field is clicked.
         lowerText.addMouseListener(new MouseAdapter(){
@@ -100,7 +105,7 @@ public class CreatePanel extends ControlPanelInterface {
 
         // Preview button.
         JButton b_Preview = new JButton("Preview");
-        b_Preview.setBounds((screenWidth / 2) ,  0, screenWidth/2 - 10, 30);
+        b_Preview.setBounds((screenWidth / 2) ,  0, screenWidth/2, 30);
         createPanel.add(b_Preview);
 
         b_Preview.addActionListener(new ActionListener() {
@@ -108,12 +113,11 @@ public class CreatePanel extends ControlPanelInterface {
             public void actionPerformed(ActionEvent e) {   // Can I have this auto update without having
                 Color newcolour = colour.getColor();       // to click preview each time a change is made?
                 previewPanel.setBackground(newcolour);     // Think it's wrong anyway lol
-                label_upperText.setText(upperText.getText()); // Doesn't work...
-                label_lowerText.setText(lowerText.getText());
+                //label_upperText.setText(upperText.getText()); // Doesn't work...
+                //label_lowerText.setText(lowerText.getText());
                 previewPanel.add(pic);
             }
         });
-
 
         JButton b_Save = new JButton("Export"); // Export (save) button.
         b_Save.setBounds(screenWidth - 435, screenHeight - 60, 100, 30);
@@ -133,6 +137,8 @@ public class CreatePanel extends ControlPanelInterface {
                 previewPanel.setBackground(Color.white);
                 imageFile.setText(null);
                 Name.setText(null);
+                upperText.setText(null);
+                lowerText.setText(null);
             }
         });
 
