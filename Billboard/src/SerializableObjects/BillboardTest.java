@@ -1,7 +1,6 @@
 package SerializableObjects;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,16 +15,14 @@ import org.junit.jupiter.api.Test;
  */
 
 public class BillboardTest {
-    private Billboard underTest;
+    Billboard underTest;
 
-    @BeforeEach
+    @BeforeEach @Test
     // Billboard = newBillboard(String msg, String info, String picURL, String picDATA, String MsgColour,String BackColour, String InfoColour)
-    public Billboard newBillboard(String msg, String info, String picURL, String picDATA, String MsgColour, String BackColour, String InfoColour) throws Exception {
-        //creates new empty billboard.
-        underTest = newBillboard("TEST MsG","TEST INFO","https://dazedimg-dazedgroup.netdna-ssl.com/830/azure/dazed-prod/1150/0/1150228.jpg",
-                "TEST","#000000","#FFFFFF","#000000");
+    void newBillboard() throws Exception {
+          underTest = new Billboard("TEST MsG","TEST INFO","https://dazedimg-dazedgroup.netdna-ssl.com/830/azure/dazed-prod/1150/0/1150228.jpg",
+                 "TEST","#000000","#FFFFFF","#000000");
 
-        return null;
     }
 
     /**
@@ -35,9 +32,8 @@ public class BillboardTest {
      */
     @Test
     public void MessageInserted () throws Exception{
-        //uses getMsg func
-        String messageStored = getMsg(undertest);
-        Assertions.assertEquals(messageStored.msg,"msg");
+        //uses getMsg funct
+        assertEquals(underTest.getMsg(),"TEST MsG");
     }
 
 
@@ -49,8 +45,7 @@ public class BillboardTest {
     @Test
     public void InfoInserted () throws Exception{
         //uses getInfo func
-        String InfoStored = getInfo(undertest);
-        Assertions.assertEquals(InfoStored,"TEST INFO");
+        assertEquals(underTest.getInfo(),"TEST INFO");
     }
     /**
      *
@@ -60,8 +55,7 @@ public class BillboardTest {
     @Test
     public void picURLInserted () throws Exception{
         //uses getpicURL func
-        String picURLStored = getpicURL(undertest);
-        Assertions.assertEquals(picURLStored,"https://dazedimg-dazedgroup.netdna-ssl.com/830/azure/dazed-prod/1150/0/1150228.jpg");
+        assertEquals(underTest.getpicURL(),"https://dazedimg-dazedgroup.netdna-ssl.com/830/azure/dazed-prod/1150/0/1150228.jpg");
     }
     /**
      *
@@ -71,8 +65,7 @@ public class BillboardTest {
     @Test
     public void PicDataInserted () throws Exception{
         //uses getPicData func
-        String PicDataStored = getPicData(undertest);
-        Assertions.assertEquals(PicDataStored,"TEST");
+        assertEquals(underTest.getPicData(),"TEST");
     }
     /**
      *
@@ -82,8 +75,7 @@ public class BillboardTest {
     @Test
     public void MsgColourInserted () throws Exception{
         //uses getMsgColour func
-        String MsgColourStored = getMsgColour(undertest);
-        Assertions.assertEquals(MsgColourStored,"#000000");
+        assertEquals( underTest.getMsgColour(),"#000000");
     }
     /**
      *
@@ -93,8 +85,7 @@ public class BillboardTest {
     @Test
     public void BackColourInserted () throws Exception{
         //uses getBackColour func
-        String BGStored = getBackColour(undertest);
-        Assertions.assertEquals(BGStored,"#FFFFFF");
+        assertEquals(underTest.getBackColour(),"#FFFFFF");
     }
     /**
      *
@@ -104,8 +95,7 @@ public class BillboardTest {
     @Test
     public void InfoColourInserted () throws Exception{
         //uses getInfoColour func
-        String InfoColourStored = getInfoColour(undertest);
-        Assertions.assertEquals(InfoColourStored,"#000000");
+        assertEquals(underTest.getInfoColour(),"#000000");
     }
 
 
