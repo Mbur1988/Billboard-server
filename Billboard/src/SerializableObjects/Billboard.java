@@ -46,6 +46,8 @@ public class Billboard implements Serializable {
 
     // - - - - - - - helpers bellow - - - - - - - - - //
 
+    //  Getters  //
+
     /**
      * Helper to get the message stored
      * @return String msg
@@ -87,4 +89,52 @@ public class Billboard implements Serializable {
      * @return String info colour
      */
     public String getInfoColour() {return infoColour; }
+
+    //  setters  //
+
+    /**
+     * sets message
+     * @param message
+     */
+    public void setMsg(String message) { this.msg = message;}
+
+    /**
+     * sets info
+     * @param info
+     */
+    public void setInfo(String info) { this.info = info;}
+
+    /**
+     * sets pictures URL
+     * @param picURL
+     */
+    public void setPicURL(String picURL) { this.picURL = picURL;}
+
+    /**
+     * Sets Pic Data as string to be converted to base64
+     * @param picData
+     */
+
+    public void setPicData(String picData) {this.picDATA = picData;}
+
+    /**
+     * sets message colour as string to be converted to HEX
+     * @param msgColour
+     */
+
+    public void setMsgColour(String msgColour) {this.msgColour = msgColour ;}
+
+    /**
+     * Sets back colour as string to be converted to HEX
+     * @param backColour
+     */
+
+    public void setBackColour(String backColour) {this.backColour = backColour;}
+
+    /**
+     * Sets info colour as string to be converted to HEX
+     * @param infoColour
+     */
+
+    public void setInfoColour(String infoColour) { this.infoColour = infoColour;}
 }
