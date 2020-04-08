@@ -1,6 +1,10 @@
 import Tools.Log;
 import ControlPanelInterface.ControlPanelInterface;
-import LoginInterface.LoginInterface;
+import ControlPanelInterface.CreatePanel;
+
+import LoginInterface.*;
+import  CustomExceptions.InvalidPortException;
+import Tools.PropertyReader;
 
 import java.io.IOException;
 
@@ -13,8 +17,8 @@ public class ControlPanel extends Client {
         Log.Message("Control panel started");
         SetNetworkConfig();
 
-        LoginInterface.loginScreen();
-        //ControlPanelInterface.controlPanelScreen();
+        ControlPanelInterface.controlPanelScreen();
+        //LoginInterface.loginScreen();
 
         // Example connection to server.
         // If server is available the control panel will connect and immediately disconnect

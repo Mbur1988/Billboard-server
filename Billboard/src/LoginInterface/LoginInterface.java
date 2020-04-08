@@ -12,7 +12,7 @@ public class LoginInterface {
     public static void loginScreen() {
 
 
-        // May be able to use a dialog window instead of a frame. *****
+         // May be able to use a dialog window instead of a frame. *****
 
 
         JFrame loginScreen = new JFrame("Billboard Control Panel"); // Login window.
@@ -51,7 +51,9 @@ public class LoginInterface {
         loginScreen.setVisible(true);
 
         String correctPassword = "0000"; // Mock password for testing comparison of input.
+
         String userName = un.getText();
+
 
         b_Login.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
