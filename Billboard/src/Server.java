@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
+import Handlers.MariaDB;
 import Tools.Log;
-import Tools.ProjectPath;
 import Tools.PropertyReader;
 import CustomExceptions.InvalidPortException;
 import Handlers.ConnectionHandler;
@@ -38,7 +38,7 @@ public class Server {
     public static void main(String[] args) {
         Log.Message("Server started");
         SetNetworkConfig();
-
+        MariaDB db = new MariaDB();
         try {
             // server is listening on configured port
             ServerSocket serverSocket = new ServerSocket(port);
@@ -72,7 +72,7 @@ public class Server {
     private static void SetNetworkConfig() {
         try {
             // setting port
-            String Port = PropertyReader.GetProperty("Server", "Port");
+            String Port = PropertyReader.GetProperty("server", "Port");
             setPort(Integer.parseInt(Port));
         } catch (IOException | InvalidPortException e) {
             e.printStackTrace();
