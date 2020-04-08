@@ -1,71 +1,12 @@
-import CustomExceptions.InvalidPortException;
-import Handlers.ObjectStreamHandler;
-import SerializableObjects.User;
-import Tools.PropertyReader;
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
+import java.util.concurrent.*;
+import Tools.Log;
 
 // Viewer class 
-public class Viewer {
-
-    // Declare InetAddress variable to be used by server
-    private static InetAddress ip;
-    // Declare port variable to be used by server
-    private static int port;
-
-    /**
-     * Sets the port number to be used by the server
-     * @param port The port number
-     * @throws InvalidPortException
-     */
-    public static void setPort(int port) throws InvalidPortException {
-        if (port <= 0) {
-            throw new InvalidPortException("port number invalid");
-        }
-        else if (port > 0 && port < 1024 || port == 3306) {
-            throw new InvalidPortException("port number reserved");
-        }
-        else {
-            Viewer.port = port;
-        }
-    }
-
-    /**
-     * Returns the port number that is currently been used by the server
-     * @return the port number as an integer
-     */
-    public static int getPort() {
-        return port;
-    }
-
-    /**
-     * Sets the port number to be used by the viewer
-     * @param ip the ip address or hostname as a string
-     * @throws UnknownHostException
-     */
-    public static void setIp(String ip)  {
-        try {
-            Viewer.ip = InetAddress.getByName(ip);
-        }
-        catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Returns the ip address or hostname that is currently set as a string
-     * @return ip address or hostname as string
-     */
-    public static String getIp() {
-        return ip.getHostAddress();
-    }
+public class Viewer extends Client {
 
     public static void main(String[] args) {
-
+        Log.Message("Viewer started");
         SetNetworkConfig();
 
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -73,22 +14,9 @@ public class Viewer {
 
         // This is loop can be used as the main loop for the GUI and will be unaffected by the executor service
         while (true) {
-            // Add main loop contents here
-        }
-    }
-
-    /**
-     * Updates network variables with configurations defined in .props file
-     */
-    private static void SetNetworkConfig() {
-        try {
-            // setting ip
-            setIp(PropertyReader.GetProperty("client", "IpAddress"));
-            // setting port
-            String Port = PropertyReader.GetProperty("client", "Port");
-            setPort(Integer.parseInt(Port));
-        } catch (IOException | InvalidPortException e) {
-            e.printStackTrace();
+            //
+            // Add any main loop contents here
+            //
         }
     }
 
@@ -97,39 +25,43 @@ public class Viewer {
      * This method creates a new connection to the server and will request the current billboard to display
      */
     public static void RequestUpdate() {
-        try {
-            Scanner scn = new Scanner(System.in);
 
-            // establish the connection with server port 5056
-            Socket socket = new Socket(ip, port);
+            if (AttemptConnect()) {
 
-            ObjectStreamHandler stream = new ObjectStreamHandler(socket);
+                //
+                // Receive current billboard here
+                //
 
-            // obtaining input and out streams
-            DataInputStream dis = new DataInputStream(socket.getInputStream());
-            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-
-            dos.writeUTF("viewer");
-
-            User test = null;
-            Object received = stream.Receive();
-            if (received instanceof User)
-            {
-                test = (User) received;
-                test.showDetails();
+                // closing resources
+                Disconnect();
             }
 
-            stream.Send(test);
+            else {
+                Log.Warning("Connection failed... Retry in 15s");
+            }
+    }
 
-            System.out.println(dis.readUTF());
-            dos.writeUTF("DataOutputStream Test");
-
-            scn.close();
-            dis.close();
-            dos.close();
-
-        } catch (Exception e) {
+    /**
+     * Attempts to connect to the server
+     * logs confirmation to console if connection successful
+     * logs error to console if connection failed
+     * @return True if connection successful otherwise false
+     */
+    private static boolean AttemptConnect() {
+        try {
+            if (Connect()) {
+                Log.Confirmation("Connected to server on: " + socket);
+                // send connection type
+                dos.writeUTF("viewer");
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }
