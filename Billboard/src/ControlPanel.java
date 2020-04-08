@@ -18,7 +18,7 @@ public class ControlPanel extends Client {
         SetNetworkConfig();
 
         ControlPanelInterface.controlPanelScreen();
-        //LoginInterface.loginScreen();
+        LoginInterface.loginScreen();
 
         // Example connection to server.
         // If server is available the control panel will connect and immediately disconnect
