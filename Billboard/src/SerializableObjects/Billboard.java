@@ -62,7 +62,7 @@ public class Billboard implements Serializable {
      * Helper to get the pic URL stored
      * @return String picURL
      */
-    public  String getpicURL() {return picURL; }
+    public  String getPicUrl() {return picURL; }
 
     /**
      * Helper to get the picture data stored
