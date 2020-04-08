@@ -1,6 +1,6 @@
 package Handlers;
 
-import SerializableObjects.User;
+import Tools.Log;
 import java.io.*;
 import java.net.Socket;
 
@@ -19,43 +19,24 @@ public class ViewerHandler extends ConnectionHandler {
     //Override of the run function of parent class
     @Override
     public void run() {
+        Log.Message(socket + " viewer handler started");
+
         // Create a new ObjectStreamHandler to send billboards to the viewer
         ObjectStreamHandler stream = new ObjectStreamHandler(socket);
-        while (true)
-        {
-            // Attempt to send and receive data and object streams and handle any exceptions
-            try {
-                // Create new user class to send as a test
-                User user = new User("test", "test");
-                // Send newly created user class
-                stream.Send(user);
 
-                // Receive class from the viewer
-                // Note: the Receive method will hang if there is no object waiting to be received on the socket
-                Object received = stream.Receive();
-                // If statement to identify the received object as an instance of User class
-                if (received instanceof User)
-                {
-                    // Cast the received object to its correct class
-                    User test = (User) received;
-                    // Not that the object is cast to its correct class, it's methods can be used
-                    test.showDetails();
-                }
+        //
+        // Send currently scheduled billboard to client here
+        //
 
-                // Test data input and output streams
-                dos.writeUTF("handshake from server");
-                System.out.println(dis.readUTF());
-
-                // Close connection nicely
-                socket.close();
-                dis.close();
-                dos.close();
-                break;
-            }
-
-            catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+        // Close connection nicely
+        try {
+            socket.close();
+            dis.close();
+            dos.close();
+            Log.Confirmation(socket + " closed successfully");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

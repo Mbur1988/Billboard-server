@@ -1,5 +1,8 @@
 package LoginInterface;
+
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -10,13 +13,15 @@ import java.awt.event.KeyEvent;
 public class LoginInterface {
 
     public static void loginScreen() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
 
-
-        // May be able to use a dialog window instead of a frame. *****
+         // May be able to use a dialog window instead of a frame. *****
 
 
         JFrame loginScreen = new JFrame("Billboard Control Panel"); // Login window.
-        loginScreen.setSize(400,400);
+        loginScreen.setSize(screenWidth,screenHeight);
 
         JLabel labelTest = new JLabel(); // Testing label that displays input at bottom of window.
         labelTest.setBounds(20,150, 200,50);
@@ -51,7 +56,9 @@ public class LoginInterface {
         loginScreen.setVisible(true);
 
         String correctPassword = "0000"; // Mock password for testing comparison of input.
+
         String userName = un.getText();
+
 
         b_Login.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -61,7 +68,6 @@ public class LoginInterface {
                 if (correctPassword.equals(enteredPassword)) {
                     String credentials = "Username " + userName;
                     credentials += ", Password: " + enteredPassword;
-                    labelTest.setText(credentials);
                     loginScreen.dispose();
                 }
                 else {

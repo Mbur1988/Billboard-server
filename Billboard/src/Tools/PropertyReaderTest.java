@@ -1,9 +1,7 @@
 package Tools;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import org.junit.jupiter.api.*;
+import java.io.*;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,9 +14,15 @@ class PropertyReaderTest {
     static void setUp() throws IOException {
         properties.setProperty("Port", "99999");
         properties.setProperty("IpAddress", "192.168.001.254");
-        FileOutputStream out = new FileOutputStream("Resources/test.props");
+        FileOutputStream out = new FileOutputStream("Resources\\test.props");
         properties.store(out, "last test:");
         out.close();
+    }
+
+    @AfterAll
+    static void cleanUp() {
+        File file = new File(ProjectPath.FileString("Resources\\test.props"));
+        file.delete();
     }
 
     @Test

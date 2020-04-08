@@ -1,17 +1,17 @@
 package Handlers;
 
+import Tools.Log;
 import java.io.*;
 import java.net.Socket;
-import java.text.*;
-import java.util.*;
 
 public class CPHandler extends ConnectionHandler {
 
-    // Declare class variables
-    DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
-    DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
-
-    // Class Constructor
+    /**
+     * Class constructor
+     * @param socket the socket reference to use
+     * @param dis the existing data input stream
+     * @param dos the existing data output stream
+     */
     public CPHandler(Socket socket, DataInputStream dis, DataOutputStream dos) {
         super(socket, dis, dos);
     }
@@ -19,67 +19,21 @@ public class CPHandler extends ConnectionHandler {
     //Override of the run function of parent class
     @Override
     public void run() {
-        // Declare variables
-        String received;
-        String toreturn;
-        while (true)
-        {
-            // Attempt to read data input stream of new connection and handle any exceptions
-            try {
-                // Ask user what he wants
-                dos.writeUTF("What do you want?[Date | Time]..\n"+
-                        "Type Exit to terminate connection.");
-                // Attempt to read client data input stream and handle any exceptions
-                try {
-                    // receive the answer from client
-                    received = dis.readUTF();
-                }
-                catch (IOException e) {
-                    System.out.println("Client " + socket + " disconnected...");
-                    this.socket.close();
-                    System.out.println("Connection closed");
-                    break;
-                }
-                // If an exit commant is received then neatly close the connection
-                if(received.equals("Exit"))
-                {
-                    System.out.println("Client " + this.socket + " sends exit...");
-                    System.out.println("Closing this connection.");
-                    this.socket.close();
-                    System.out.println("Connection closed");
-                    break;
-                }
+        Log.Message(socket + " control panel handler started");
 
-                // creating Date object
-                Date date = new Date();
+        // Create a new ObjectStreamHandler to send billboards to the viewer
+        ObjectStreamHandler stream = new ObjectStreamHandler(socket);
 
-                // write on output stream based on the
-                // answer from the client
-                switch (received) {
-                    case "Date" :
-                        toreturn = fordate.format(date);
-                        dos.writeUTF(toreturn);
-                        break;
-                    case "Time" :
-                        toreturn = fortime.format(date);
-                        dos.writeUTF(toreturn);
-                        break;
-                    case "Ping" :
-                        dos.writeUTF("Pong..");
-                        break;
-                    default:
-                        dos.writeUTF("Invalid input");
-                        break;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        //
+        // Do required control panel things here
+        //
 
+        // Close connection nicely
         try {
-            // closing resources
+            socket.close();
             this.dis.close();
             this.dos.close();
+            Log.Confirmation(socket.toString() + " closed successfully");
         }
         catch(IOException e) {
             e.printStackTrace();
