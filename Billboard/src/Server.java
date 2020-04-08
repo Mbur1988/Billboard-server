@@ -12,7 +12,6 @@ public class Server {
 
     /**
      * Sets the port number to be used by the server
-     *
      * @param port The port number
      * @throws InvalidPortException
      */
@@ -28,7 +27,6 @@ public class Server {
 
     /**
      * Returns the port number that is currently been used by the server
-     *
      * @return the port number as an integer
      */
     public static int getPort() {

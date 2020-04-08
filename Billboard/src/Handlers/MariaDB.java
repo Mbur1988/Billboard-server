@@ -3,7 +3,6 @@ package Handlers;
 import Tools.Log;
 import Tools.PropertyReader;
 import java.io.IOException;
-import java.net.URL;
 import java.sql.*;
 
 import static java.lang.System.exit;
@@ -20,7 +19,10 @@ public class MariaDB {
         SetNetworkConfig();
         try {
             Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(url, username, password);
+            // create full url string for connection in the form:
+            // jdbc:mysql://<HOST>:<PORT>/<DATABASE_NAME>
+            String fullURL = url+"/"+schema;
+            connection = DriverManager.getConnection(fullURL, username, password);
             statement = connection.createStatement();
             Log.Confirmation("Database connection established");
         } catch (Exception e) {
