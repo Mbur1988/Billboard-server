@@ -21,6 +21,9 @@ public class ViewerHandler extends ConnectionHandler {
     public void run() {
         Log.Message(socket + " viewer handler started");
 
+        MariaDB db = new MariaDB();
+        db.Connect();
+        db.Disconnect();
         // Create a new ObjectStreamHandler to send billboards to the viewer
         ObjectStreamHandler stream = new ObjectStreamHandler(socket);
 

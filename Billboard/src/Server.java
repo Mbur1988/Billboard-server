@@ -36,7 +36,7 @@ public class Server {
     public static void main(String[] args) {
         Log.Message("Server started");
         SetNetworkConfig();
-        MariaDB db = new MariaDB();
+
         try {
             // server is listening on configured port
             ServerSocket serverSocket = new ServerSocket(port);
