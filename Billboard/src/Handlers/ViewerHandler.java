@@ -1,8 +1,11 @@
 package Handlers;
 
+import Tools.HashCredentials;
 import Tools.Log;
 import java.io.*;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 
 public class ViewerHandler extends ConnectionHandler {
 
@@ -23,6 +26,13 @@ public class ViewerHandler extends ConnectionHandler {
 
         MariaDB db = new MariaDB();
         db.Connect();
+        try {
+            String password = HashCredentials.Hash("default");
+            password = HashCredentials.Hash(password, db.GetUserSalt("admin"));
+            System.out.println(password);
+        } catch (NoSuchAlgorithmException | SQLException e) {
+            e.printStackTrace();
+        }
         db.Disconnect();
         // Create a new ObjectStreamHandler to send billboards to the viewer
         ObjectStreamHandler stream = new ObjectStreamHandler(socket);

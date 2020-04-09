@@ -4,6 +4,7 @@ import Tools.Log;
 import Tools.PropertyReader;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 
 import static java.lang.System.exit;
@@ -26,6 +27,7 @@ public class MariaDB {
 
     /**
      * Returns the JDBC driver used by MariaDB class
+     *
      * @return JDBC driver as string
      */
     public static String getJdbcDriver() {
@@ -34,6 +36,7 @@ public class MariaDB {
 
     /**
      * Sets the URL to be used by the MariaDB class instance
+     *
      * @param url URL as string
      */
     public void setUrl(String url) {
@@ -42,6 +45,7 @@ public class MariaDB {
 
     /**
      * Gets the URL used by the MariaDB class instance
+     *
      * @return URL as string
      */
     public String getUrl() {
@@ -50,6 +54,7 @@ public class MariaDB {
 
     /**
      * Sets the schema to be used by the MariaDB class instance
+     *
      * @param schema
      */
     public void setSchema(String schema) {
@@ -58,6 +63,7 @@ public class MariaDB {
 
     /**
      * Gets the schema used by the MariaDB class instance
+     *
      * @return Schema as string
      */
     public String getSchema() {
@@ -66,6 +72,7 @@ public class MariaDB {
 
     /**
      * Sets the userName to be used by the MariaDB class instance
+     *
      * @param userName
      */
     public void setUsername(String userName) {
@@ -74,6 +81,7 @@ public class MariaDB {
 
     /**
      * Gets the userName used by the MariaDB class instance
+     *
      * @return Username as string
      */
     public String getUsername() {
@@ -82,6 +90,7 @@ public class MariaDB {
 
     /**
      * Sets the password to be used by the MariaDB class instance
+     *
      * @param password
      */
     public void setPassword(String password) {
@@ -90,6 +99,7 @@ public class MariaDB {
 
     /**
      * Gets the password used by the MariaDB class instance
+     *
      * @return Password as string
      */
     public String getPassword() {
@@ -98,6 +108,7 @@ public class MariaDB {
 
     /**
      * Sets the connection to be used by the MariaDB class instance
+     *
      * @param connection
      */
     private void setConnection(Connection connection) {
@@ -106,6 +117,7 @@ public class MariaDB {
 
     /**
      * Gets the connection used by the MariaDB class instance
+     *
      * @return Connection
      */
     private Connection getConnection() {
@@ -114,6 +126,7 @@ public class MariaDB {
 
     /**
      * Sets the statement to be used by the MariaDB class instance
+     *
      * @param statement
      */
     private void setStatement(Statement statement) {
@@ -122,6 +135,7 @@ public class MariaDB {
 
     /**
      * Gets the statement used by the MariaDB class instance
+     *
      * @return Statement
      */
     private Statement getStatement() {
@@ -151,16 +165,13 @@ public class MariaDB {
      */
     public void Connect() {
         try {
-            Class.forName(JDBC_DRIVER);
-            // create full url string for connection in the form:
-            // jdbc:mysql://<HOST>:<PORT>/<DATABASE_NAME>
-            String fullURL = url + "/" + schema;
-            connection = DriverManager.getConnection(fullURL, username, password);
+            Class.forName(JDBC_DRIVER).getConstructor().newInstance();
+            connection = DriverManager.getConnection(url + "/" + schema, username, password);
             statement = connection.createStatement();
+            CheckForTables();
             Log.Confirmation("Database connection established");
-        }
-        catch (ClassNotFoundException | SQLException e) {
-            Log.Error("Database connection failed");
+        } catch (ClassNotFoundException | SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            Log.Error("Database connection failed due to:\n" + e);
             e.printStackTrace();
             // if database connection fails then end program
             exit(0);
@@ -175,9 +186,135 @@ public class MariaDB {
             statement.close();
             connection.close();
             Log.Warning("Database connection closed");
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Checks whether the specified table exists within the database
+     * @param name name of the tabe as string
+     * @return true if the table exists, else false
+     * @throws SQLException
+     */
+    private boolean CheckTable(String name) throws SQLException {
+        ResultSet results = connection.getMetaData().getTables(null, null, name, null);
+        if (results.next()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Creates a new users table and default admin user
+     * @throws SQLException
+     */
+    private void CreateUsersTable() throws SQLException {
+        statement.executeQuery("CREATE TABLE users (username VARCHAR(64) UNIQUE KEY, password VARCHAR(64), access INT NOT NULL, salt VARBINARY(11));");
+        statement.executeQuery("INSERT INTO users VALUES ('admin', 'EB2CBD81BB9290778682D62AD2E58FA90732C7767D560D3D660F5CFACCADD4AE', 5, '[B@4730246f');");
+        Log.Confirmation("Table created: users");
+    }
+
+    /**
+     * Creates a new billboards table
+     * @throws SQLException
+     */
+    private void CreateBillboardsTable() throws SQLException {
+        statement.executeQuery("CREATE TABLE billboards (name VARCHAR(64) UNIQUE KEY);");
+        Log.Confirmation("Table created: billboards");
+    }
+
+    /**
+     * Creates a new scheduling table
+     * @throws SQLException
+     */
+    private void CreateSchedulingTable() throws SQLException {
+        statement.executeQuery("CREATE TABLE scheduling (name VARCHAR(64) UNIQUE KEY);");
+        Log.Confirmation("Table created: scheduling");
+    }
+
+    /**
+     * Checks the database for the required tables
+     * If any of the required tables does not exist then a default version is generated
+     * @throws SQLException
+     */
+    private void CheckForTables() throws SQLException {
+        if (!CheckTable("users")) {
+            CreateUsersTable();
+        }
+        if (!CheckTable("billboards")) {
+            CreateBillboardsTable();
+        }
+        if (!CheckTable("scheduling")) {
+            CreateSchedulingTable();
+        }
+    }
+
+    /**
+     * Adds a new user to the users table as long as the username does not already exist
+     * @param username the username of the entry as String
+     * @param password the password of the entry as String
+     * @param access the access level of the entry as an Integer
+     * @return true if the entry is successful and false if an entry already exists with the same username
+     * @throws SQLException
+     */
+    public boolean AddUser(String username, String password, Integer access) throws SQLException {
+        ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
+        if (result.next()) {
+            return false;
+        }
+        else {
+            statement.executeQuery("INSERT INTO users VALUES ('" + username + "', '" + password + "', " + access + ");");
+            return true;
+        }
+    }
+
+    /**
+     * Returns the password of an entry provided that it exists
+     * @param username the username of the entry as String
+     * @return the password as a string else null if the entry does not exist
+     * @throws SQLException
+     */
+    public String GetUserPassword(String username) throws SQLException {
+        ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
+        if (result.next()) {
+            return result.getString("password");
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the access level of an entry provided that it exists
+     * @param username the username of the entry as String
+     * @return the access level as an integer else null if the entry does not exist
+     * @throws SQLException
+     */
+    public Integer GetUserAccess(String username) throws SQLException {
+        ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
+        if (result.next()) {
+            return result.getInt("access");
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the password of an entry provided that it exists
+     * @param username the username of the entry as String
+     * @return the password as a byte array else null if the entry does not exist
+     * @throws SQLException
+     */
+    public byte[] GetUserSalt(String username) throws SQLException {
+        ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
+        if (result.next()) {
+            return result.getBytes("salt");
+        }
+        else {
+            return null;
         }
     }
 }
