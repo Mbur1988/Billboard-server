@@ -1,9 +1,8 @@
 package Tools;
 
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -15,40 +14,56 @@ import javax.swing.JLabel;
  */
 
 public class DisplayImage {
+//    /**
+//     * TODO DELETE ME--->
+//     * TEST RUNNER
+//     * This class is to display an image in the screen in a frame.
+//     * @param arg file path or URL (include www. or http)
+//     * @throws Exception on incorrect
+//     *
+//     */
+////
+////    public static void main(String[] arg) throws Exception
+////    {
+////        DisplayImage abc = new DisplayImage("C:\\sally.jpg");
+////    }
+//   // <----TODO DELETE ME
 
     /**
-     * This class is to display an image in the screen in a frame.
-     * @param arg o = filePath(String), 1 = URL(string),
-     * @param data image in byte[] form
-     * @throws Exception on incorrect number of inputs
+     * Displat Image takes string of URL or
+     * @param filePath
+     * @throws Exception
      */
-    public static void main(String[] arg,byte[] data) throws Exception
+    public DisplayImage(String filePath) throws Exception
     {
-        DisplayImage abc = new DisplayImage(arg[0],arg[1],data);
-    }
+        if (filePath.substring(0,3) == "www." || filePath.substring(0,3) == "http") {
 
-    public DisplayImage(String filePath,String URL, byte [] data) throws Exception
-    {
-
-        if(filePath != null ) {
+        }
+        else {
             BufferedImage img = ImageIO.read(new File(filePath));
             ImageIcon icon = new ImageIcon(img);
             JFrame frame = new JFrame();
             frame.setLayout(new FlowLayout());
-            frame.setSize(400, 600);    //need to make this size of image
+            frame.setBackground(Color.blue);
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            frame.setUndecorated(true);
+//            frame.setBounds(600,200,200,600);
             JLabel lbl = new JLabel();
             lbl.setIcon(icon);
             frame.add(lbl);
             frame.setVisible(true);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        } else if (URL != null) {
-
-        } else if (data != null) {
-
-        } else if (filePath == null && URL == null && data == null) {
-            throw new  Exception("no image input");
-        } else {
-            throw new Exception("Only accepts one Image");
         }
     }
+
+    /**
+     * This is the function that will be used to read data in byte array form and convert it to an image.
+     * @param data byte[] of an image to be used.
+     * @throws Exception
+     */
+    public DisplayImage(byte[] data) throws Exception{
+
+
+    }
+
 }

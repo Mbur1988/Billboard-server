@@ -1,6 +1,8 @@
 package SerializableObjects;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import Tools.*;
@@ -25,11 +27,6 @@ public class Billboard implements Serializable {
        this.backColour = null;
        this.infoColour = null;
     }
-    public static void main(String[] args) throws Exception {
-
-        new DisplayImage("C:\\sally.jpg",null,null);
-
-    }
     /**
      *
      * @param msg The message to be displayed at the top
@@ -50,7 +47,15 @@ public class Billboard implements Serializable {
         this.infoColour = InfoColour;
 
     }
+    public static void main(String[] args) throws Exception {
+        new Billboard();
 
+        JFrame frame = new JFrame();
+
+        frame.setBackground(Color.cyan);
+        new DisplayImage("C:\\sally.jpg");
+
+    }
 
     // - - - - - - - helpers bellow - - - - - - - - - //
 
