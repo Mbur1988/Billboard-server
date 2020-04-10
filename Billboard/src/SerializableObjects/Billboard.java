@@ -1,6 +1,8 @@
 package SerializableObjects;
 
-import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
@@ -12,7 +14,7 @@ public class Billboard implements Serializable {
     private String msg;
     private String info;
     private String picURL;
-    private String picDATA;
+    private byte[] picDATA;
     private String msgColour;
     private String backColour;
     private String infoColour;
@@ -37,7 +39,7 @@ public class Billboard implements Serializable {
      * @param BackColour colour of the back ground in hex
      * @param InfoColour colour of info writting
      */
-    public Billboard(String msg, String info, String picURL, String picDATA, String MsgColour, String BackColour, String InfoColour) {
+    public Billboard(String msg, String info, String picURL, byte[] picDATA, String MsgColour, String BackColour, String InfoColour) {
         this.msg = msg;
         this.info = info;
         this.picURL = picURL;
@@ -75,7 +77,7 @@ public class Billboard implements Serializable {
      * Helper to get the picture data stored
      * @return String picDATA
      */
-    public  String getPicData() {return picDATA; }
+    public  byte[] getPicData() {return picDATA; }
 
     /**
      * Helper to get the message colour stored
@@ -120,7 +122,7 @@ public class Billboard implements Serializable {
      * @param picData
      */
 
-    public void setPicData(String picData) {this.picDATA = picData;}
+    public void setPicData(byte[] picData) {this.picDATA = picData;}
 
     /**
      * sets message colour as string to be converted to HEX
@@ -172,24 +174,20 @@ public class Billboard implements Serializable {
         String hex = String.format("#%02X%02X%02X", r, g, b);
         return hex;
     }
-     /*   //Needs to be completed.
-    public String ConvertImageToData(File filePath) throws Exception {
-        String PicData;
-        try{
-            FileInputStream streamReader = new FileInputStream(filePath);
-            byte[] ImageBytes = new byte[(int)filePath.length()];
-            streamReader.read(ImageBytes);
-            PicData = new String(Base64.getEncoder().encodeToString(ImageBytes));
-            return PicData;
-        }
-        catch(Exception e){
-            // check exceptions
-            return "exception hit";
-        }
+   //Needs to be completed.
+    public byte[] ConvertImageToData(File filePath) throws Exception {
+                BufferedImage bImage = ImageIO.read(new File(String.valueOf(filePath)));
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                ImageIO.write(bImage, "jpg", bos );
+                byte [] data = bos.toByteArray();
+    return data;
+    }
+
+
 
 
 
     }
 
-      */
-}
+
+
