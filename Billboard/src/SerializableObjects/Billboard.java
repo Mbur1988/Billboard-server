@@ -2,12 +2,8 @@ package SerializableObjects;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.Serializable;
-import java.util.Base64;
-
+import java.io.*;
+import Tools.*;
 
 public class Billboard implements Serializable {
 
@@ -28,6 +24,11 @@ public class Billboard implements Serializable {
        this.msgColour = null;
        this.backColour = null;
        this.infoColour = null;
+    }
+    public static void main(String[] args) throws Exception {
+
+        new DisplayImage("C:\\sally.jpg",null,null);
+
     }
     /**
      *
@@ -176,6 +177,13 @@ public class Billboard implements Serializable {
         return hex;
     }
    //Needs to be completed.
+
+    /**
+     * Converts a image from the file path to a byte array
+     * @param filePath image to be converted
+     * @return image in byte[] form
+     * @throws Exception
+     */
     public byte[] ConvertImageToData(File filePath) throws Exception {
                 BufferedImage bImage = ImageIO.read(new File(String.valueOf(filePath)));
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -184,11 +192,20 @@ public class Billboard implements Serializable {
     return data;
     }
 
+    /**
+     * Converts a byte[] to a buffered immage.
+     * @param imageData
+     * @return
+     * @throws IOException
+     */
 
-
-
-
+    public BufferedImage ConvertDataToImage(byte[] imageData) throws IOException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
+        BufferedImage image = ImageIO.read(bais);
+        return image;
     }
+
+}
 
 
 
