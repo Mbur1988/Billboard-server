@@ -13,33 +13,40 @@ import java.awt.event.KeyEvent;
 public class LoginInterface {
 
     public static void loginScreen() {
+
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = screenSize.width;
         int screenHeight = screenSize.height;
 
          // May be able to use a dialog window instead of a frame. *****
 
-
-        JFrame loginScreen = new JFrame("Billboard Control Panel"); // Login window.
+        JFrame loginScreen = new JFrame(); // Login window.
         loginScreen.setSize(screenWidth,screenHeight);
 
         JLabel labelTest = new JLabel(); // Testing label that displays input at bottom of window.
-        labelTest.setBounds(20,150, 200,50);
+        labelTest.setBounds((screenWidth/2) - 100, screenHeight/2 + 60, 200, 30);
+        labelTest.setHorizontalAlignment(JLabel.CENTER);
 
         JLabel label_Password = new JLabel("Password:");    // Password label.
-        label_Password.setBounds(20,50, 80,20);
+        label_Password.setFont(new Font("Courier", Font.BOLD, 20));
+        label_Password.setHorizontalAlignment(JLabel.CENTER);
+        label_Password.setVerticalAlignment(JLabel.CENTER);
+        label_Password.setBounds((screenWidth/2)-80,screenHeight/2, 160,20);
 
         JPasswordField pw = new JPasswordField(); // Password entry field.
-        pw.setBounds(150, 50, 150, 20);
+        pw.setBounds((screenWidth/2) - 50, screenHeight/2 + 30, 100, 30);
 
         JLabel label_Username = new JLabel("Username:"); // Username label.
-        label_Username.setBounds(20,20, 80,20);
+        label_Username.setFont(new Font("Courier", Font.BOLD, 20));
+        label_Username.setHorizontalAlignment(JLabel.CENTER);
+        label_Username.setVerticalAlignment(JLabel.CENTER);
+        label_Username.setBounds((screenWidth/2)-80,(screenHeight/2) - 100, 160,20);
 
         JTextField un = new JTextField(); // Username entry field.
-        un.setBounds(150, 20, 150, 20);
+        un.setBounds((screenWidth/2) - 50, (screenHeight/2) - 60, 100, 30);
 
         JButton b_Login = new JButton("Login"); // Login button.
-        b_Login.setBounds(150, 100, 100, 30);
+        b_Login.setBounds((screenWidth/2) - 50, screenHeight/2 + 100, 100, 30);
 
         // Add elements to the screen.
         loginScreen.add(pw);
@@ -49,8 +56,6 @@ public class LoginInterface {
         loginScreen.add(b_Login);
         loginScreen.add(un);
 
-
-        loginScreen.setLocationRelativeTo(null);
         loginScreen.setLayout(null);
         loginScreen.setUndecorated(true);
         loginScreen.setVisible(true);
@@ -59,7 +64,6 @@ public class LoginInterface {
 
         String userName = un.getText();
 
-
         b_Login.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
 
@@ -67,7 +71,7 @@ public class LoginInterface {
 
                 if (correctPassword.equals(enteredPassword)) {
                     String credentials = "Username " + userName;
-                    credentials += ", Password: " + enteredPassword;
+                   // credentials += ", Password: " + enteredPassword;
                     loginScreen.dispose();
                 }
                 else {
