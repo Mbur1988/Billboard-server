@@ -24,46 +24,4 @@ public class ProjectPath {
         path = path.toAbsolutePath();
         return path;
     }
-
-    /**
-     * Gets the absolute path of the project resources directory as a string
-     * @return project resources directory String e.g C:\Billboard\Resources
-     */
-    public static String ResourcesString() {
-        File file = new File("Resources");
-        return file.getAbsolutePath();
-    }
-
-    /**
-     * Gets the absolute path of the project resources directory as a Path object
-     * @return project resources directory Path e.g C:\Billboard\Resources
-     */
-    public static Path ResourcesPath() {
-        Path path = Paths.get("Resources");
-        path = path.normalize();
-        path = path.toAbsolutePath();
-        return path;
-    }
-
-     /**
-     * Gets the absolute path of a specified project file as a string
-     * @param filename filename including relative path
-     * @return project resources file String
-     */
-    public static String FileString(String filename) {
-        File file = new File(filename);
-        return file.getAbsolutePath();
-    }
-
-    /**
-     * Gets the absolute path of a specified project file as a Path object
-     * @param filename filename including relative path
-     * @return project resources directory Path e.g C:\Billboard\Resources
-     */
-    public static Path FilePath(String filename) {
-        Path path = Paths.get(filename);
-        path = path.normalize();
-        path = path.toAbsolutePath();
-        return path;
-    }
 }
