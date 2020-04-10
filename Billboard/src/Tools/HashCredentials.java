@@ -37,7 +37,7 @@ public class HashCredentials {
      * Creates a random salt
      * @return Salt as byte array
      */
-    public static byte[] CreateSalt() {
+    public byte[] CreateSalt() {
         byte[] bytes = new byte[10];
         SecureRandom random = new SecureRandom();
         random.nextBytes(bytes);

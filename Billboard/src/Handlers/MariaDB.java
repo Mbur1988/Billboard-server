@@ -2,11 +2,9 @@ package Handlers;
 
 import Tools.Log;
 import Tools.PropertyReader;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
-
 import static java.lang.System.exit;
 
 public class MariaDB {
@@ -193,6 +191,7 @@ public class MariaDB {
 
     /**
      * Checks whether the specified table exists within the database
+     *
      * @param name name of the tabe as string
      * @return true if the table exists, else false
      * @throws SQLException
@@ -208,6 +207,7 @@ public class MariaDB {
 
     /**
      * Creates a new users table and default admin user
+     *
      * @throws SQLException
      */
     private void CreateUsersTable() throws SQLException {
@@ -218,6 +218,7 @@ public class MariaDB {
 
     /**
      * Creates a new billboards table
+     *
      * @throws SQLException
      */
     private void CreateBillboardsTable() throws SQLException {
@@ -227,6 +228,7 @@ public class MariaDB {
 
     /**
      * Creates a new scheduling table
+     *
      * @throws SQLException
      */
     private void CreateSchedulingTable() throws SQLException {
@@ -237,6 +239,7 @@ public class MariaDB {
     /**
      * Checks the database for the required tables
      * If any of the required tables does not exist then a default version is generated
+     *
      * @throws SQLException
      */
     private void CheckForTables() throws SQLException {
@@ -253,25 +256,26 @@ public class MariaDB {
 
     /**
      * Adds a new user to the users table as long as the username does not already exist
+     *
      * @param username the username of the entry as String
      * @param password the password of the entry as String
-     * @param access the access level of the entry as an Integer
+     * @param access   the access level of the entry as an Integer
      * @return true if the entry is successful and false if an entry already exists with the same username
      * @throws SQLException
      */
-    public boolean AddUser(String username, String password, Integer access) throws SQLException {
+    public boolean AddUser(String username, String password, Integer access, byte[] salt) throws SQLException {
         ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
         if (result.next()) {
             return false;
-        }
-        else {
-            statement.executeQuery("INSERT INTO users VALUES ('" + username + "', '" + password + "', " + access + ");");
+        } else {
+            statement.executeQuery("INSERT INTO users VALUES ('" + username + "', '" + password + "', " + access + ", '" + access + "');");
             return true;
         }
     }
 
     /**
      * Returns the password of an entry provided that it exists
+     *
      * @param username the username of the entry as String
      * @return the password as a string else null if the entry does not exist
      * @throws SQLException
@@ -280,14 +284,14 @@ public class MariaDB {
         ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
         if (result.next()) {
             return result.getString("password");
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     /**
      * Returns the access level of an entry provided that it exists
+     *
      * @param username the username of the entry as String
      * @return the access level as an integer else null if the entry does not exist
      * @throws SQLException
@@ -296,14 +300,14 @@ public class MariaDB {
         ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
         if (result.next()) {
             return result.getInt("access");
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     /**
      * Returns the password of an entry provided that it exists
+     *
      * @param username the username of the entry as String
      * @return the password as a byte array else null if the entry does not exist
      * @throws SQLException
@@ -312,9 +316,130 @@ public class MariaDB {
         ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
         if (result.next()) {
             return result.getBytes("salt");
-        }
-        else {
+        } else {
             return null;
+        }
+    }
+
+    /**
+     * Edits existing user fields; password, access and salt
+     *
+     * @param username Username of the user to edit
+     * @param password New password as string
+     * @param access new access level as integer
+     * @param salt new salt as byte array
+     * @return boolean value true if operation was successful else false
+     * @throws SQLException
+     */
+    public boolean EditUser(String username, String password, Integer access, byte[] salt) throws SQLException {
+        ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
+        if (result.next()) {
+            if (password != null)
+                statement.executeQuery("UPDATE users SET password='" + password + "' WHERE username='" + username + "';");
+            if (access != null)
+                statement.executeQuery("UPDATE users SET access='" + access + "' WHERE username='" + username + "';");
+            if (salt != null)
+                statement.executeQuery("UPDATE users SET salt='" + salt + "' WHERE username='" + username + "';");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Edits existing user password field
+     *
+     * @param username Username of the user to edit
+     * @param password New password as string
+     * @return boolean value true if operation was successful else false
+     * @throws SQLException
+     */
+    public boolean EditUser(String username, String password) throws SQLException {
+        return EditUser(username, password, null, null);
+    }
+
+    /**
+     * Edits existing user access field
+     *
+     * @param username Username of the user to edit
+     * @param access new access level as integer
+     * @return boolean value true if operation was successful else false
+     * @throws SQLException
+     */
+    public boolean EditUser(String username, Integer access) throws SQLException {
+        return EditUser(username, null, access, null);
+    }
+
+    /**
+     * Edits existing user salt field
+     *
+     * @param username Username of the user to edit
+     * @param salt new salt as byte array
+     * @return boolean value true if operation was successful else false
+     * @throws SQLException
+     */
+    public boolean EditUser(String username, byte[] salt) throws SQLException {
+        return EditUser(username, null, null, salt);
+    }
+
+    /**
+     * Edits existing user fields; access and salt
+     *
+     * @param username Username of the user to edit
+     * @param access new access level as integer
+     * @param salt new salt as byte array
+     * @return boolean value true if operation was successful else false
+     * @throws SQLException
+     */
+    public boolean EditUser(String username, Integer access, byte[] salt) throws SQLException {
+        return EditUser(username, null, access, salt);
+    }
+
+    /**
+     * Edits existing user fields; password and salt
+     *
+     * @param username Username of the user to edit
+     * @param password New password as string
+     * @param salt new salt as byte array
+     * @return boolean value true if operation was successful else false
+     * @throws SQLException
+     */
+    public boolean EditUser(String username, String password, byte[] salt) throws SQLException {
+        return EditUser(username, password, null, salt);
+    }
+
+    /**
+     * Edits existing user fields; password and access
+     *
+     * @param username Username of the user to edit
+     * @param password New password as string
+     * @param access new access level as integer
+     * @return boolean value true if operation was successful else false
+     * @throws SQLException
+     */
+    public boolean EditUser(String username, String password, Integer access) throws SQLException {
+        return EditUser(username, password, access, null);
+    }
+
+    /**
+     * Deletes existing user field
+     *
+     * @param username Username of the user to delete
+     * @return boolean value true if operation was successful else false
+     * @throws SQLException
+     */
+    public boolean DeleteUser(String username) throws SQLException {
+        ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
+        if (result.next()) {
+            statement.executeQuery("DELETE FROM users WHERE username='" + username + "';");
+            result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
+            if (!result.next()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 }

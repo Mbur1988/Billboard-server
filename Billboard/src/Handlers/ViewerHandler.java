@@ -4,7 +4,6 @@ import Tools.HashCredentials;
 import Tools.Log;
 import java.io.*;
 import java.net.Socket;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 public class ViewerHandler extends ConnectionHandler {
@@ -19,6 +18,9 @@ public class ViewerHandler extends ConnectionHandler {
         super(socket, dis, dos);
     }
 
+    /////////// remember to remove
+    HashCredentials hashCredentials = new HashCredentials();
+
     //Override of the run function of parent class
     @Override
     public void run() {
@@ -27,10 +29,15 @@ public class ViewerHandler extends ConnectionHandler {
         MariaDB db = new MariaDB();
         db.Connect();
         try {
-            String password = HashCredentials.Hash("default");
-            password = HashCredentials.Hash(password, db.GetUserSalt("admin"));
-            System.out.println(password);
-        } catch (NoSuchAlgorithmException | SQLException e) {
+            db.AddUser("test1", "password1", 1, hashCredentials.CreateSalt());
+            db.AddUser("test2", "password2", 2, hashCredentials.CreateSalt());
+            db.AddUser("test3", "password3", 3, hashCredentials.CreateSalt());
+            System.out.println(db.GetUserSalt("test1"));
+            db.EditUser("test1", "password4", 4, hashCredentials.CreateSalt());
+            //db.DeleteUser("test2");
+            System.out.println(db.GetUserSalt("test1"));
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         db.Disconnect();
