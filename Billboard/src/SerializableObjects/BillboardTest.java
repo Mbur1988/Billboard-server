@@ -338,18 +338,23 @@ public class BillboardTest {
      * Test 25,
      *      Checks conversion from Data (base64) JPG
      *       Store in pic data
-     *       !!!!!!!!!!====this is needing to be run after we get result of above.====!!!!!!!!
+     *       Only way to test is to use already tested function. This may need ot be revisited once we have image displaying working.
      * @throws Exception
      */
-    /*
+
     @Test
     public void ConvertDataToImage() throws Exception {
-        //uses ConvertDataToImage funct
-        underTestEmpty.ConvertDataToImage("C://Uni/image.jpg");
+        //uses ConvertImageToData to turn from img to data and then ConvertDataToImage func to compare the two
+        // convert img to data
+        File file = new File("C:\\sally.jpg");
+        byte[] S = underTestEmpty.ConvertImageToData(file);
+        underTestEmpty.setPicData(S);
+        //converts back to image
+        File fileImage = underTestEmpty.ConvertDataToImage(S);
         //In this test we will need to convert to data and see what it says then change im and then see differences and try to make one back using next test
-        assertEquals(underTestEmpty.getMsgColour(),"I have no idea.");
+        assertEquals(file,fileImage);
     }
-    */
+
 
 
 }

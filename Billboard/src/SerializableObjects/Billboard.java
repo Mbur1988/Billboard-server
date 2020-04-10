@@ -85,6 +85,7 @@ public class Billboard implements Serializable {
      */
     public String getMsgColour() {return msgColour; }
 
+
     /**
      * Helper to get the background colour stored
      * @return String background colour
