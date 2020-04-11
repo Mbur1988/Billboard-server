@@ -19,12 +19,6 @@ class PropertyReaderTest {
         out.close();
     }
 
-    @AfterAll
-    static void cleanUp() {
-        File file = new File(ProjectPath.FileString("Resources\\test.props"));
-        file.delete();
-    }
-
     @Test
     void getProperties1() throws IOException {
         assertEquals(PropertyReader.GetProperties("test"), properties);

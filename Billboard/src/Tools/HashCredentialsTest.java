@@ -14,17 +14,17 @@ class HashCredentialsTest {
 
     @Test
     void testHash1() throws NoSuchAlgorithmException {
-        assertNotEquals(Hash(userPassword, CreateSalt()), "5E884898DA28047151D0E56F8DC6292773603D0D6AABBDD62A11EF721D1542D8");
+        assertNotEquals(Hash(userPassword, HashCredentials.CreateSalt()), "5E884898DA28047151D0E56F8DC6292773603D0D6AABBDD62A11EF721D1542D8");
     }
 
     @Test
     void testHash2() throws NoSuchAlgorithmException {
-        assertNotEquals(Hash(userPassword, CreateSalt()), Hash(userPassword, CreateSalt()));
+        assertNotEquals(Hash(userPassword, HashCredentials.CreateSalt()), Hash(userPassword, HashCredentials.CreateSalt()));
     }
 
     @Test
     void testHash3() throws NoSuchAlgorithmException {
-        byte[] salt = CreateSalt();
+        byte[] salt = HashCredentials.CreateSalt();
         assertEquals(Hash(userPassword, salt), Hash(userPassword, salt));
     }
 
@@ -40,12 +40,12 @@ class HashCredentialsTest {
 
     @Test
     void createSalt1() {
-        byte[] salt = CreateSalt();
+        byte[] salt = HashCredentials.CreateSalt();
         assertEquals(salt instanceof byte[], true);
     }
 
     @Test
     void createSalt2() {
-        assertNotEquals(CreateSalt(), CreateSalt());
+        assertNotEquals(HashCredentials.CreateSalt(), HashCredentials.CreateSalt());
     }
 }

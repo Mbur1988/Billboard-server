@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.*;
 import Tools.Log;
-import Tools.ProjectPath;
 import Tools.PropertyReader;
 import CustomExceptions.InvalidPortException;
 import Handlers.ConnectionHandler;
@@ -12,7 +11,6 @@ public class Server {
 
     /**
      * Sets the port number to be used by the server
-     *
      * @param port The port number
      * @throws InvalidPortException
      */
@@ -28,7 +26,6 @@ public class Server {
 
     /**
      * Returns the port number that is currently been used by the server
-     *
      * @return the port number as an integer
      */
     public static int getPort() {
@@ -72,7 +69,7 @@ public class Server {
     private static void SetNetworkConfig() {
         try {
             // setting port
-            String Port = PropertyReader.GetProperty("Server", "Port");
+            String Port = PropertyReader.GetProperty("server", "Port");
             setPort(Integer.parseInt(Port));
         } catch (IOException | InvalidPortException e) {
             e.printStackTrace();

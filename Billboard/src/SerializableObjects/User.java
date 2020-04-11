@@ -1,6 +1,7 @@
 package SerializableObjects;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
 import java.util.UUID;
 
 public class User implements Serializable {
@@ -10,7 +11,7 @@ public class User implements Serializable {
     private UUID id;
     private String username;
     private String password;
-    private int access;
+    private Integer access;
 
     /**
      * Class constructor that sets variables to default values

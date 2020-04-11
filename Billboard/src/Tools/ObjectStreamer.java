@@ -1,4 +1,4 @@
-package Handlers;
+package Tools;
 
 import SerializableObjects.User;
 import Tools.Log;
@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ObjectStreamHandler {
+public class ObjectStreamer {
 
     // Declare class variables
     private Socket socket;
@@ -17,7 +17,7 @@ public class ObjectStreamHandler {
      * Class constructor
      * @param socket the socket reference to use
      */
-    public ObjectStreamHandler(Socket socket) {
+    public ObjectStreamer(Socket socket) {
         this.socket = socket;
     }
 

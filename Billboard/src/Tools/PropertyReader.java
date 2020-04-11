@@ -13,7 +13,7 @@ public class PropertyReader {
      */
     public static Properties GetProperties(String file) throws IOException {
         Properties properties = new Properties();
-        FileInputStream ip= new FileInputStream("Resources/"+file+".props");
+        FileInputStream ip= new FileInputStream(ProjectPath.RootString() + "\\Resources/"+file+".props");
         properties.load(ip);
         return properties;
     }
@@ -26,7 +26,7 @@ public class PropertyReader {
      */
     public static String GetProperty(String file, String property) throws IOException {
         Properties prop = new Properties();
-        FileInputStream ip= new FileInputStream("Resources/"+file+".props");
+        FileInputStream ip= new FileInputStream(ProjectPath.RootString() + "\\Resources\\" + file + ".props");
         prop.load(ip);
         return prop.getProperty(property);
     }
