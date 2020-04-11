@@ -1,12 +1,11 @@
 package LoginInterface;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import ControlPanelInterface.ControlPanelInterface;
+
 
 // The Billboard Control Panel Login Interface.
 
@@ -72,6 +71,7 @@ public class LoginInterface {
                 if (correctPassword.equals(enteredPassword)) {
                     String credentials = "Username " + userName;
                    // credentials += ", Password: " + enteredPassword;
+                    ControlPanelInterface.controlPanelScreen();
                     loginScreen.dispose();
                 }
                 else {
