@@ -17,7 +17,7 @@ public class ControlPanel extends Client {
         Log.Message("Control panel started");
         SetNetworkConfig();
 
-        ControlPanelInterface.controlPanelScreen();
+        //ControlPanelInterface.controlPanelScreen();
         LoginInterface.loginScreen();
 
         // Example connection to server.
