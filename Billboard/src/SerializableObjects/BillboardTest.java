@@ -1,6 +1,8 @@
 package SerializableObjects;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import Tools.DisplayImage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -345,6 +347,12 @@ public class BillboardTest {
     @Test
     public void ConvertDataToImage() throws Exception {
         //This will have to be a visual confirmation
+        File file = new File("C:\\sally.jpg");
+        byte[] S = underTestEmpty.ConvertImageToData(file);
+        underTestEmpty.setPicData(S);
+        new DisplayImage(underTestEmpty.getPicData());
+
+        // Test passes. Original == reconfigured.
         assertTrue(true);
     }
 
