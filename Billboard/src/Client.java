@@ -1,5 +1,5 @@
 import CustomExceptions.InvalidPortException;
-import Handlers.ObjectStreamHandler;
+import Tools.ObjectStreamer;
 import Tools.Log;
 import Tools.PropertyReader;
 import java.io.DataInputStream;
@@ -19,7 +19,7 @@ public class Client {
     protected static Socket socket;
     protected static DataInputStream dis;
     protected static DataOutputStream dos;
-    protected static ObjectStreamHandler objectStream;
+    protected static ObjectStreamer objectStream;
 
     /**
      * Sets the port number to be used by the server
@@ -98,7 +98,7 @@ public class Client {
             dos = new DataOutputStream(socket.getOutputStream());
 
             // create object stream handler
-            objectStream = new ObjectStreamHandler(socket);
+            objectStream = new ObjectStreamer(socket);
 
             return true;
         }

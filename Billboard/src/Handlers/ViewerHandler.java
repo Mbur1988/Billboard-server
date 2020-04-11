@@ -2,6 +2,8 @@ package Handlers;
 
 import Tools.HashCredentials;
 import Tools.Log;
+import Tools.ObjectStreamer;
+
 import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
@@ -42,7 +44,7 @@ public class ViewerHandler extends ConnectionHandler {
         }
         db.Disconnect();
         // Create a new ObjectStreamHandler to send billboards to the viewer
-        ObjectStreamHandler stream = new ObjectStreamHandler(socket);
+        ObjectStreamer stream = new ObjectStreamer(socket);
 
         //
         // Send currently scheduled billboard to client here

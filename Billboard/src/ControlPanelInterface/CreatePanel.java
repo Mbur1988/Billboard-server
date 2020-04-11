@@ -1,5 +1,7 @@
 package ControlPanelInterface;
 
+import Tools.ProjectPath;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -49,7 +51,7 @@ public class CreatePanel extends ControlPanelInterface {
         colour.setBounds(0,100,500,300);    // I think all this is wrong but it seems to work lol
         createPanel.add(colour);
 
-        BufferedImage img = ImageIO.read(new File("E:\\cab302_assignment_reclone\\cab302_assignment\\Billboard\\src\\Images\\cat.jpg"));
+        BufferedImage img = ImageIO.read(new File(ProjectPath.RootString() + "\\src\\Images\\cat.jpg"));
         ImageIcon icon = new ImageIcon(img);
         JLabel pic = new JLabel();
         pic.setIcon(icon);
