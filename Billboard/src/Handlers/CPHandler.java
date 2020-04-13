@@ -1,6 +1,8 @@
 package Handlers;
 
 import Tools.Log;
+import Tools.ObjectStreamer;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -22,7 +24,7 @@ public class CPHandler extends ConnectionHandler {
         Log.Message(socket + " control panel handler started");
 
         // Create a new ObjectStreamHandler to send billboards to the viewer
-        ObjectStreamHandler stream = new ObjectStreamHandler(socket);
+        ObjectStreamer stream = new ObjectStreamer(socket);
 
         //
         // Do required control panel things here

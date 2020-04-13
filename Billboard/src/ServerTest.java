@@ -2,7 +2,7 @@ import CustomExceptions.InvalidPortException;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ServerTests {
+public class ServerTest {
 
     private Server server;
 
