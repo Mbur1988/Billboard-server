@@ -4,6 +4,8 @@ import Tools.ProjectPath;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.colorchooser.ColorSelectionModel;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,26 +38,55 @@ public class CreatePanel extends ControlPanelInterface {
         String billboardName = Name.getText();                  // Billboard name for storage on server etc.
         createPanel.add(Name);
 
-        JLabel label_imageFile = new JLabel("Image Path:");
+        JLabel label_imageFile = new JLabel("Image URL:");
         label_imageFile.setBounds(0, 50, 150, 30);
         createPanel.add(label_imageFile);
 
         JTextField imageFile = new JTextField();
-        imageFile.setBounds(120,50,150,30);
-
-        String imageFileName = imageFile.getText();
-
+        imageFile.setBounds(70,50,150,30);
         createPanel.add(imageFile);
 
-        JColorChooser colour = new JColorChooser();
-        colour.setBounds(0,100,500,300);    // I think all this is wrong but it seems to work lol
-        createPanel.add(colour);
+        JLabel label_OR = new JLabel("OR");
+        label_OR.setBounds(250, 50, 50, 30);
+        createPanel.add(label_OR);
 
-        BufferedImage img = ImageIO.read(new File(ProjectPath.RootString() + "\\src\\Images\\cat.jpg"));
-        ImageIcon icon = new ImageIcon(img);
-        JLabel pic = new JLabel();
-        pic.setIcon(icon);
-        pic.setBounds(300,0,previewSize.width,previewSize.height - 200);
+        JButton b_fileSelect = new JButton("Select File");
+        b_fileSelect.setBounds(310,50,150,30);
+        createPanel.add(b_fileSelect);
+
+        JFileChooser chooser = new JFileChooser();
+
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
+        b_fileSelect.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chooser.showDialog(b_fileSelect,"Select Image");
+                File picture = chooser.getSelectedFile();
+                String imageFilePath = picture.getAbsolutePath();
+
+                BufferedImage img = null;
+                imageFile.setText(imageFilePath);
+
+                try {
+                    img = ImageIO.read(new File(imageFile.getText()));
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+
+                ImageIcon icon = new ImageIcon(img);
+                JLabel pic = new JLabel();
+                pic.setIcon(icon);
+                pic.setBounds(300,0,previewSize.width,previewSize.height - 200);
+                previewPanel.add(pic);
+            }
+        });
+
+        JColorChooser colour = new JColorChooser();
+        colour.setBounds(0,100,600,300);    // I think all this is wrong but it seems to work lol
+        colour.setPreviewPanel(new JPanel());
+
+        createPanel.add(colour);
 
         // Upper billboard text.
         String default_UpperText = "Click here to enter text...";
@@ -110,6 +141,8 @@ public class CreatePanel extends ControlPanelInterface {
         b_Preview.setBounds((screenWidth / 2) ,  0, screenWidth/2, 30);
         createPanel.add(b_Preview);
 
+
+
         b_Preview.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {   // Can I have this auto update without having
@@ -117,7 +150,7 @@ public class CreatePanel extends ControlPanelInterface {
                 previewPanel.setBackground(newcolour);     // Think it's wrong anyway lol
                 //label_upperText.setText(upperText.getText()); // Doesn't work...
                 //label_lowerText.setText(lowerText.getText());
-                previewPanel.add(pic);
+               // previewPanel.add(pic);
             }
         });
 
