@@ -108,46 +108,46 @@ public class Billboard implements Serializable {
 
     /**
      * sets message
-     * @param message
+     * @param message String message to be displayed
      */
     public void setMsg(String message) { this.msg = message;}
 
     /**
      * sets info
-     * @param info
+     * @param info String Informaiton to be displayed
      */
     public void setInfo(String info) { this.info = info;}
 
     /**
      * sets pictures URL
-     * @param picURL
+     * @param picURL URL to the pic String
      */
     public void setPicURL(String picURL) { this.picURL = picURL;}
 
     /**
      * Sets Pic Data as string to be converted to base64
-     * @param picData
+     * @param picData byte[] of image
      */
 
     public void setPicData(byte[] picData) {this.picDATA = picData;}
 
     /**
      * sets message colour as string to be converted to HEX
-     * @param msgColour
+     * @param msgColour colour of string
      */
 
     public void setMsgColour(String msgColour) {this.msgColour = msgColour ;}
 
     /**
      * Sets back colour as string to be converted to HEX
-     * @param backColour
+     * @param backColour colour of string
      */
 
     public void setBackColour(String backColour) {this.backColour = backColour;}
 
     /**
      * Sets info colour as string to be converted to HEX
-     * @param infoColour
+     * @param infoColour colour of string
      */
 
     public void setInfoColour(String infoColour) { this.infoColour = infoColour;}
@@ -187,7 +187,7 @@ public class Billboard implements Serializable {
      * Converts a image from the file path to a byte array
      * @param filePath image to be converted
      * @return image in byte[] form
-     * @throws Exception
+     * @throws Exception if no file found
      */
     public byte[] ConvertImageToData(File filePath) throws Exception {
                 BufferedImage bImage = ImageIO.read(new File(String.valueOf(filePath)));
@@ -199,9 +199,9 @@ public class Billboard implements Serializable {
 
     /**
      * Converts a byte[] to a buffered immage.
-     * @param imageData
-     * @return
-     * @throws IOException
+     * @param imageData byte[] data of image
+     * @return buffered image
+     * @throws IOException if cant read
      */
 
     public BufferedImage ConvertDataToImage(byte[] imageData) throws IOException {
