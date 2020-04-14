@@ -1,4 +1,4 @@
-package Handlers;
+package Server.Handlers;
 
 import Tools.Log;
 
