@@ -54,11 +54,11 @@ public class ControlPanelInterface {
         ChangePWPanel.changePWScreen();
         EditUsersPanel.editUserScreen();
 
-        controlPanelScreen.add(tabs);
+        controlPanelScreen.getContentPane().add(tabs);
         controlPanelScreen.setLayout(null);
         controlPanelScreen.setUndecorated(true);
         controlPanelScreen.setVisible(true);
-        controlPanelScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        controlPanelScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // May need HIDE_ON_CLOSE instead of exit.
 
     }
 

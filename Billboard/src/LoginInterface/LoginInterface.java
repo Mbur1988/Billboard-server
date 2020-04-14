@@ -71,7 +71,8 @@ public class LoginInterface {
                 if (correctPassword.equals(enteredPassword)) {
                     String credentials = "Username " + userName;
                    // credentials += ", Password: " + enteredPassword;
-                    ControlPanelInterface.controlPanelScreen();
+                    //ControlPanelInterface.controlPanelScreen();               Can run this from main or here...
+                    loginScreen.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                     loginScreen.dispose();
                 }
                 else {
