@@ -26,7 +26,11 @@ public class PropertyReader {
      */
     public static String GetProperty(String file, String property) throws IOException {
         Properties prop = new Properties();
+<<<<<<< Updated upstream
         FileInputStream ip= new FileInputStream(ProjectPath.RootString() + "\\Resources\\" + file + ".props");
+=======
+        FileInputStream ip= new FileInputStream(ProjectPath.ResourcesPath() + "\\" + file +".props");
+>>>>>>> Stashed changes
         prop.load(ip);
         return prop.getProperty(property);
     }
