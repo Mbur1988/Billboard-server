@@ -75,9 +75,6 @@ public class LoginInterface {
                 if (AttemptConnect()) {
                     // Try a login attempt
                     try {
-                        // Send action request to server
-                        dos.writeUTF("LoginAttempt");
-                        Log.Message("Login attempt request sent");
                         // Send user object to server
                         objectStreamer.Send(user);
                         Log.Message("User object sent");

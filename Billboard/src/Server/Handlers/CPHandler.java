@@ -28,29 +28,21 @@ public class CPHandler extends ConnectionHandler {
         // Create a new ObjectStreamHandler to send billboards to the viewer
         ObjectStreamer objectStreamer = new ObjectStreamer(socket);
 
+        Log.Message("Login attempt received from control panel");
+
+        Object received = null;
         try {
-            String action = dis.readUTF();
-            Log.Message(action);
-            if ("LoginAttempt".equals(action)) {
-                Log.Message("Login attempt received from control panel");
-
-                Object received = objectStreamer.Receive();
-
-                // If statement to identify the received object as an instance of User class
-                if (received instanceof User) {
-                    // Cast the received object to its correct class
-                    User user = (User) received;
-                    user.setVerified(true);
-                    objectStreamer.Send(user);
-                }
+            received = objectStreamer.Receive();
+            // If statement to identify the received object as an instance of User class
+            if (received instanceof User) {
+                // Cast the received object to its correct class
+                User user = (User) received;
+                user.setVerified(true);
+                objectStreamer.Send(user);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-        //
-        // Do required control panel things here
-        //
 
         // Close connection nicely
         try {
