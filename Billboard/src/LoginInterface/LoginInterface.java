@@ -20,7 +20,8 @@ public class LoginInterface {
          // May be able to use a dialog window instead of a frame. *****
 
         JFrame loginScreen = new JFrame(); // Login window.
-        loginScreen.setSize(screenWidth,screenHeight);
+        loginScreen.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        loginScreen.setResizable(false);
 
         JLabel labelTest = new JLabel(); // Testing label that displays input at bottom of window.
         labelTest.setBounds((screenWidth/2) - 100, screenHeight/2 + 60, 200, 30);
@@ -47,13 +48,17 @@ public class LoginInterface {
         JButton b_Login = new JButton("Login"); // Login button.
         b_Login.setBounds((screenWidth/2) - 50, screenHeight/2 + 100, 100, 30);
 
+        JButton b_Exit = new JButton("Exit"); // Exit button.
+        b_Exit.setBounds(screenWidth - 105, screenHeight - 35, 100, 30);
+
         // Add elements to the screen.
-        loginScreen.add(pw);
-        loginScreen.add(label_Username);
-        loginScreen.add(labelTest);
-        loginScreen.add(label_Password);
-        loginScreen.add(b_Login);
-        loginScreen.add(un);
+        loginScreen.getContentPane().add(pw);
+        loginScreen.getContentPane().add(label_Username);
+        loginScreen.getContentPane().add(labelTest);
+        loginScreen.getContentPane().add(label_Password);
+        loginScreen.getContentPane().add(b_Login);
+        loginScreen.getContentPane().add(b_Exit);
+        loginScreen.getContentPane().add(un);
 
         loginScreen.setLayout(null);
         loginScreen.setUndecorated(true);
@@ -62,6 +67,13 @@ public class LoginInterface {
         String correctPassword = "0000"; // Mock password for testing comparison of input.
 
         String userName = un.getText();
+
+        b_Exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {            // Close the screen on exit.
+                loginScreen.dispose();
+            }
+        });
 
         b_Login.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
