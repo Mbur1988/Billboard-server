@@ -31,7 +31,7 @@ public class BillboardTest {
     // Billboard = newBillboard(String msg, String info, String picURL, String picDATA, String MsgColour,String BackColour, String InfoColour)
     void newBillboard() {
 
-          underTestFull = new Billboard("TEST MsG","TEST INFO","https://dazedimg-dazedgroup.netdna-ssl.com/830/azure/dazed-prod/1150/0/1150228.jpg",
+          underTestFull = new Billboard("TEST billboardName", "TEST MsG","TEST INFO","https://dazedimg-dazedgroup.netdna-ssl.com/830/azure/dazed-prod/1150/0/1150228.jpg",
                  testBytes,"#000000","#FFFFFF","#000000");
         underTestEmpty = new Billboard();
 

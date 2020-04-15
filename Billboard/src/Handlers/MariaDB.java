@@ -458,7 +458,7 @@ public class MariaDB {
          * @throws SQLException
          */
 
-        public boolean addBillboard(String billboardName, String msg, String info, String picURL, byte[] picDATA, String msgColour, String backColour, String infoColour ) throws SQLException {
+        public boolean addBillboard(String bugger, String billboardName, String msg, String info, String picURL, byte[] picDATA, String msgColour, String backColour, String infoColour ) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM Billboards WHERE billboardName = '" + billboardName + "';");
             if (result.next()) {
                 return false;
@@ -468,20 +468,46 @@ public class MariaDB {
             }
         }
 
-        public boolean EditBillboard(String billboardName, String msg, String info, String picURL, byte[] picDATA, String msgColour, String backColour, String infoColour) throws SQLException {
+        /**
+         * Edits existing user fields; billboardName, msg, info, picURL, msgColour, backColour, infoColour
+         *
+         * @param billboardName to edit by user
+         * @param msg to edit by user
+         * @param info to edit by user
+         * @param picURL to edit by user
+         * @param backColour to edit by user
+         * @return infoColour to edit by user
+         * @return boolean value true if operation was successful else false
+         * @throws SQLException
+         */
+
+        public boolean EditBillboardName(String billboardName, String msg, String info, String picURL, byte[] picDATA, String msgColour, String backColour, String infoColour) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM Billboards WHERE billboardName = '" + billboardName + "';");
             if (result.next()) {
-                if (password != null)
-                    statement.executeQuery("UPDATE users SET password='" + password + "' WHERE username='" + username + "';");
-                if (access != null)
-                    statement.executeQuery("UPDATE users SET access='" + access + "' WHERE username='" + username + "';");
-                if (salt != null)
-                    statement.executeQuery("UPDATE users SET salt='" + salt + "' WHERE username='" + username + "';");
+                if (billboardName != null)
+                    statement.executeQuery("UPDATE Billboards SET billboardName ='" + billboardName + "'WHERE billboardName='" + billboardName + "';'");
+                if (msg != null)
+                    statement.executeQuery("UPDATE Billboards SET msg ='" + msg + "' WHERE billboardName='" + billboardName + "';");
+                if (info != null)
+                    statement.executeQuery("UPDATE Billboards SET info ='" + info + "' WHERE billboardName='" + billboardName + "';");
+                if (picURL != null)
+                    statement.executeQuery("UPDATE Billboards SET picURL ='" + picURL + "' WHERE billboardName='" + billboardName + "';");
+               // if (picDATA != null)
+                  //  statement.executeQuery("UPDATE Billboards SET picDATA ='" + picDATA + "' WHERE billboardName='" + billboardName + "';");
+                if (msgColour != null)
+                    statement.executeQuery("UPDATE Billboards SET msgColour ='" + msgColour + "' WHERE billboardName='" + billboardName + "';");
+                if (backColour != null)
+                    statement.executeQuery("UPDATE Billboards SET backColour ='" + backColour + "' WHERE billboardName='" + billboardName + "';");
+                if (infoColour != null)
+                    statement.executeQuery("UPDATE Billboards SET infoColour ='" + infoColour + "' WHERE billboardName='" + billboardName + "';");
                 return true;
+
             } else {
                 return false;
             }
         }
+
+        
 
 
     }
