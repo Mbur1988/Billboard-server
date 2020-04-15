@@ -1,15 +1,15 @@
 package Clients.ControlPanel.LoginInterface;
-import Clients.ControlPanel.ControlPanel;
+
 import Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface;
 import SerializableObjects.User;
+import Tools.HashCredentials;
 import Tools.Log;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
+import java.security.NoSuchAlgorithmException;
 import static Clients.ControlPanel.ControlPanel.*;
 
 // The Billboard Control Panel Login Interface
@@ -67,7 +67,13 @@ public class LoginInterface {
             public void actionPerformed(ActionEvent event) {
                 // Retrieve username and password from user input
                 user.setUsername(un.getText());
-                user.setPassword(new String(pw.getPassword()));
+                String password = new String(pw.getPassword());
+                try {
+                    password = HashCredentials.Hash(password);
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+                user.setPassword(password);
                 // Clear username and password fields
                 un.setText("");
                 pw.setText("");
@@ -77,17 +83,19 @@ public class LoginInterface {
                     try {
                         // Send user object to server
                         objectStreamer.Send(user);
-                        Log.Message("User object sent");
+                        Log.Message("User object sent to server");
                         // Await returned object from server
                         user = (User)objectStreamer.Receive();
+                        Log.Message("User object received from server");
                     } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                         Log.Error("Login attempt request failed");
                     }
                     // Disconnect from server
                     AttemptDisconnect();
+                    user.showDetails();
                     // Check whether the user has been verified
-                    if (user.isVerified()) {
+                    if (user.isVerified() && user.getId() != null) {
                         // Open control panel screen
                         ControlPanelInterface.controlPanelScreen();
                         // Nicely close login screen

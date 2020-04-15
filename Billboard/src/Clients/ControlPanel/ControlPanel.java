@@ -6,7 +6,6 @@ import SerializableObjects.User;
 import Tools.Log;
 import java.io.IOException;
 
-// Clients.Client class
 public class ControlPanel extends Client {
 
     public static User user = new User();

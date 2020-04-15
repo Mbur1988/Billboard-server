@@ -1,13 +1,21 @@
 package Server.Handlers;
 
 import SerializableObjects.User;
+import Tools.HashCredentials;
 import Tools.Log;
 import Tools.ObjectStreamer;
 
 import java.io.*;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
+import java.util.UUID;
+
+import static Server.Server.authorised;
 
 public class CPHandler extends ConnectionHandler {
+
+    MariaDB mariaDB;
 
     /**
      * Class constructor
@@ -18,6 +26,7 @@ public class CPHandler extends ConnectionHandler {
      */
     public CPHandler(Socket socket, DataInputStream dis, DataOutputStream dos) {
         super(socket, dis, dos);
+        mariaDB = new MariaDB();
     }
 
     //Override of the run function of parent class
@@ -30,16 +39,11 @@ public class CPHandler extends ConnectionHandler {
 
         Log.Message("Login attempt received from control panel");
 
-        Object received = null;
         try {
-            received = objectStreamer.Receive();
-            // If statement to identify the received object as an instance of User class
-            if (received instanceof User) {
-                // Cast the received object to its correct class
-                User user = (User) received;
-                user.setVerified(true);
-                objectStreamer.Send(user);
-            }
+            User user = (User) objectStreamer.Receive();
+            AttemptAuthentication(user);
+            objectStreamer.Send(user);
+
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -53,5 +57,23 @@ public class CPHandler extends ConnectionHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private User AttemptAuthentication(User user) {
+        String username = user.getUsername();
+        try {
+            byte[] salt = mariaDB.users.GetUserSalt(username);
+            String password = HashCredentials.Hash(username, salt);
+            if (password == mariaDB.users.GetUserPassword(username)) {
+                user.setVerified(true);
+                UUID uuid = UUID.randomUUID();
+                authorised.Add(username, uuid);
+                user.setId(uuid);
+                Log.Message(user.getId().toString());
+            }
+        } catch (SQLException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 }

@@ -2,6 +2,9 @@ package Server;
 
 import java.io.*;
 import java.net.*;
+
+import Server.Handlers.MariaDB;
+import Server.Trackers.Authaurised;
 import Tools.Log;
 import Tools.PropertyReader;
 import CustomExceptions.InvalidPortException;
@@ -9,7 +12,8 @@ import Server.Handlers.ConnectionHandler;
 
 public class Server {
     // Declare port variable to be used by server
-    static int port;
+    private static int port;
+    public static Authaurised authorised = new Authaurised();
 
     /**
      * Sets the port number to be used by the server
