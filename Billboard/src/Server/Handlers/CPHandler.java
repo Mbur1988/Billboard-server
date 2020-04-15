@@ -12,10 +12,12 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import static Server.Server.authorised;
+import static Server.Server.main;
 
 public class CPHandler extends ConnectionHandler {
 
-    MariaDB mariaDB;
+    private MariaDB mariaDB;
+    private User user;
 
     /**
      * Class constructor
@@ -26,12 +28,15 @@ public class CPHandler extends ConnectionHandler {
      */
     public CPHandler(Socket socket, DataInputStream dis, DataOutputStream dos) {
         super(socket, dis, dos);
-        mariaDB = new MariaDB();
+        user = new User();
+        mariaDB = new MariaDB(true, false, false);
     }
 
     //Override of the run function of parent class
     @Override
     public void run() {
+        mariaDB.Connect();
+
         Log.Message(socket + " control panel handler started");
 
         // Create a new ObjectStreamHandler to send billboards to the viewer
@@ -40,8 +45,8 @@ public class CPHandler extends ConnectionHandler {
         Log.Message("Login attempt received from control panel");
 
         try {
-            User user = (User) objectStreamer.Receive();
-            AttemptAuthentication(user);
+            user = (User)objectStreamer.Receive();
+            AttemptAuthentication();
             objectStreamer.Send(user);
 
         } catch (IOException | ClassNotFoundException e) {
@@ -57,21 +62,30 @@ public class CPHandler extends ConnectionHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mariaDB.Disconnect();
     }
 
-    private User AttemptAuthentication(User user) {
+    private User AttemptAuthentication() {
         String username = user.getUsername();
+        String password = user.getPassword();
         try {
             byte[] salt = mariaDB.users.GetUserSalt(username);
-            String password = HashCredentials.Hash(username, salt);
-            if (password == mariaDB.users.GetUserPassword(username)) {
+            String toCheck = HashCredentials.Hash(password, salt);
+            if(salt != null) {
+                Log.Message(salt.toString());
+                Log.Message(HashCredentials.Hash(HashCredentials.Hash("default"), salt));
+                Log.Message(toCheck);
+                Log.Message(mariaDB.users.GetUserPassword(username));
+            }
+
+            if (toCheck == mariaDB.users.GetUserPassword(username)) {
                 user.setVerified(true);
                 UUID uuid = UUID.randomUUID();
                 authorised.Add(username, uuid);
                 user.setId(uuid);
                 Log.Message(user.getId().toString());
             }
-        } catch (SQLException | NoSuchAlgorithmException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return user;

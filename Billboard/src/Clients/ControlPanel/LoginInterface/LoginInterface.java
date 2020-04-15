@@ -66,13 +66,10 @@ public class LoginInterface {
         b_Login.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 // Retrieve username and password from user input
-                user.setUsername(un.getText());
+                String username = un.getText();
+                user.setUsername(username);
                 String password = new String(pw.getPassword());
-                try {
-                    password = HashCredentials.Hash(password);
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
+                password = HashCredentials.Hash(password);
                 user.setPassword(password);
                 // Clear username and password fields
                 un.setText("");

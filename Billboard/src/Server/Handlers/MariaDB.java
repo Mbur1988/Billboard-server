@@ -1,9 +1,11 @@
 package Server.Handlers;
 
+import Tools.HashCredentials;
 import Tools.Log;
 import Tools.PropertyReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import static java.lang.System.exit;
 
@@ -22,11 +24,17 @@ public class MariaDB {
      * MariaDB class constructor
      * Sets network configuration variables; url, schema, username and password
      */
-    public MariaDB() {
+    public MariaDB(boolean users, boolean billboards, boolean scheduling) {
         SetNetworkConfig();
-        users = new Users();
-        billboards = new Billboards();
-        scheduling = new Scheduling();
+        if (users) {
+            this.users = new Users();
+        }
+        if (billboards) {
+            this.billboards = new Billboards();
+        }
+        if (scheduling) {
+            this.scheduling = new Scheduling();
+        }
     }
 
     /**
@@ -237,8 +245,17 @@ public class MariaDB {
          * @throws SQLException
          */
         private void CreateUsersTable() throws SQLException {
-            statement.executeQuery("CREATE TABLE users (username VARCHAR(64) UNIQUE KEY, password VARCHAR(64), access INT NOT NULL, salt VARBINARY(11));");
-            statement.executeQuery("INSERT INTO users VALUES ('admin', 'EB2CBD81BB9290778682D62AD2E58FA90732C7767D560D3D660F5CFACCADD4AE', 5, '[B@4730246f');");
+            String username = "admin";
+            int access = 5;
+            byte[] salt = HashCredentials.CreateSalt();
+            String password = HashCredentials.Hash("default", salt);
+            statement.executeUpdate("CREATE TABLE users (username VARCHAR(64) UNIQUE KEY, password VARCHAR(64), access INT NOT NULL, salt VARBINARY(10));");
+            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `users`(username, password, access, salt) VALUES (?, ?, ?, ?)");
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            pstmt.setInt(3, access);
+            pstmt.setBytes(4, salt);
+            pstmt.executeUpdate();
             Log.Confirmation("Table created: users");
         }
 
