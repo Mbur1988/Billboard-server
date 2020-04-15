@@ -5,7 +5,6 @@ import Tools.Log;
 import Tools.PropertyReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import static java.lang.System.exit;
 
@@ -274,7 +273,12 @@ public class MariaDB {
             if (result.next()) {
                 return false;
             } else {
-                statement.executeQuery("INSERT INTO users VALUES ('" + username + "', '" + password + "', " + access + ", '" + access + "');");
+                PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `users`(username, password, access, salt) VALUES (?, ?, ?, ?)");
+                pstmt.setString(1, username);
+                pstmt.setString(2, password);
+                pstmt.setInt(3, access);
+                pstmt.setBytes(4, salt);
+                pstmt.executeUpdate();
                 return true;
             }
         }
@@ -327,105 +331,105 @@ public class MariaDB {
             }
         }
 
-        /**
-         * Edits existing user fields; password, access and salt
-         *
-         * @param username Username of the user to edit
-         * @param password New password as string
-         * @param access new access level as integer
-         * @param salt new salt as byte array
-         * @return boolean value true if operation was successful else false
-         * @throws SQLException
-         */
-        public boolean EditUser(String username, String password, Integer access, byte[] salt) throws SQLException {
-            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
-            if (result.next()) {
-                if (password != null)
-                    statement.executeQuery("UPDATE users SET password='" + password + "' WHERE username='" + username + "';");
-                if (access != null)
-                    statement.executeQuery("UPDATE users SET access='" + access + "' WHERE username='" + username + "';");
-                if (salt != null)
-                    statement.executeQuery("UPDATE users SET salt='" + salt + "' WHERE username='" + username + "';");
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        /**
-         * Edits existing user password field
-         *
-         * @param username Username of the user to edit
-         * @param password New password as string
-         * @return boolean value true if operation was successful else false
-         * @throws SQLException
-         */
-        public boolean EditUser(String username, String password) throws SQLException {
-            return EditUser(username, password, null, null);
-        }
-
-        /**
-         * Edits existing user access field
-         *
-         * @param username Username of the user to edit
-         * @param access new access level as integer
-         * @return boolean value true if operation was successful else false
-         * @throws SQLException
-         */
-        public boolean EditUser(String username, Integer access) throws SQLException {
-            return EditUser(username, null, access, null);
-        }
-
-        /**
-         * Edits existing user salt field
-         *
-         * @param username Username of the user to edit
-         * @param salt new salt as byte array
-         * @return boolean value true if operation was successful else false
-         * @throws SQLException
-         */
-        public boolean EditUser(String username, byte[] salt) throws SQLException {
-            return EditUser(username, null, null, salt);
-        }
-
-        /**
-         * Edits existing user fields; access and salt
-         *
-         * @param username Username of the user to edit
-         * @param access new access level as integer
-         * @param salt new salt as byte array
-         * @return boolean value true if operation was successful else false
-         * @throws SQLException
-         */
-        public boolean EditUser(String username, Integer access, byte[] salt) throws SQLException {
-            return EditUser(username, null, access, salt);
-        }
-
-        /**
-         * Edits existing user fields; password and salt
-         *
-         * @param username Username of the user to edit
-         * @param password New password as string
-         * @param salt new salt as byte array
-         * @return boolean value true if operation was successful else false
-         * @throws SQLException
-         */
-        public boolean EditUser(String username, String password, byte[] salt) throws SQLException {
-            return EditUser(username, password, null, salt);
-        }
-
-        /**
-         * Edits existing user fields; password and access
-         *
-         * @param username Username of the user to edit
-         * @param password New password as string
-         * @param access new access level as integer
-         * @return boolean value true if operation was successful else false
-         * @throws SQLException
-         */
-        public boolean EditUser(String username, String password, Integer access) throws SQLException {
-            return EditUser(username, password, access, null);
-        }
+//        /**
+//         * Edits existing user fields; password, access and salt
+//         *
+//         * @param username Username of the user to edit
+//         * @param password New password as string
+//         * @param access new access level as integer
+//         * @param salt new salt as byte array
+//         * @return boolean value true if operation was successful else false
+//         * @throws SQLException
+//         */
+//        public boolean EditUser(String username, String password, Integer access, byte[] salt) throws SQLException {
+//            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
+//            if (result.next()) {
+//                if (password != null)
+//                    statement.executeQuery("UPDATE users SET password='" + password + "' WHERE username='" + username + "';");
+//                if (access != null)
+//                    statement.executeQuery("UPDATE users SET access='" + access + "' WHERE username='" + username + "';");
+//                if (salt != null)
+//                    statement.executeQuery("UPDATE users SET salt='" + salt + "' WHERE username='" + username + "';");
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        }
+//
+//        /**
+//         * Edits existing user password field
+//         *
+//         * @param username Username of the user to edit
+//         * @param password New password as string
+//         * @return boolean value true if operation was successful else false
+//         * @throws SQLException
+//         */
+//        public boolean EditUser(String username, String password) throws SQLException {
+//            return EditUser(username, password, null, null);
+//        }
+//
+//        /**
+//         * Edits existing user access field
+//         *
+//         * @param username Username of the user to edit
+//         * @param access new access level as integer
+//         * @return boolean value true if operation was successful else false
+//         * @throws SQLException
+//         */
+//        public boolean EditUser(String username, Integer access) throws SQLException {
+//            return EditUser(username, null, access, null);
+//        }
+//
+//        /**
+//         * Edits existing user salt field
+//         *
+//         * @param username Username of the user to edit
+//         * @param salt new salt as byte array
+//         * @return boolean value true if operation was successful else false
+//         * @throws SQLException
+//         */
+//        public boolean EditUser(String username, byte[] salt) throws SQLException {
+//            return EditUser(username, null, null, salt);
+//        }
+//
+//        /**
+//         * Edits existing user fields; access and salt
+//         *
+//         * @param username Username of the user to edit
+//         * @param access new access level as integer
+//         * @param salt new salt as byte array
+//         * @return boolean value true if operation was successful else false
+//         * @throws SQLException
+//         */
+//        public boolean EditUser(String username, Integer access, byte[] salt) throws SQLException {
+//            return EditUser(username, null, access, salt);
+//        }
+//
+//        /**
+//         * Edits existing user fields; password and salt
+//         *
+//         * @param username Username of the user to edit
+//         * @param password New password as string
+//         * @param salt new salt as byte array
+//         * @return boolean value true if operation was successful else false
+//         * @throws SQLException
+//         */
+//        public boolean EditUser(String username, String password, byte[] salt) throws SQLException {
+//            return EditUser(username, password, null, salt);
+//        }
+//
+//        /**
+//         * Edits existing user fields; password and access
+//         *
+//         * @param username Username of the user to edit
+//         * @param password New password as string
+//         * @param access new access level as integer
+//         * @return boolean value true if operation was successful else false
+//         * @throws SQLException
+//         */
+//        public boolean EditUser(String username, String password, Integer access) throws SQLException {
+//            return EditUser(username, password, access, null);
+//        }
 
         /**
          * Deletes existing user field
