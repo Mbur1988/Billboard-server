@@ -84,6 +84,7 @@ public class CPHandler extends ConnectionHandler {
                 UUID uuid = UUID.randomUUID();
                 authorised.Add(username, uuid);
                 user.setId(uuid);
+                user.setAccess(mariaDB.users.GetUserAccess(username));
                 Log.Message("User credentials validated");
             }
             else {
@@ -92,6 +93,7 @@ public class CPHandler extends ConnectionHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        user.setPassword("");
         return user;
     }
 }
