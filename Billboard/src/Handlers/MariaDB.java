@@ -440,9 +440,50 @@ public class MariaDB {
          * @throws SQLException
          */
         private void CreateBillboardsTable() throws SQLException {
-            statement.executeQuery("CREATE TABLE billboards (name VARCHAR(64) UNIQUE KEY);");
-            Log.Confirmation("Table created: billboards");
+            statement.executeQuery("CREATE TABLE Billboards (billboardName VARCHAR(64) UNIQUE KEY, msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB(MAX), msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64) );");
+            Log.Confirmation("Table created: Billboards");
         }
+
+        /**
+         * Adds a Billboard to the Billboard table as long as it does not already exist
+         * @param billboardName The name of the billboard to be stored
+         * @param msg the billboard message of the entry as String
+         * @param info billboard information of the entry as String
+         * @param picURL picture URL of the entry as a String
+         * @param picDATA picture data of the entry as a Byte
+         * @param msgColour Colour of the message of the entry as a String
+         * @param backColour Colour of the background of the entry as a String
+         * @param infoColour information colour of the entry as a String
+         * @return true if the entry is successful and false if an entry already exists with the same billboard name
+         * @throws SQLException
+         */
+
+        public boolean addBillboard(String billboardName, String msg, String info, String picURL, byte[] picDATA, String msgColour, String backColour, String infoColour ) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM Billboards WHERE billboardName = '" + billboardName + "';");
+            if (result.next()) {
+                return false;
+            } else {
+                statement.executeQuery("INSERT INTO Billboards VALUES ('" + billboardName + "', '" + msg + "', '" + info + "', '" + picURL + "', '" + picDATA + "', '" + msgColour + "', '" + backColour + "', '" + infoColour + "');");
+                return true;
+            }
+        }
+
+        public boolean EditBillboard(String billboardName, String msg, String info, String picURL, byte[] picDATA, String msgColour, String backColour, String infoColour) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM Billboards WHERE billboardName = '" + billboardName + "';");
+            if (result.next()) {
+                if (password != null)
+                    statement.executeQuery("UPDATE users SET password='" + password + "' WHERE username='" + username + "';");
+                if (access != null)
+                    statement.executeQuery("UPDATE users SET access='" + access + "' WHERE username='" + username + "';");
+                if (salt != null)
+                    statement.executeQuery("UPDATE users SET salt='" + salt + "' WHERE username='" + username + "';");
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+
     }
 
     public class Scheduling {

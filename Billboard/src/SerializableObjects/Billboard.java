@@ -9,6 +9,7 @@ import Tools.*;
 
 public class Billboard implements Serializable {
 
+    private String billboardName;
     private String msg;
     private String info;
     private String picURL;
@@ -19,6 +20,8 @@ public class Billboard implements Serializable {
 
     //setting a blank Billboard
     public Billboard(){
+
+        this.billboardName = null;
        this.msg = null;
        this.info = null;
        this.picURL = null;
@@ -29,6 +32,7 @@ public class Billboard implements Serializable {
     }
     /**
      *
+     * @param billboardName The name of the billboard for database control
      * @param msg The message to be displayed at the top
      * @param info The message to be displayed at the bottom
      * @param picURL the URL to the pic to be displayed. (incompattible to picDATA)
@@ -37,7 +41,8 @@ public class Billboard implements Serializable {
      * @param BackColour colour of the back ground in hex
      * @param InfoColour colour of info writting
      */
-    public Billboard(String msg, String info, String picURL, byte[] picDATA, String MsgColour, String BackColour, String InfoColour) {
+    public Billboard(String billboardName, String msg, String info, String picURL, byte[] picDATA, String MsgColour, String BackColour, String InfoColour) {
+        this.billboardName = billboardName;
         this.msg = msg;
         this.info = info;
         this.picURL = picURL;
@@ -65,6 +70,13 @@ public class Billboard implements Serializable {
      * Helper to get the message stored
      * @return String msg
      */
+
+    public String getBillboardName() {return billboardName;}
+    /**
+     * Helper to get the billboard name stored
+     * @return String info
+     */
+
     public  String getMsg(){ return msg; }
 
     /**
@@ -107,9 +119,17 @@ public class Billboard implements Serializable {
     //  setters  //
 
     /**
+     * sets name of Billboard
+     * @param name
+     */
+
+    public void setName(String name) {this.billboardName = name;}
+
+    /**
      * sets message
      * @param message
      */
+
     public void setMsg(String message) { this.msg = message;}
 
     /**
