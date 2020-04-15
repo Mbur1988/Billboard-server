@@ -27,6 +27,7 @@ public class ObjectStreamer {
      * @throws IOException
      */
     public void Send(Object object) throws IOException {
+        Log.Message("Attempting to send object on " + socket);
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
         oos.writeObject(object);
         oos.flush();
