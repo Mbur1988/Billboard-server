@@ -9,7 +9,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import static Clients.ControlPanel.ControlPanel.*;
 
 // The Billboard Control Panel Login Interface
@@ -24,44 +23,56 @@ public class LoginInterface {
         // May be able to use a dialog window instead of a frame. *****
 
         JFrame loginScreen = new JFrame(); // Login window.
-        loginScreen.setSize(screenWidth, screenHeight);
+        loginScreen.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        loginScreen.setResizable(false);
 
         JLabel labelMessage = new JLabel(); // Testing label that displays input at bottom of window.
-        labelMessage.setBounds((screenWidth / 2) - 100, screenHeight / 2 + 60, 200, 30);
+        labelMessage.setBounds((screenWidth/2) - 100, screenHeight/2 + 60, 200, 30);
         labelMessage.setHorizontalAlignment(JLabel.CENTER);
 
         JLabel label_Password = new JLabel("Password:");    // Password label.
         label_Password.setFont(new Font("Courier", Font.BOLD, 20));
         label_Password.setHorizontalAlignment(JLabel.CENTER);
         label_Password.setVerticalAlignment(JLabel.CENTER);
-        label_Password.setBounds((screenWidth / 2) - 80, screenHeight / 2, 160, 20);
+        label_Password.setBounds((screenWidth/2)-80,screenHeight/2, 160,20);
 
         JPasswordField pw = new JPasswordField(); // Password entry field.
-        pw.setBounds((screenWidth / 2) - 50, screenHeight / 2 + 30, 100, 30);
+        pw.setBounds((screenWidth/2) - 50, screenHeight/2 + 30, 100, 30);
 
         JLabel label_Username = new JLabel("Username:"); // Username label.
         label_Username.setFont(new Font("Courier", Font.BOLD, 20));
         label_Username.setHorizontalAlignment(JLabel.CENTER);
         label_Username.setVerticalAlignment(JLabel.CENTER);
-        label_Username.setBounds((screenWidth / 2) - 80, (screenHeight / 2) - 100, 160, 20);
+        label_Username.setBounds((screenWidth/2)-80,(screenHeight/2) - 100, 160,20);
 
         JTextField un = new JTextField(); // Username entry field.
-        un.setBounds((screenWidth / 2) - 50, (screenHeight / 2) - 60, 100, 30);
+        un.setBounds((screenWidth/2) - 50, (screenHeight/2) - 60, 100, 30);
 
         JButton b_Login = new JButton("Login"); // Login button.
-        b_Login.setBounds((screenWidth / 2) - 50, screenHeight / 2 + 100, 100, 30);
+        b_Login.setBounds((screenWidth/2) - 50, screenHeight/2 + 100, 100, 30);
+
+        JButton b_Exit = new JButton("Exit"); // Exit button.
+        b_Exit.setBounds(screenWidth - 105, screenHeight - 35, 100, 30);
 
         // Add elements to the screen.
-        loginScreen.add(pw);
-        loginScreen.add(label_Username);
-        loginScreen.add(labelMessage);
-        loginScreen.add(label_Password);
-        loginScreen.add(b_Login);
-        loginScreen.add(un);
+        loginScreen.getContentPane().add(pw);
+        loginScreen.getContentPane().add(label_Username);
+        loginScreen.getContentPane().add(labelMessage);
+        loginScreen.getContentPane().add(label_Password);
+        loginScreen.getContentPane().add(b_Login);
+        loginScreen.getContentPane().add(b_Exit);
+        loginScreen.getContentPane().add(un);
 
         loginScreen.setLayout(null);
         loginScreen.setUndecorated(true);
         loginScreen.setVisible(true);
+
+        b_Exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {            // Close the screen on exit.
+                loginScreen.dispose();
+            }
+        });
 
         b_Login.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
