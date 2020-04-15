@@ -246,9 +246,10 @@ public class MariaDB {
          */
         private void CreateUsersTable() throws SQLException {
             String username = "admin";
+            String password = HashCredentials.Hash("default");
             int access = 5;
             byte[] salt = HashCredentials.CreateSalt();
-            String password = HashCredentials.Hash("default", salt);
+            password = HashCredentials.Hash(password, salt);
             statement.executeUpdate("CREATE TABLE users (username VARCHAR(64) UNIQUE KEY, password VARCHAR(64), access INT NOT NULL, salt VARBINARY(10));");
             PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `users`(username, password, access, salt) VALUES (?, ?, ?, ?)");
             pstmt.setString(1, username);

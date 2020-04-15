@@ -17,6 +17,7 @@ import static Server.Server.main;
 public class CPHandler extends ConnectionHandler {
 
     private MariaDB mariaDB;
+    private ObjectStreamer objectStreamer;
     private User user;
 
     /**
@@ -27,42 +28,49 @@ public class CPHandler extends ConnectionHandler {
      * @param dos    the existing data output stream
      */
     public CPHandler(Socket socket, DataInputStream dis, DataOutputStream dos) {
+        // Update inherited variables
         super(socket, dis, dos);
+        // Create new user class to check user access
         user = new User();
+        // Create new database handler for communication with the database
         mariaDB = new MariaDB(true, false, false);
+        // Create a new ObjectStreamHandler to send and receive objects
+        objectStreamer = new ObjectStreamer(socket);
     }
 
     //Override of the run function of parent class
     @Override
     public void run() {
-        mariaDB.Connect();
-
         Log.Message(socket + " control panel handler started");
-
-        // Create a new ObjectStreamHandler to send billboards to the viewer
-        ObjectStreamer objectStreamer = new ObjectStreamer(socket);
-
-        Log.Message("Login attempt received from control panel");
-
+        // Connect to the database
+        mariaDB.Connect();
+        // Attempt to communicate with the control panel
         try {
-            user = (User)objectStreamer.Receive();
-            AttemptAuthentication();
-            objectStreamer.Send(user);
-
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        // Close connection nicely
-        try {
+            user = (User) objectStreamer.Receive();
+            Log.Message("User object received from control panel");
+            // If the current control panel user is verified then handle the requested action
+            if (user.isVerified()) {
+                // Must first check users uuid is valid
+                // Next, receive action command from control panel
+                // Handle requested action
+            }
+            // If the current control panel user is not verified then check credential validity
+            else {
+                Log.Message("Login attempt received from control panel");
+                AttemptAuthentication();
+                objectStreamer.Send(user);
+                Log.Message("User object sent to control panel");
+            }
+            // Close connection to database
+            mariaDB.Disconnect();
+            // Close connection to control panel nicely
             socket.close();
             this.dis.close();
             this.dos.close();
             Log.Confirmation(socket.toString() + " closed successfully");
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        mariaDB.Disconnect();
     }
 
     private User AttemptAuthentication() {
@@ -71,19 +79,15 @@ public class CPHandler extends ConnectionHandler {
         try {
             byte[] salt = mariaDB.users.GetUserSalt(username);
             String toCheck = HashCredentials.Hash(password, salt);
-            if(salt != null) {
-                Log.Message(salt.toString());
-                Log.Message(HashCredentials.Hash(HashCredentials.Hash("default"), salt));
-                Log.Message(toCheck);
-                Log.Message(mariaDB.users.GetUserPassword(username));
-            }
-
-            if (toCheck == mariaDB.users.GetUserPassword(username)) {
+            if (toCheck.equals(mariaDB.users.GetUserPassword(username))) {
                 user.setVerified(true);
                 UUID uuid = UUID.randomUUID();
                 authorised.Add(username, uuid);
                 user.setId(uuid);
-                Log.Message(user.getId().toString());
+                Log.Message("User credentials validated");
+            }
+            else {
+                Log.Message("User credentials could not be validated");
             }
         } catch (SQLException e) {
             e.printStackTrace();

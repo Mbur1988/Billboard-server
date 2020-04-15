@@ -67,11 +67,13 @@ public class LoginInterface {
             public void actionPerformed(ActionEvent event) {
                 // Retrieve username and password from user input
                 String username = un.getText();
-                user.setUsername(username);
                 String password = new String(pw.getPassword());
+                // Hash the entered password before it is sent over the network
                 password = HashCredentials.Hash(password);
+                // Set the username and password variables of the static instance of user in ControlPanel class
+                user.setUsername(username);
                 user.setPassword(password);
-                // Clear username and password fields
+                // Clear username and password fields for added security
                 un.setText("");
                 pw.setText("");
                 // Attempt connection to server
@@ -80,22 +82,22 @@ public class LoginInterface {
                     try {
                         // Send user object to server
                         objectStreamer.Send(user);
-                        Log.Message("User object sent to server");
                         // Await returned object from server
                         user = (User)objectStreamer.Receive();
-                        Log.Message("User object received from server");
                     } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                         Log.Error("Login attempt request failed");
                     }
                     // Disconnect from server
                     AttemptDisconnect();
-                    user.showDetails();
                     // Check whether the user has been verified
                     if (user.isVerified() && user.getId() != null) {
+                        Log.Confirmation("User credentials verified by server");
+                        Log.Message("Opening control panel interface");
                         // Open control panel screen
                         ControlPanelInterface.controlPanelScreen();
                         // Nicely close login screen
+                        Log.Message("Closing login screen");
                         loginScreen.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                         loginScreen.dispose();
                     }
