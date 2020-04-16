@@ -33,7 +33,7 @@ public class CPHandler extends ConnectionHandler {
         // Create new user class to check user access
         user = new User();
         // Create new database handler for communication with the database
-        mariaDB = new MariaDB(true, false, false);
+        mariaDB = new MariaDB();
         // Create a new ObjectStreamHandler to send and receive objects
         objectStreamer = new ObjectStreamer(socket);
     }
