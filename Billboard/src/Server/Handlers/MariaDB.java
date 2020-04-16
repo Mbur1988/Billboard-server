@@ -23,17 +23,11 @@ public class MariaDB {
      * MariaDB class constructor
      * Sets network configuration variables; url, schema, username and password
      */
-    public MariaDB(boolean users, boolean billboards, boolean scheduling) {
+    public MariaDB() {
         SetNetworkConfig();
-        if (users) {
-            this.users = new Users();
-        }
-        if (billboards) {
-            this.billboards = new Billboards();
-        }
-        if (scheduling) {
-            this.scheduling = new Scheduling();
-        }
+        users = new Users();
+        billboards = new Billboards();
+        scheduling = new Scheduling();
     }
 
     /**
@@ -212,6 +206,9 @@ public class MariaDB {
         if (!CheckForTable("users")) {
             users.CreateUsersTable();
         }
+        else if (CheckForTable("users") && !users.CheckForUsers()) {
+            users.CreateDefaultUser();
+        }
         if (!CheckForTable("billboards")) {
             billboards.CreateBillboardsTable();
         }
@@ -244,19 +241,44 @@ public class MariaDB {
          * @throws SQLException
          */
         private void CreateUsersTable() throws SQLException {
+            statement.executeUpdate("CREATE TABLE users (username VARCHAR(64) UNIQUE KEY, password VARCHAR(64), access INT NOT NULL, salt VARBINARY(10));");
+            Log.Confirmation("Table created: users");
+            CreateDefaultUser();
+        }
+
+        private void CreateDefaultUser() throws SQLException {
             String username = "admin";
             String password = HashCredentials.Hash("default");
             int access = 5;
             byte[] salt = HashCredentials.CreateSalt();
             password = HashCredentials.Hash(password, salt);
-            statement.executeUpdate("CREATE TABLE users (username VARCHAR(64) UNIQUE KEY, password VARCHAR(64), access INT NOT NULL, salt VARBINARY(10));");
             PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `users`(username, password, access, salt) VALUES (?, ?, ?, ?)");
             pstmt.setString(1, username);
             pstmt.setString(2, password);
             pstmt.setInt(3, access);
             pstmt.setBytes(4, salt);
             pstmt.executeUpdate();
-            Log.Confirmation("Table created: users");
+            Log.Confirmation("User created: admin");
+        }
+
+        private boolean CheckForUser(String username) throws SQLException {
+            ResultSet result;
+            if (username == null) {
+                result = statement.executeQuery("SELECT * FROM users;");
+            }
+            else {
+                result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
+            }
+            if (result.next()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        private boolean CheckForUsers() throws SQLException {
+            return CheckForUser(null);
         }
 
         /**
@@ -269,8 +291,7 @@ public class MariaDB {
          * @throws SQLException
          */
         public boolean AddUser(String username, String password, Integer access, byte[] salt) throws SQLException {
-            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
-            if (result.next()) {
+            if (CheckForUser(username)) {
                 return false;
             } else {
                 PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `users`(username, password, access, salt) VALUES (?, ?, ?, ?)");
@@ -439,14 +460,12 @@ public class MariaDB {
          * @throws SQLException
          */
         public boolean DeleteUser(String username) throws SQLException {
-            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
-            if (result.next()) {
+            if (CheckForUser(username)) {
                 statement.executeQuery("DELETE FROM users WHERE username='" + username + "';");
-                result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
-                if (!result.next()) {
-                    return true;
-                } else {
+                if (CheckForUser(username)) {
                     return false;
+                } else {
+                    return true;
                 }
             } else {
                 return false;

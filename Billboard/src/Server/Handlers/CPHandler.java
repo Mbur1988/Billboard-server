@@ -4,19 +4,17 @@ import SerializableObjects.User;
 import Tools.HashCredentials;
 import Tools.Log;
 import Tools.ObjectStreamer;
-
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.UUID;
-
 import static Server.Server.authorised;
-import static Server.Server.main;
+import static Server.Server.mariaDB;
 
 public class CPHandler extends ConnectionHandler {
 
-    private MariaDB mariaDB;
     private ObjectStreamer objectStreamer;
     private User user;
 
@@ -32,8 +30,6 @@ public class CPHandler extends ConnectionHandler {
         super(socket, dis, dos);
         // Create new user class to check user access
         user = new User();
-        // Create new database handler for communication with the database
-        mariaDB = new MariaDB(true, false, false);
         // Create a new ObjectStreamHandler to send and receive objects
         objectStreamer = new ObjectStreamer(socket);
     }
@@ -42,8 +38,6 @@ public class CPHandler extends ConnectionHandler {
     @Override
     public void run() {
         Log.Message(socket + " control panel handler started");
-        // Connect to the database
-        mariaDB.Connect();
         // Attempt to communicate with the control panel
         try {
             user = (User) objectStreamer.Receive();
@@ -61,8 +55,6 @@ public class CPHandler extends ConnectionHandler {
                 objectStreamer.Send(user);
                 Log.Message("User object sent to control panel");
             }
-            // Close connection to database
-            mariaDB.Disconnect();
             // Close connection to control panel nicely
             socket.close();
             this.dis.close();
@@ -73,27 +65,45 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
-    private User AttemptAuthentication() {
+    /**
+     * Method to validate the current user class instance.
+     * The password is salt-hashed using the salt stored in the database for that user.
+     * Once salt-hashed, if the password matches that stored in the database for that user then the user is validated
+     * and a confirmation log message will be printed to console.
+     * Validation comprises; setting the user verified boolean to true, assigning a random UUID to the user and
+     * updating the access level. The assigned UUID and username is also added to the 'authorised' list of the server.
+     * If the credentials of the current user can not be validated then a warning log entry is printed to console.
+     * Regardless of whether the user is validated or not, the password variable of the current user instance will be
+     * cleared for security.
+     */
+    private void AttemptAuthentication() {
+        // Get login credentials from user instance
         String username = user.getUsername();
         String password = user.getPassword();
         try {
+            // get the relevant salt for the user from the database
             byte[] salt = mariaDB.users.GetUserSalt(username);
+            // salt-hash the password using the relevant salt
             String toCheck = HashCredentials.Hash(password, salt);
+            // check whether the salt-hashed password matches that stored on the database
             if (toCheck.equals(mariaDB.users.GetUserPassword(username))) {
+                // if passwords match then validate user and update authorised list
                 user.setVerified(true);
                 UUID uuid = UUID.randomUUID();
                 authorised.Add(username, uuid);
                 user.setId(uuid);
                 user.setAccess(mariaDB.users.GetUserAccess(username));
-                Log.Message("User credentials validated");
+                // print confirmation log message
+                Log.Confirmation("User credentials validated");
             }
             else {
-                Log.Message("User credentials could not be validated");
+                // user could not be validated - print warning log message
+                Log.Warning("User credentials could not be validated");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        // clear user password variable for security
         user.setPassword("");
-        return user;
     }
 }
