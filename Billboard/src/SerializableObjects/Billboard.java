@@ -78,8 +78,8 @@ public class Billboard implements Serializable {
      * @return frame JFrame
      */
     public JFrame createFrame() {
-        JFrame frame = new JFrame();
-        frame.setLayout(new FlowLayout());
+        JFrame frame = new JFrame("Flow Layout");
+        //frame.setLayout(new FlowLayout());
         frame.setBackground(Color.blue);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(true);

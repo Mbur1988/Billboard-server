@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 
+import java.awt.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -469,16 +471,20 @@ public class BillboardTest {
     public void BillboardAllLabels()throws Exception {
         JLabel testText = underTestEmpty.CreateTextArea("message", "message");
         JLabel testInfo = underTestEmpty.CreateTextArea("info", "info");
+
+        //underTestEmpty.getJFrame().setLayout(new BoxLayout(underTestEmpty.getJFrame(),BoxLayout.PAGE_AXIS));
         underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
         JLabel Image = DisplayImage.DisplayImageLabel(underTestEmpty.getPicData());
-        underTestEmpty.getJFrame().add(Image);
-        underTestEmpty.getJFrame().add(testText);
-        underTestEmpty.getJFrame().add(testInfo);
+        underTestEmpty.getJFrame().add(testText,BorderLayout.BEFORE_FIRST_LINE);
+        underTestEmpty.getJFrame().add(Image,BorderLayout.CENTER);
+        Image.setVerticalAlignment(SwingConstants.CENTER);
+        Image.setHorizontalAlignment(SwingConstants.CENTER);
+        underTestEmpty.getJFrame().add(testInfo,BorderLayout.PAGE_END);
         underTestEmpty.getJFrame().setVisible(true);
         underTestEmpty.getJFrame().revalidate();
 
         Thread.sleep(10000);
-        //Visual check failed try new image TODO CONTINUE WORKING
+        //Visual check PASSED
         assertTrue(true);
     }
 
