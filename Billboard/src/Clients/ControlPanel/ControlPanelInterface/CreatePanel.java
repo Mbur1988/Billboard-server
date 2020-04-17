@@ -2,16 +2,13 @@ package Clients.ControlPanel.ControlPanelInterface;
 
 import SerializableObjects.Billboard;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 public class CreatePanel extends ControlPanelInterface {
 
@@ -19,12 +16,7 @@ public class CreatePanel extends ControlPanelInterface {
 
         createPanel.setLayout(null);
         Billboard BillboardBeingMade = new Billboard();
-//blockBelow
-        //JPanel previewPanel = new JPanel();
-//        previewPanel.setBounds((screenWidth / 2),35,(screenWidth / 2) ,screenHeight - 100);
-//        previewPanel.setBackground(Color.white);
-//        previewPanel.setLayout(null);
-//        Dimension previewSize = previewPanel.getSize();
+
 
         // Create new Billboard Panel:
         JLabel label_nameBoard = new JLabel("Set Billboard Name: ");
@@ -65,18 +57,17 @@ public class CreatePanel extends ControlPanelInterface {
                 File picture = chooser.getSelectedFile();
                 String imageFilePath = picture.getAbsolutePath();
 
-                BufferedImage img = null;
-                imageFile.setText(imageFilePath);
+                //BufferedImage img = null;
+                //imageFile.setText(imageFilePath);
 
                 try {
-                    img = ImageIO.read(new File(imageFile.getText()));
+                    //img = ImageIO.read(new File(imageFile.getText()));
                     BillboardBeingMade.setPicData(BillboardBeingMade.ConvertImageToData(imageFilePath));
-                } catch (IOException ioException) {
+                } catch (Exception ioException) {
                     ioException.printStackTrace();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
-               // TODO change this to run the disp image data
+
+
              // ImageIcon icon = new ImageIcon(img);
              // // display image from data as icon   //TODO watch to make centre (screen width - width of pic /2????)
              // JLabel pic = new JLabel();
@@ -85,92 +76,73 @@ public class CreatePanel extends ControlPanelInterface {
              // previewPanel.add(pic);
             }
         });
-
+        //colour chooser
         JColorChooser colour = new JColorChooser();
         colour.setBounds(0,100,600,300);    // I think all this is wrong but it seems to work lol
         colour.setPreviewPanel(new JPanel());
-        colour.getColor().toString();
         createPanel.add(colour);    //output of color chooser
-        BillboardBeingMade.setBackColour( colour.getColor().toString());
+        BillboardBeingMade.setBackColour(colour.getColor());
 
         // Upper billboard text.
         String default_UpperText = "Click here to enter text...";
         JTextArea upperTextPanel = new JTextArea(default_UpperText);
-        JLabel upperText = Billboard.CreateTextArea("message",default_UpperText);
-        upperTextPanel.setOpaque(false);
-        upperTextPanel.setFont(new Font("Courier", Font.BOLD,40));
-        upperTextPanel.setBounds(0, 0, screenWidth, 100);
+        upperTextPanel.setBounds(0, 515, screenWidth/2, 100);
         upperTextPanel.setLineWrap(true);
-        createPanel.add(upperText);
-        //String topText = upperText.getText();
-
-        // This label will be placed at the top of the preview window to display the upper billboard text.
-//        JLabel label_upperText = new JLabel();
-//        label_upperText.setBounds(100,100,100,100);
-//        label_upperText.setFont(new Font("Courier", Font.BOLD,40));
-//        previewPanel.add(label_upperText);
-
+        createPanel.add(upperTextPanel);
         // Clear the hint text when the field is clicked.
-        upperText.addMouseListener(new MouseAdapter(){
+        String msgText = upperTextPanel.getText();
+        BillboardBeingMade.setMsg(msgText);
+        upperTextPanel.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
-                if ((upperText.getText()).equals(default_UpperText)) {
-                    upperText.setText("");
+                if ((upperTextPanel.getText()).equals(default_UpperText)) {
+                    upperTextPanel.setText("");
                 }
             }
         });
 
         // Lower billboard text.
         String default_LowerText = "Text to be displayed at the bottom of the billboard...";
-        JLabel lowerText = Billboard.CreateTextArea("info",default_LowerText);
-        BillboardBeingMade.setInfo(default_LowerText);
+
         JTextArea lowerTextPannel = new JTextArea(default_LowerText);
-        lowerText.setBounds(0, 515, 500, 100);
-        createPanel.add(lowerText);
-        //String bottomText = lowerText.getText();
-
-        // This label will be placed at the bottom of the preview window to display the lower billboard text.
-//        JLabel label_lowerText = new JLabel();
-//        label_lowerText.setBounds(100,300,100,100);
-//        previewPanel.add(label_lowerText);
-
+        lowerTextPannel.setBounds(0, 815, 500, 100);
+        createPanel.add(lowerTextPannel);
+        String bottomText = lowerTextPannel.getText();
+        BillboardBeingMade.setInfo(bottomText);
         // Clear the hint text when the field is clicked.
-        lowerText.addMouseListener(new MouseAdapter(){
+        lowerTextPannel.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
-                if ((lowerText.getText()).equals(default_LowerText)) {
-                    lowerText.setText("");
+                if ((lowerTextPannel.getText()).equals(default_LowerText)) {
+                    lowerTextPannel.setText("");
                 }
             }
         });
 
         // Preview button.
         JButton b_Preview = new JButton("Preview");
-        b_Preview.setBounds((screenWidth / 2) ,  0, screenWidth/2, 30);
+
+        b_Preview.setBounds((0) ,  screenHeight - 60, screenWidth/2, 30);
         createPanel.add(b_Preview);
 
 
 
         b_Preview.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {   // Can I have this auto update without having
-                Color newcolour = colour.getColor();       // to click preview each time a change is made?
-                //previewPanel.setBackground(newcolour);     // Think it's wrong anyway lol
+            public void actionPerformed(ActionEvent e) {
+                Color newcolour = colour.getColor();
+                String colourChosen = String.valueOf(newcolour.getRGB());
+
+                //previewPanel.setBackground(newcolour);
                 //label_upperText.setText(upperText.getText()); // Doesn't work...
                 //label_lowerText.setText(lowerText.getText());
                // previewPanel.add(pic);
-//                BillboardBeingMade.createFrame();
-//                try {
-//                    new DisplayImage(BillboardBeingMade.getPicData());
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-                BillboardBeingMade.getJFrame().add(upperText);
-                BillboardBeingMade.getJFrame().add(lowerText);
 
-
-//              BillboardBeingMade.SetVisible(true,BillboardBeingMade.getJPanel());
-//                createPanel.add(BillboardBeingMade.getJPanel());
+                try {
+                    BillboardBeingMade.showBillboard();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
@@ -189,11 +161,7 @@ public class CreatePanel extends ControlPanelInterface {
         b_Clear.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {            // Find a way to reset all parameters.
-                //previewPanel.setBackground(Color.white);
-                imageFile.setText(null);
-                Name.setText(null);
-                upperText.setText(null);
-                lowerText.setText(null);
+                BillboardBeingMade.WishhyWassyTheBillyBoardy();
             }
         });
 

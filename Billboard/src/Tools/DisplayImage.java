@@ -45,7 +45,7 @@ public class DisplayImage {
             ImageIcon icon = new ImageIcon(img);
             JFrame frame = new JFrame();
             frame.setLayout(new FlowLayout());
-            frame.setBackground(Color.blue);
+            //frame.setBackground(Color.blue);
             frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             frame.setUndecorated(true);
 //            frame.setBounds(600,200,200,600);
@@ -85,11 +85,12 @@ public class DisplayImage {
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         BufferedImage bImage2 = ImageIO.read(bis);
         ImageIcon icon = new ImageIcon(bImage2);
-        JLabel lbl = new JLabel();
-        lbl.setOpaque(false);
+        JLabel lbl = new JLabel(icon);
+        lbl.setOpaque(true);
         lbl.setBounds(200, 1200,500 , 500);//check Dimentions
-        lbl.setVisible(true);
         lbl.setIcon(icon);
+//        lbl.setVisible(true);
+        //lbl.setIcon(icon);
         return lbl;
     }
 

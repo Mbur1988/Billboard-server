@@ -1,8 +1,12 @@
 package SerializableObjects;
 
+import Tools.DisplayImage;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
@@ -19,9 +23,9 @@ public class Billboard implements Serializable {
     private String info;
     private String picURL;
     private byte[] picDATA;
-    private String msgColour;
-    private String backColour;
-    private String infoColour;
+    private Color msgColour;
+    private Color backColour;
+    private Color infoColour;
     private JFrame BillboardScreen;
     private JPanel BillboardScreenPannel;
 
@@ -35,8 +39,8 @@ public class Billboard implements Serializable {
        this.msgColour = null;
        this.backColour = null;
        this.infoColour = null;
-       this.BillboardScreen = createFrame();
-       this.BillboardScreenPannel = CreatePanel();
+       //this.BillboardScreen = createFrame();
+       //this.BillboardScreenPannel = CreatePanel();
 
     }
     /**
@@ -49,7 +53,7 @@ public class Billboard implements Serializable {
      * @param BackColour colour of the back ground in hex
      * @param InfoColour colour of info writing
      */
-    public Billboard(String msg,String name, String info, String picURL, byte[] picDATA, String MsgColour, String BackColour, String InfoColour) {
+    public Billboard(String msg,String name, String info, String picURL, byte[] picDATA, Color MsgColour, Color BackColour, Color InfoColour) {
         this.msg = msg;
         this.name = name;
         this.info = info;
@@ -78,6 +82,7 @@ public class Billboard implements Serializable {
      * @return frame JFrame
      */
     public JFrame createFrame() {
+        BillboardScreenPannel = CreatePanel();
         JFrame frame = new JFrame("Flow Layout");
         //frame.setLayout(new FlowLayout());
         frame.setBackground(Color.blue);
@@ -85,6 +90,7 @@ public class Billboard implements Serializable {
         frame.setUndecorated(true);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //BillboardScreen.setContentPane(BillboardScreenPannel);
         return frame;
     }
     /**
@@ -94,7 +100,7 @@ public class Billboard implements Serializable {
     public JPanel CreatePanel() {
         //Used to create the background of the Billboard
         JPanel BillboardScreen = new JPanel();
-        BillboardScreen.setBounds((screenWidth ),35,(screenWidth) ,screenHeight - 100); //todo change to full screen
+        BillboardScreen.setBounds(0 ,0,(screenWidth) ,screenHeight ); //todo change to full screen
         BillboardScreen.setBackground(Color.blue);
         BillboardScreen.setLayout(null);
         Dimension previewSize = BillboardScreen.getSize();  //debug help
@@ -132,9 +138,59 @@ public class Billboard implements Serializable {
 
     }
 
+    public void showBillboard() throws Exception {
+        BillboardScreen = createFrame();
+        BillboardScreenPannel = CreatePanel();
+        BillboardScreenPannel.setBackground(getBackColour());
+        BillboardScreenPannel.setOpaque(true);
+        BillboardScreen.setContentPane(BillboardScreenPannel);
+
+        JLabel MessageText =CreateTextArea("message", msg);
+        JLabel InfoText = CreateTextArea("info", info);
+        BillboardScreen.add(MessageText,BorderLayout.PAGE_START);
+        BillboardScreen.add(InfoText,BorderLayout.PAGE_END);
+        BillboardScreen.setVisible(true);
+        BillboardScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        if(picDATA != null) {
+            JLabel Image = DisplayImage.DisplayImageLabel(picDATA);
+            Image.setVerticalAlignment(SwingConstants.CENTER);
+            Image.setHorizontalAlignment(SwingConstants.CENTER);
+            BillboardScreenPannel.add(Image,BorderLayout.CENTER);
+        }
+        BillboardScreenPannel.repaint();
+        BillboardScreenPannel.revalidate();
+//DELETE--------->
+        JButton b3 = new JButton("CLOSE");
+
+        b3.setBounds(50, 375, 250, 50);
+        BillboardScreenPannel.add(b3);
+        b3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+                System.exit(0);
+            }
+        });
+//---------->DELETE
+    }
 
     // - - - - - - - helpers bellow - - - - - - - - - //
+    //  aux helper //
 
+    /** WishhyWassyTheBillyBoard() is the cleaning function that is related to the clear button.
+     * Hopefully the function name gives a LOL here or there.
+     *
+     */
+    public void WishhyWassyTheBillyBoardy() {
+    setMsg(null);
+    setName(null);
+    setInfo(null);
+    setPicURL(null);
+    setPicData(null);
+    setMsgColour(null);
+    setBackColour(null);
+    setInfoColour(null);
+    }
     //  Getters  //
 
     /**
@@ -171,20 +227,20 @@ public class Billboard implements Serializable {
      * Helper to get the message colour stored
      * @return String msg colour
      */
-    public String getMsgColour() {return msgColour; }
+    public Color getMsgColour() {return msgColour; }
 
 
     /**
      * Helper to get the background colour stored
      * @return String background colour
      */
-    public String getBackColour() {return backColour; }
+    public Color getBackColour() {return backColour; }
 
     /**
      * Helper to get the info colour stored
      * @return String info colour
      */
-    public String getInfoColour() {return infoColour; }
+    public Color getInfoColour() {return infoColour; }
     /**
      * Gets the pannel that has been made for this billboard.
      * @return JPanel stored in Billboard.
@@ -211,13 +267,13 @@ public class Billboard implements Serializable {
      * sets message
      * @param message String message to be displayed
      */
-    public void setMsg(String message) {
-        this.msg = message;
+    public void setMsg(String message) {this.msg = message;}
 
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
+    /**
+     * Sets name, useful for storage
+     * @param name String of Billboard name
+     */
+    public void setName(String name) {this.name = name;}
     /**
      * sets info
      * @param info String Informaiton to be displayed
@@ -242,21 +298,21 @@ public class Billboard implements Serializable {
      * @param msgColour colour of string
      */
 
-    public void setMsgColour(String msgColour) {this.msgColour = msgColour ;}
+    public void setMsgColour(Color msgColour) {this.msgColour = msgColour ;}
 
     /**
      * Sets back colour as string to be converted to HEX
      * @param backColour colour of string
      */
 
-    public void setBackColour(String backColour) {this.backColour = backColour;}
+    public void setBackColour(Color backColour) {this.backColour = backColour;}
 
     /**
      * Sets info colour as string to be converted to HEX
      * @param infoColour colour of string
      */
 
-    public void setInfoColour(String infoColour) { this.infoColour = infoColour;}
+    public void setInfoColour(Color infoColour) { this.infoColour = infoColour;}
 
     /**
      * Sets the Panel created elsewhere (see CreatePanel) to bool visibility
