@@ -45,6 +45,8 @@ public class ControlPanelInterface {
             CreatePanel.createPanelScreen();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         ListPanel.listPanelScreen();

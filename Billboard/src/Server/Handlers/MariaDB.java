@@ -209,13 +209,13 @@ public class MariaDB {
      * @throws SQLException
      */
     private void CheckForTables() throws SQLException {
-        if (!CheckForTable("users")) {
+        if (!CheckForTable("users") && users!=null) {
             users.CreateUsersTable();
         }
-        if (!CheckForTable("billboards")) {
+        if (!CheckForTable("billboards") && billboards!=null) {
             billboards.CreateBillboardsTable();
         }
-        if (!CheckForTable("scheduling")) {
+        if (!CheckForTable("scheduling")&& scheduling!=null) {
             scheduling.CreateSchedulingTable();
         }
     }

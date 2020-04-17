@@ -1,5 +1,7 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
+import SerializableObjects.Billboard;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -13,32 +15,34 @@ import java.io.IOException;
 
 public class CreatePanel extends ControlPanelInterface {
 
-    public static void createPanelScreen() throws IOException {
+    public static void createPanelScreen() throws Exception {
 
         createPanel.setLayout(null);
-
-        JPanel previewPanel = new JPanel();
-        previewPanel.setBounds((screenWidth / 2),35,(screenWidth / 2) ,screenHeight - 100);
-        previewPanel.setBackground(Color.white);
-        previewPanel.setLayout(null);
-        Dimension previewSize = previewPanel.getSize();
+        Billboard BillboardBeingMade = new Billboard();
+//blockBelow
+        //JPanel previewPanel = new JPanel();
+//        previewPanel.setBounds((screenWidth / 2),35,(screenWidth / 2) ,screenHeight - 100);
+//        previewPanel.setBackground(Color.white);
+//        previewPanel.setLayout(null);
+//        Dimension previewSize = previewPanel.getSize();
 
         // Create new Billboard Panel:
         JLabel label_nameBoard = new JLabel("Set Billboard Name: ");
         label_nameBoard.setBounds(0,0,150,30);
         createPanel.add(label_nameBoard);
-        createPanel.add(previewPanel);
+        //createPanel.add(previewPanel);
 
         JTextField Name = new JTextField();
         Name.setBounds(120,0,150,30);
-        String billboardName = Name.getText();                  // Billboard name for storage on server etc.
+       // String billboardName = Name.getText();                  // Billboard name for storage on server etc.
+        BillboardBeingMade.setName(Name.getText());
         createPanel.add(Name);
 
         JLabel label_imageFile = new JLabel("Image URL:");
         label_imageFile.setBounds(0, 50, 150, 30);
         createPanel.add(label_imageFile);
 
-        JTextField imageFile = new JTextField();
+        JTextField imageFile = new JTextField();                //todo entering URL
         imageFile.setBounds(70,50,150,30);
         createPanel.add(imageFile);
 
@@ -66,32 +70,38 @@ public class CreatePanel extends ControlPanelInterface {
 
                 try {
                     img = ImageIO.read(new File(imageFile.getText()));
+                    BillboardBeingMade.setPicData(BillboardBeingMade.ConvertImageToData(imageFilePath));
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-
-                ImageIcon icon = new ImageIcon(img);
-                JLabel pic = new JLabel();
-                pic.setIcon(icon);
-                pic.setBounds(300,0,previewSize.width,previewSize.height - 200);
-                previewPanel.add(pic);
+               // TODO change this to run the disp image data
+             // ImageIcon icon = new ImageIcon(img);
+             // // display image from data as icon   //TODO watch to make centre (screen width - width of pic /2????)
+             // JLabel pic = new JLabel();
+             // pic.setIcon(icon);
+             // pic.setBounds(300,0,previewSize.width,previewSize.height - 200);
+             // previewPanel.add(pic);
             }
         });
 
         JColorChooser colour = new JColorChooser();
         colour.setBounds(0,100,600,300);    // I think all this is wrong but it seems to work lol
         colour.setPreviewPanel(new JPanel());
-
-        createPanel.add(colour);
+        colour.getColor().toString();
+        createPanel.add(colour);    //output of color chooser
+        BillboardBeingMade.setBackColour( colour.getColor().toString());
 
         // Upper billboard text.
         String default_UpperText = "Click here to enter text...";
-        JTextArea upperText = new JTextArea(default_UpperText);
-        upperText.setOpaque(false);
-        upperText.setFont(new Font("Courier", Font.BOLD,40));
-        upperText.setBounds(0, 0, previewSize.width, 100);
-        upperText.setLineWrap(true);
-        previewPanel.add(upperText);
+        JTextArea upperTextPanel = new JTextArea(default_UpperText);
+        JLabel upperText = Billboard.CreateTextArea("message",default_UpperText);
+        upperTextPanel.setOpaque(false);
+        upperTextPanel.setFont(new Font("Courier", Font.BOLD,40));
+        upperTextPanel.setBounds(0, 0, screenWidth, 100);
+        upperTextPanel.setLineWrap(true);
+        createPanel.add(upperText);
         //String topText = upperText.getText();
 
         // This label will be placed at the top of the preview window to display the upper billboard text.
@@ -112,7 +122,9 @@ public class CreatePanel extends ControlPanelInterface {
 
         // Lower billboard text.
         String default_LowerText = "Text to be displayed at the bottom of the billboard...";
-        JTextArea lowerText = new JTextArea(default_LowerText);
+        JLabel lowerText = Billboard.CreateTextArea("info",default_LowerText);
+        BillboardBeingMade.setInfo(default_LowerText);
+        JTextArea lowerTextPannel = new JTextArea(default_LowerText);
         lowerText.setBounds(0, 515, 500, 100);
         createPanel.add(lowerText);
         //String bottomText = lowerText.getText();
@@ -143,10 +155,22 @@ public class CreatePanel extends ControlPanelInterface {
             @Override
             public void actionPerformed(ActionEvent e) {   // Can I have this auto update without having
                 Color newcolour = colour.getColor();       // to click preview each time a change is made?
-                previewPanel.setBackground(newcolour);     // Think it's wrong anyway lol
+                //previewPanel.setBackground(newcolour);     // Think it's wrong anyway lol
                 //label_upperText.setText(upperText.getText()); // Doesn't work...
                 //label_lowerText.setText(lowerText.getText());
                // previewPanel.add(pic);
+//                BillboardBeingMade.createFrame();
+//                try {
+//                    new DisplayImage(BillboardBeingMade.getPicData());
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+                BillboardBeingMade.getJFrame().add(upperText);
+                BillboardBeingMade.getJFrame().add(lowerText);
+
+
+//              BillboardBeingMade.SetVisible(true,BillboardBeingMade.getJPanel());
+//                createPanel.add(BillboardBeingMade.getJPanel());
             }
         });
 
@@ -165,7 +189,7 @@ public class CreatePanel extends ControlPanelInterface {
         b_Clear.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {            // Find a way to reset all parameters.
-                previewPanel.setBackground(Color.white);
+                //previewPanel.setBackground(Color.white);
                 imageFile.setText(null);
                 Name.setText(null);
                 upperText.setText(null);
