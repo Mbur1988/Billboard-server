@@ -1,13 +1,10 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
+
 import SerializableObjects.Billboard;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 
 public class CreatePanel extends ControlPanelInterface {
@@ -22,11 +19,11 @@ public class CreatePanel extends ControlPanelInterface {
         JLabel label_nameBoard = new JLabel("Set Billboard Name: ");
         label_nameBoard.setBounds(0,0,150,30);
         createPanel.add(label_nameBoard);
-        //createPanel.add(previewPanel);
+
 
         JTextField Name = new JTextField();
         Name.setBounds(120,0,150,30);
-       // String billboardName = Name.getText();                  // Billboard name for storage on server etc.
+        String billboardName = Name.getText();                  // Billboard name for storage on server etc.
         BillboardBeingMade.setName(Name.getText());
         createPanel.add(Name);
 
@@ -34,9 +31,29 @@ public class CreatePanel extends ControlPanelInterface {
         label_imageFile.setBounds(0, 50, 150, 30);
         createPanel.add(label_imageFile);
 
-        JTextField imageFile = new JTextField();                //todo entering URL
+        JTextField imageFile = new JTextField();
         imageFile.setBounds(70,50,150,30);
         createPanel.add(imageFile);
+        imageFile.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if ((imageFile.getText()).equals("Image URL:")) {
+                    imageFile.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                try {
+                    String URLToConvert = imageFile.getText();
+                    BillboardBeingMade.setPicURL(URLToConvert);
+                    byte[] temp = BillboardBeingMade.UrlToData(BillboardBeingMade.getPicUrl());
+                    BillboardBeingMade.setPicData(temp);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
 
         JLabel label_OR = new JLabel("OR");
         label_OR.setBounds(250, 50, 50, 30);
@@ -66,16 +83,9 @@ public class CreatePanel extends ControlPanelInterface {
                 } catch (Exception ioException) {
                     ioException.printStackTrace();
                 }
-
-
-             // ImageIcon icon = new ImageIcon(img);
-             // // display image from data as icon   //TODO watch to make centre (screen width - width of pic /2????)
-             // JLabel pic = new JLabel();
-             // pic.setIcon(icon);
-             // pic.setBounds(300,0,previewSize.width,previewSize.height - 200);
-             // previewPanel.add(pic);
             }
         });
+
         //colour chooser
         JColorChooser colour = new JColorChooser();
         colour.setBounds(0,100,600,300);    // I think all this is wrong but it seems to work lol
@@ -90,16 +100,26 @@ public class CreatePanel extends ControlPanelInterface {
         upperTextPanel.setLineWrap(true);
         createPanel.add(upperTextPanel);
         // Clear the hint text when the field is clicked.
-        String msgText = upperTextPanel.getText();
-        BillboardBeingMade.setMsg(msgText);
-        upperTextPanel.addMouseListener(new MouseAdapter(){
+
+
+        upperTextPanel.addFocusListener(new FocusListener() {
             @Override
-            public void mouseClicked(MouseEvent e){
+            public void focusGained(FocusEvent e) {
                 if ((upperTextPanel.getText()).equals(default_UpperText)) {
                     upperTextPanel.setText("");
                 }
             }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String msgText = upperTextPanel.getText();
+                BillboardBeingMade.setMsg(msgText);
+            }
         });
+
+
+
+
 
         // Lower billboard text.
         String default_LowerText = "Text to be displayed at the bottom of the billboard...";
@@ -108,16 +128,23 @@ public class CreatePanel extends ControlPanelInterface {
         lowerTextPannel.setBounds(0, 815, 500, 100);
         createPanel.add(lowerTextPannel);
         String bottomText = lowerTextPannel.getText();
-        BillboardBeingMade.setInfo(bottomText);
+        //BillboardBeingMade.setInfo(bottomText);
         // Clear the hint text when the field is clicked.
-        lowerTextPannel.addMouseListener(new MouseAdapter(){
+        lowerTextPannel.addFocusListener(new FocusListener() {
             @Override
-            public void mouseClicked(MouseEvent e){
+            public void focusGained(FocusEvent e) {
                 if ((lowerTextPannel.getText()).equals(default_LowerText)) {
                     lowerTextPannel.setText("");
                 }
             }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String msgText = lowerTextPannel.getText();
+                BillboardBeingMade.setInfo(msgText);
+            }
         });
+
 
         // Preview button.
         JButton b_Preview = new JButton("Preview");
@@ -130,14 +157,7 @@ public class CreatePanel extends ControlPanelInterface {
         b_Preview.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Color newcolour = colour.getColor();
-                String colourChosen = String.valueOf(newcolour.getRGB());
-
-                //previewPanel.setBackground(newcolour);
-                //label_upperText.setText(upperText.getText()); // Doesn't work...
-                //label_lowerText.setText(lowerText.getText());
-               // previewPanel.add(pic);
-
+                BillboardBeingMade.setBackColour(colour.getColor());
                 try {
                     BillboardBeingMade.showBillboard();
                 } catch (Exception ex) {
@@ -177,4 +197,6 @@ public class CreatePanel extends ControlPanelInterface {
         });
 
     }
+
+
 }

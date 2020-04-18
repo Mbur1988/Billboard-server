@@ -81,13 +81,14 @@ public class DisplayImage {
 
        // System.out.println("image created");
     }
+
     public static JLabel DisplayImageLabel(byte[] data) throws Exception {
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         BufferedImage bImage2 = ImageIO.read(bis);
         ImageIcon icon = new ImageIcon(bImage2);
-        JLabel lbl = new JLabel(icon);
-        lbl.setOpaque(true);
-        lbl.setBounds(200, 1200,500 , 500);//check Dimentions
+        JLabel lbl = new JLabel(icon,SwingConstants.CENTER);
+        lbl.setOpaque(false);
+        lbl.setBounds(0, 0,500 , 500);//check Dimentions
         lbl.setIcon(icon);
 //        lbl.setVisible(true);
         //lbl.setIcon(icon);

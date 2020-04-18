@@ -1,7 +1,5 @@
 package SerializableObjects;
 
-import Tools.DisplayImage;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
 
 public class Billboard implements Serializable {
     // Get the size of the screen.
@@ -31,14 +30,16 @@ public class Billboard implements Serializable {
 
     //setting a blank Billboard
     public Billboard(){
-       this.msg = null;
-       this.name = null;
-       this.info = null;
-       this.picURL = null;
-       this.picDATA = null;
-       this.msgColour = null;
-       this.backColour = null;
-       this.infoColour = null;
+        this.msg = null;
+        this.name = null;
+        this.info = null;
+        this.picURL = null;
+        this.picDATA = null;
+        this.msgColour = null;
+        this.backColour = null;
+        this.infoColour = null;
+        this.BillboardScreenPannel = null;
+        this.BillboardScreen = null;
        //this.BillboardScreen = createFrame();
        //this.BillboardScreenPannel = CreatePanel();
 
@@ -62,6 +63,8 @@ public class Billboard implements Serializable {
         this.msgColour = MsgColour;
         this.backColour = BackColour;
         this.infoColour = InfoColour;
+        BillboardScreenPannel = null;
+        BillboardScreen = null;
 
     }
     public static void main(String[] args) {
@@ -94,13 +97,13 @@ public class Billboard implements Serializable {
         return frame;
     }
     /**
-     * Creates a Panel as the back ground of the screen, TODO fix bounds
+     * Creates a Panel as the back ground of the screen,
      * @return returns a JPanel that is used primarily for the background of the Billboard.
      */
     public JPanel CreatePanel() {
         //Used to create the background of the Billboard
         JPanel BillboardScreen = new JPanel();
-        BillboardScreen.setBounds(0 ,0,(screenWidth) ,screenHeight ); //todo change to full screen
+        BillboardScreen.setBounds(0 ,0,(screenWidth) ,screenHeight );
         BillboardScreen.setBackground(Color.blue);
         BillboardScreen.setLayout(null);
         Dimension previewSize = BillboardScreen.getSize();  //debug help
@@ -113,7 +116,7 @@ public class Billboard implements Serializable {
      *
      * @param Name this can be message or info
      * @param message_input this is what will be displayed in the text field associated with the name
-     * @return returns a label to be added into the panel elsewhere (TODO tell where)
+     * @return returns a label to be added into the panel elsewhere
      * @exception. If name != message or info  or Message or Info
      */
     public static JLabel CreateTextArea(String Name, String message_input) throws Exception {//display as output change!!!!
@@ -137,6 +140,26 @@ public class Billboard implements Serializable {
         }
 
     }
+    public static JLabel CreateImageFilepath(String Filepath) throws Exception {//display as output change!!!!
+
+        BufferedImage img = ImageIO.read(new File(Filepath));
+        ImageIcon icon = new ImageIcon(img);
+        JLabel Image = new JLabel(icon);
+        Image.setBounds(0,0,screenWidth,500);
+
+
+        return Image;
+    }
+    public static JLabel CreateImageData(byte[] Data) throws Exception {
+        ByteArrayInputStream bis = new ByteArrayInputStream(Data);
+        BufferedImage img = ImageIO.read(bis);
+        ImageIcon icon = new ImageIcon(img);
+        JLabel Image = new JLabel(icon);
+        Image.setBounds(0,0,screenWidth,screenHeight);
+
+
+        return Image;
+    }
 
     public void showBillboard() throws Exception {
         BillboardScreen = createFrame();
@@ -153,28 +176,30 @@ public class Billboard implements Serializable {
         BillboardScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         if(picDATA != null) {
-            JLabel Image = DisplayImage.DisplayImageLabel(picDATA);
+            JLabel Image = CreateImageData(picDATA);
             Image.setVerticalAlignment(SwingConstants.CENTER);
             Image.setHorizontalAlignment(SwingConstants.CENTER);
-            BillboardScreenPannel.add(Image,BorderLayout.CENTER);
+            BillboardScreen.getContentPane().add(Image,BorderLayout.CENTER);
         }
         BillboardScreenPannel.repaint();
         BillboardScreenPannel.revalidate();
 //DELETE--------->
         JButton b3 = new JButton("CLOSE");
 
-        b3.setBounds(50, 375, 250, 50);
+        b3.setBounds(0, 0, 250, 50);
         BillboardScreenPannel.add(b3);
         b3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
                 System.exit(0);
-            }
+            }   // need to change to a keep changes button
         });
 //---------->DELETE
     }
 
     // - - - - - - - helpers bellow - - - - - - - - - //
+
+
     //  aux helper //
 
     /** WishhyWassyTheBillyBoard() is the cleaning function that is related to the clear button.
@@ -257,9 +282,7 @@ public class Billboard implements Serializable {
      * @param panel JPanel created elswhere
      * @return Bool true if visible false if not
      */
-    public boolean GetVisibility(JPanel panel) {
-        return panel.isVisible();
-    }
+    public boolean GetVisibility(JPanel panel) { return panel.isVisible();}
 
     //  setters  //
 
@@ -319,11 +342,7 @@ public class Billboard implements Serializable {
      * @param visibility bool true = visible, false = not
      * @param panel created panel elsewhere
      */
-    public void SetVisible(Boolean visibility,JPanel panel) {
-        panel.setVisible(visibility);
-    }
-
-
+    public void SetVisible(Boolean visibility,JPanel panel) {panel.setVisible(visibility);}
 
     //   converters    //
 
@@ -353,7 +372,6 @@ public class Billboard implements Serializable {
         String hex = String.format("#%02X%02X%02X", r, g, b);
         return hex;
     }
-   //Needs to be completed.
 
     /**
      * Converts a image from the file path to a byte array
@@ -382,8 +400,33 @@ public class Billboard implements Serializable {
         return image;
     }
 
+    /**
+     * Takes URL from the interwebs and converts to a Byte[] for use with display image.
+     * @param input URL in a string format
+     * @return byte[] of image.
+     * @throws Exception in case
+     */
 
+    public byte[] UrlToData(String input) throws Exception {
+        URL url = new URL(input);
+        BufferedImage image = ImageIO.read(url);
+        byte[] byteArray = ByteArrayHelper(image, "png");
+        return byteArray;
+    }
 
+    /**
+     * Helper for changing URL to data
+     * @param image Buffered image wanting conversion
+     * @param type jpg
+     * @return byte[] of image
+     * @throws IOException if file is not there.
+     */
+    private static byte[] ByteArrayHelper(BufferedImage image, String type) throws IOException {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
+            ImageIO.write(image, type, out);
+            return out.toByteArray();
+        }
+    }
 }
 
 

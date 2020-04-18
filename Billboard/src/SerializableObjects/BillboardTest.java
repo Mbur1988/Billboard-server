@@ -11,21 +11,26 @@ import java.awt.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-/**
- ******************* This is the test class for the Billboards**********
- * before each the tester will create a new billboard  using the constructor with...
- * (String msg, String info, String picURL, String picDATA, String MsgColour,String BackColour, String InfoColour)
- * Test 1 to 7 are to test if all fields have been filled - consider adding more for other constructors made ase we go. (uses underTestFull)
- * Test 8-21 are for testing if initialised as all null, inserting params then reading each field using their functions. (uses underTestEmpty)
- * Test 21 - **** is for converting to to correct type be it from JPG to base 64 String or V V, and converting hex to string or V V.
- * as this continues we will add functionality to display image etc
- */
+/*************************************************** This is the test class for the Billboards****************************************************************
+ *
+ *       before each the tester will create a new billboard  using the constructor with...
+ *       (String msg, String info, String picURL, String picDATA, String MsgColour,String BackColour, String InfoColour)
+ *       Test 1 to 8 are to test if all fields have been filled - consider adding more for other constructors made ase we go. (uses underTestFull)
+ *       Test 9-21 + 27-28 are for testing if initialised as all null, inserting params then reading each field using their functions. (uses underTestEmpty)
+ *       Test 22+23 have been deleted after changing colour sections from string imput to Color
+ *       24 + 25 is for converting to to correct type be it from JPG to base 64 String or V V, and converting hex to string or V V.
+ *       26 + 27 Tests the creating of a JPanel and a JFrame.
+ *       32 - 33 Tests making labels for the Mesage and Info
+ *       37 - 42 Tests displaying the Billboard and clearing the Billboard
+ *       43 tests Conversion of URL to byte[] and shows
+ *
+ *************************************************************************************************************************************************************/
 
 public class BillboardTest {
     Billboard underTestEmpty;
     Billboard underTestFull;
     byte[] testBytes = new byte[]{0, 1, 2};
-    int red, green, blue;
+    int blue;
     Color TestColor = new Color(blue);
 
     @BeforeEach
@@ -138,29 +143,6 @@ public class BillboardTest {
 //--------------------------------------------------------------------------------------------//
 //                                    Inserters                                               //
 //--------------------------------------------------------------------------------------------//
-
-
-    /**
-     * Test 27,
-     * Checks Name starts empty
-     */
-    @Test
-    public void EmptyNameCheck() {
-        //uses getMsg func
-        assertNull(underTestEmpty.getName());
-    }
-
-    /**
-     * Test 28,
-     * Checks if set msg funct is setting a new function over the OG
-     */
-    @Test
-    public void EmptyNameInsert() {
-        //uses setMsg funct
-        underTestEmpty.setName("Test 27");
-        assertEquals(underTestEmpty.getName(), "Test 27");
-    }
-
 
     /**
      * Test 9,
@@ -299,6 +281,27 @@ public class BillboardTest {
         underTestEmpty.setInfoColour(TestColor);
         assertEquals(underTestEmpty.getInfoColour(), TestColor);
     }
+    /**
+     * Test 27,
+     * Checks Name starts empty
+     */
+    @Test
+    public void EmptyNameCheck() {
+        //uses getMsg func
+        assertNull(underTestEmpty.getName());
+    }
+
+    /**
+     * Test 28,
+     * Checks if set msg funct is setting a new function over the OG
+     */
+    @Test
+    public void EmptyNameInsert() {
+        //uses setMsg funct
+        underTestEmpty.setName("Test 27");
+        assertEquals(underTestEmpty.getName(), "Test 27");
+    }
+
 
 //--------------------------------------------------------------------------------------------//
 //                                    Conversions                                             //
@@ -369,18 +372,12 @@ public class BillboardTest {
         // Test passes. Original == reconfigured.
         assertTrue(true);
     }
-    /*
-    //TODO list for 16/4/2020
-    make a pannel in Billboard DONE
-    Change display image to make a pannel rather then a frame DONE
-    create jlables for info and data DONE
-    work on color changing
-    */
-
-
+//--------------------------------------------------------------------------------------------//
+//                                    Creaters                                                //
+//--------------------------------------------------------------------------------------------//
     /**
      * Test 26,
-     * checks if CreateFrame Creates Panel in Billboard Class for labels and images     //todo fix
+     * checks if CreateFrame Creates Panel in Billboard Class for labels and images
      */
     @Test
     public void CreatePanel() {
@@ -391,48 +388,7 @@ public class BillboardTest {
     }
 
     /**
-     * Test 30,
-     * Sets is visible to false and check
-     */
-    @Test
-    public void Visibility() {
-        JPanel Test = new JPanel();
-        Test.setVisible(false);
-        assertFalse(Test.isVisible());
-
-    }
-
-    /**
-     * Test 32,
-     *      Tests making a JLable with msg in it.   TODO TEST IN APP
-     */
-//    @Test
-//    public void MsgLabel() throws Exception {
-//        underTestEmpty.createFrame();
-//        //Uses DisplayImage function CreateLabel()
-//        JLabel Test = Billboard.CreateTextArea("message","message input");
-//
-//        //underTestEmpty.SetVisible(true,underTestEmpty.getJPanel());
-//        underTestEmpty.getJFrame().add(Test);
-//        //check visually
-//        assertTrue(true);
-//    }
-//    /**
-//     * Test 33,
-//     *      Tests making a JTextArea with msg in it. TODO TEST IN APP
-//     */
-//    @Test
-//    public void infoLabel() throws Exception {
-//        underTestEmpty.createFrame();
-//        //Uses DisplayImage function CreateLabel()
-//        JLabel Test = Billboard.CreateTextArea("info","info input");
-//        //underTestEmpty.SetVisible(true,underTestEmpty.getJPanel());
-//        underTestEmpty.getJFrame().add(Test);
-//        //check visually
-//        assertTrue(true);
-//    }
-    /**
-     * Test 34,
+     * Test 27,
      *      createFrame for back of billboard maybe?
      */
     @Test
@@ -442,51 +398,41 @@ public class BillboardTest {
         assertTrue(true);
     }
     /**
-     * Test 35,
-     *      Uses the CreateTextArea function and adds it into the already tested JFrame creator function
-     *      CTA function works for info and msg and is centred.
+     * Test 32,
+     *      Tests making a JLable with msg in it.
      */
-//    @Test
-//    public void creatingTextArea() throws Exception {
-//        underTestEmpty.createFrame();
-//        underTestEmpty.CreatePanel();
-//        //underTestEmpty.getJPanel().setContentPane(BillboardScreenPannel);
-//        JFrame testframe = underTestEmpty.getJFrame();
-//        testframe.setContentPane(underTestEmpty.getJPanel());
-//        //Trying to change to JLabel.rater then JTextArea
-//        JLabel testText = underTestEmpty.CreateTextArea("message","message");
-//        JLabel testInfo = underTestEmpty.CreateTextArea("info","info");
-//        underTestEmpty.getJPanel().add(testText);
-//        underTestEmpty.getJPanel().add(testInfo);
-//        Thread.sleep(10000);
-//        //Visual check passed
-//        assertTrue(true);
-//    }
-//    /**
-//     * Test 36,
-//     *      testing adding both texts and image from DisplayImage to a Billboard
-//     */
-//    @Test
-//    public void BillboardAllLabels()throws Exception {
-//        underTestEmpty.createFrame();
-//        JLabel testText = underTestEmpty.CreateTextArea("message", "message");
-//        JLabel testInfo = underTestEmpty.CreateTextArea("info", "info");
-//
-//
-//        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
-//        JLabel Image = DisplayImage.DisplayImageLabel(underTestEmpty.getPicData());
-//        underTestEmpty.getJFrame().add(testText,BorderLayout.BEFORE_FIRST_LINE);
-//        underTestEmpty.getJFrame().add(Image,BorderLayout.CENTER);
-//        Image.setVerticalAlignment(SwingConstants.CENTER);
-//        Image.setHorizontalAlignment(SwingConstants.CENTER);
-//        underTestEmpty.getJFrame().add(testInfo,BorderLayout.PAGE_END);
-//        underTestEmpty.getJFrame().setVisible(true);
-//        underTestEmpty.getJFrame().revalidate();
-//
-//        Thread.sleep(3000);
-//        //Visual check PASSED
-//        assertTrue(true);
-//    }
+    @Test
+    public void MsgLabel() throws Exception {
+        JFrame testframe = underTestEmpty.createFrame();
+
+        JLabel Test = Billboard.CreateTextArea("message","message input");
+
+        //underTestEmpty.SetVisible(true,underTestEmpty.getJPanel());
+        testframe.getContentPane().add(Test);
+
+        //check visually PASSED
+        Thread.sleep(3000);
+        assertTrue(true);
+    }
+    /**
+     * Test 33,
+     *      Tests making a JTextArea with msg in it
+     */
+    @Test
+    public void infoLabel() throws Exception {
+        JFrame testframe = underTestEmpty.createFrame();
+        //Uses DisplayImage function CreateLabel()
+        JLabel Test = Billboard.CreateTextArea("info","info input");
+        //underTestEmpty.SetVisible(true,underTestEmpty.getJPanel());
+        testframe.getContentPane().add(Test);
+        //check visually
+        Thread.sleep(3000);
+        assertTrue(true);
+    }
+
+//--------------------------------------------------------------------------------------------//
+//                                    Displayer's                                             //
+//--------------------------------------------------------------------------------------------//
     /**
      * Test 37,
      *      make a Display Billboard function in Billboard class
@@ -534,41 +480,86 @@ public class BillboardTest {
         underTestEmpty.showBillboard();
 
 
-        //visual check
+        //visual check PASSED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Thread.sleep(3000);
-        assertTrue(false);
+        assertTrue(true);//!!!!!!!!!!!!
 
     }
-    /**
-     * Test 40,
-     *      After edditng the frame to have colour as above we have lost Picture display so we will test it here
-     */
-    @Test
-    public void DisplayImageTester() throws Exception {
-        JFrame TestFrame = underTestEmpty.createFrame();
-        byte[] Data = underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg");
-        JLabel testLab =  DisplayImage.DisplayImageLabel(Data);
-        //new DisplayImage("E:\\DND\\TEST.jpg");
-
-        Thread.sleep((2000));
-        TestFrame.getContentPane().add(testLab);
-        Thread.sleep((2000));
-
-    }
-
-
-
-    /**
-     * Test ,
-     *      change control panel to insert message into billboard
-     */
+//    /**               ----------FAILED UNEQUIVOCALLY SO FIXED------------
+//     * Test 40,
+//     *      After edditng the frame to have colour as above we have lost Picture display so we will test it here
+//     */
 //    @Test
-//    public void ButtonMsg(){
+//    public void DisplayImageTester() throws Exception {
+//        JFrame TestFrame = underTestEmpty.createFrame();
+//        byte[] Data = underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg");
+//        JLabel testLab =  DisplayImage.DisplayImageLabel(Data);
+//        //new DisplayImage("E:\\DND\\TEST.jpg");
 //
+//        Thread.sleep((2000));
+//        TestFrame.add(testLab);
 //
-//                ____
+//        //Visual test failing. reWriting function into Billboard
+//        assertTrue(false);
 //    }
 
+    /**
+     * Test 41,
+     *      Testing a display image function rewritten into Billboard to try to avoid bug to solve test 39
+     */
+    @Test
+    public void DisplayImageTester2() throws Exception {
+
+        JFrame testFrame = underTestEmpty.createFrame();
+        JPanel testPanel = underTestEmpty.CreatePanel();
+        testFrame.setContentPane(testPanel);
+        JLabel LabTest =  underTestEmpty.CreateImageFilepath("E:\\DND\\TEST.jpg");
+        testFrame.getContentPane().add(LabTest);
+        testFrame.repaint();
+
+        Thread.sleep((2000));
+        //Visual check Passed. Image is on the correct panel.
+        assertTrue(true);
+    }
+    /**
+     * Test 42,
+     *      Testing a display image function rewritten into Billboard to try to avoid bug to solve test 39
+     *      This time taking in data not filepath
+     */
+    @Test
+    public void DisplayImageTester3() throws Exception {
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
+        JFrame testFrame = underTestEmpty.createFrame();
+        JPanel testPanel = underTestEmpty.CreatePanel();
+        testFrame.setContentPane(testPanel);
+        JLabel LabTest =  underTestEmpty.CreateImageData(underTestEmpty.getPicData());
+        testFrame.getContentPane().add(LabTest);
+        testFrame.repaint();
+
+        Thread.sleep((2000));
+        //Visual check Passed. Image is on the correct panel.
+        assertTrue(true);
+    }
+    /**
+     * Test 43,
+     *      Converting URL to Image and to Data to be used
+     */
+    @Test
+    public void GettingAndSavingUrl() throws Exception {
+        byte[] testFromUrl = underTestEmpty.UrlToData("https://images2.minutemediacdn.com/image/upload/c_crop,h_1193,w_2121,x_0,y_64/f_auto,q_auto,w_1100/v1565279671/shape/mentalfloss/578211-gettyimages-542930526.jpg");
+        byte[] testFromSave = underTestEmpty.ConvertImageToData("E:\\DND\\TEST2Copy.jpg");
+        underTestEmpty.setPicData(testFromUrl);
+        JFrame testFrame = underTestEmpty.createFrame();
+        JPanel testPanel = underTestEmpty.CreatePanel();
+        testFrame.setContentPane(testPanel);
+        JLabel LabTest = underTestEmpty.CreateImageData(underTestEmpty.getPicData());
+        testFrame.getContentPane().add(LabTest);
+        testFrame.repaint();
+
+        Thread.sleep((2000));
+        //Visual check Passed. Image is on the correct panel.
+        assertTrue(true);
+    }
 
     //Test template
 //    /**
