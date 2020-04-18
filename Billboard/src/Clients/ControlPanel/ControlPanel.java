@@ -1,7 +1,6 @@
 package Clients.ControlPanel;
 
 import Clients.Client;
-import Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface;
 import Clients.ControlPanel.LoginInterface.LoginInterface;
 import SerializableObjects.User;
 import Tools.Log;
