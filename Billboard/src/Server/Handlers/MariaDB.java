@@ -203,7 +203,7 @@ public class MariaDB {
      * @throws SQLException
      */
     private void CheckForTables() throws SQLException {
-        if (!CheckForTable("users")) {
+        if (!CheckForTable("users") && users!=null) {
             users.CreateUsersTable();
         }
         else if (CheckForTable("users") && !users.CheckForUsers()) {
@@ -212,7 +212,7 @@ public class MariaDB {
         if (!CheckForTable("billboards")) {
             billboards.CreateBillboardsTable();
         }
-        if (!CheckForTable("scheduling")) {
+        if (!CheckForTable("scheduling")&& scheduling!=null) {
             scheduling.CreateSchedulingTable();
         }
     }

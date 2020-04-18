@@ -1,14 +1,11 @@
 package Tools;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 /*
  * To change this template, choose Tools | Templates
@@ -16,6 +13,9 @@ import javax.swing.JLabel;
  */
 
 public class DisplayImage {
+    static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    static int screenWidth = screenSize.width;
+    static int screenHeight = screenSize.height;
 //    /**
 //     * TODO DELETE ME--->
 //     * TEST RUNNER
@@ -45,7 +45,7 @@ public class DisplayImage {
             ImageIcon icon = new ImageIcon(img);
             JFrame frame = new JFrame();
             frame.setLayout(new FlowLayout());
-            frame.setBackground(Color.blue);
+            //frame.setBackground(Color.blue);
             frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             frame.setUndecorated(true);
 //            frame.setBounds(600,200,200,600);
@@ -81,6 +81,20 @@ public class DisplayImage {
 
        // System.out.println("image created");
     }
+
+    public static JLabel DisplayImageLabel(byte[] data) throws Exception {
+        ByteArrayInputStream bis = new ByteArrayInputStream(data);
+        BufferedImage bImage2 = ImageIO.read(bis);
+        ImageIcon icon = new ImageIcon(bImage2);
+        JLabel lbl = new JLabel(icon,SwingConstants.CENTER);
+        lbl.setOpaque(false);
+        lbl.setBounds(0, 0,500 , 500);//check Dimentions
+        lbl.setIcon(icon);
+//        lbl.setVisible(true);
+        //lbl.setIcon(icon);
+        return lbl;
+    }
+
 }
 
 
