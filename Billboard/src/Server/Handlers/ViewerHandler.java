@@ -6,6 +6,7 @@ import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Random;
+import static Server.Server.mariaDB;
 
 public class ViewerHandler extends ConnectionHandler {
 
@@ -24,12 +25,10 @@ public class ViewerHandler extends ConnectionHandler {
     public void run() {
         Log.Message(socket + " viewer handler started");
 
-        MariaDB db = new MariaDB();
-        db.Connect();
         byte[] b = new byte[200];
         new Random().nextBytes(b);
         try {
-           db.billboards.addBillboardName("Billboard 1", "Test 1", "test1info", "data", b, "red", "Blue", "black");
+           mariaDB.billboards.addBillboardName("Billboard 1", "Test 1", "test1info", "data", b, "red", "Blue", "black");
 
      /*       db.users.AddUser("test1", "password1", 1, hashCredentials.CreateSalt());
             db.users.AddUser("test2", "password2", 2, hashCredentials.CreateSalt());
@@ -42,7 +41,7 @@ public class ViewerHandler extends ConnectionHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        db.Disconnect();
+        mariaDB.Disconnect();
 
         // Create a new ObjectStreamHandler to send billboards to the viewer
         ObjectStreamer stream = new ObjectStreamer(socket);
