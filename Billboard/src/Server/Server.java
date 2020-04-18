@@ -2,7 +2,6 @@ package Server;
 
 import java.io.*;
 import java.net.*;
-
 import Server.Handlers.MariaDB;
 import Server.Trackers.Authaurised;
 import Tools.Log;
@@ -14,6 +13,7 @@ public class Server {
     // Declare port variable to be used by server
     private static int port;
     public static Authaurised authorised = new Authaurised();
+    public static MariaDB mariaDB = new MariaDB();
 
     /**
      * Sets the port number to be used by the server
@@ -41,7 +41,8 @@ public class Server {
     public static void main(String[] args) {
         Log.Message("Server.Server started");
         SetNetworkConfig();
-
+        mariaDB.Connect();
+        //mariaDB.Disconnect();
         try {
             // server is listening on configured port
             ServerSocket serverSocket = new ServerSocket(port);
@@ -72,6 +73,9 @@ public class Server {
         }
     }
 
+    /**
+     * Sets the network configuration using the server.props file
+     */
     private static void SetNetworkConfig() {
         try {
             // setting port
