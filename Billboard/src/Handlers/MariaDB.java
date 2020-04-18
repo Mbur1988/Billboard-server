@@ -440,8 +440,8 @@ public class MariaDB {
          * @throws SQLException
          */
         private void CreateBillboardsTable() throws SQLException {
-            statement.executeQuery("CREATE TABLE Billboards (billboardName VARCHAR(64) UNIQUE KEY, msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB(MAX), msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64) );");
-            Log.Confirmation("Table created: Billboards");
+            statement.executeQuery("CREATE TABLE billboards (billboardName VARCHAR(64), msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB(MAX), msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64) );");
+            Log.Confirmation("Table created: billboards");
         }
 
         /**
@@ -458,12 +458,12 @@ public class MariaDB {
          * @throws SQLException
          */
 
-        public boolean addBillboard(String bugger, String billboardName, String msg, String info, String picURL, byte[] picDATA, String msgColour, String backColour, String infoColour ) throws SQLException {
-            ResultSet result = statement.executeQuery("SELECT * FROM Billboards WHERE billboardName = '" + billboardName + "';");
+        public boolean addBillboardName(String billboardName, String msg, String info, String picURL, byte[] picDATA, String msgColour, String backColour, String infoColour ) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE billboardName = '" + billboardName + "';");
             if (result.next()) {
                 return false;
             } else {
-                statement.executeQuery("INSERT INTO Billboards VALUES ('" + billboardName + "', '" + msg + "', '" + info + "', '" + picURL + "', '" + picDATA + "', '" + msgColour + "', '" + backColour + "', '" + infoColour + "');");
+                statement.executeQuery("INSERT INTO billboards VALUES ('" + billboardName + "', '" + msg + "', '" + info + "', '" + picURL + "', '" + picDATA + "', '" + msgColour + "', '" + backColour + "', '" + infoColour + "');");
                 return true;
             }
         }
@@ -482,24 +482,24 @@ public class MariaDB {
          */
 
         public boolean EditBillboardName(String billboardName, String msg, String info, String picURL, byte[] picDATA, String msgColour, String backColour, String infoColour) throws SQLException {
-            ResultSet result = statement.executeQuery("SELECT * FROM Billboards WHERE billboardName = '" + billboardName + "';");
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE billboardName = '" + billboardName + "';");
             if (result.next()) {
                 if (billboardName != null)
-                    statement.executeQuery("UPDATE Billboards SET billboardName ='" + billboardName + "'WHERE billboardName='" + billboardName + "';'");
+                    statement.executeQuery("UPDATE billboards SET billboardName ='" + billboardName + "'WHERE billboardName='" + billboardName + "';'");
                 if (msg != null)
-                    statement.executeQuery("UPDATE Billboards SET msg ='" + msg + "' WHERE billboardName='" + billboardName + "';");
+                    statement.executeQuery("UPDATE billboards SET msg ='" + msg + "' WHERE billboardName='" + billboardName + "';");
                 if (info != null)
-                    statement.executeQuery("UPDATE Billboards SET info ='" + info + "' WHERE billboardName='" + billboardName + "';");
+                    statement.executeQuery("UPDATE billboards SET info ='" + info + "' WHERE billboardName='" + billboardName + "';");
                 if (picURL != null)
-                    statement.executeQuery("UPDATE Billboards SET picURL ='" + picURL + "' WHERE billboardName='" + billboardName + "';");
+                    statement.executeQuery("UPDATE billboards SET picURL ='" + picURL + "' WHERE billboardName='" + billboardName + "';");
                // if (picDATA != null)
                   //  statement.executeQuery("UPDATE Billboards SET picDATA ='" + picDATA + "' WHERE billboardName='" + billboardName + "';");
                 if (msgColour != null)
-                    statement.executeQuery("UPDATE Billboards SET msgColour ='" + msgColour + "' WHERE billboardName='" + billboardName + "';");
+                    statement.executeQuery("UPDATE billboards SET msgColour ='" + msgColour + "' WHERE billboardName='" + billboardName + "';");
                 if (backColour != null)
-                    statement.executeQuery("UPDATE Billboards SET backColour ='" + backColour + "' WHERE billboardName='" + billboardName + "';");
+                    statement.executeQuery("UPDATE billboards SET backColour ='" + backColour + "' WHERE billboardName='" + billboardName + "';");
                 if (infoColour != null)
-                    statement.executeQuery("UPDATE Billboards SET infoColour ='" + infoColour + "' WHERE billboardName='" + billboardName + "';");
+                    statement.executeQuery("UPDATE billboards SET infoColour ='" + infoColour + "' WHERE billboardName='" + billboardName + "';");
                 return true;
 
             } else {
@@ -507,7 +507,16 @@ public class MariaDB {
             }
         }
 
-        
+        public String Getmsg(String billboardName, String msg) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE billboardName = '" + billboardName + "';");
+            if (result.next()) {
+                return result.getString("msg");
+            } else {
+                return null;
+            }
+        }
+
+
 
 
     }

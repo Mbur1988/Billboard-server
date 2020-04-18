@@ -31,18 +31,19 @@ public class ViewerHandler extends ConnectionHandler {
 
         MariaDB db = new MariaDB();
         db.Connect();
-        byte[] b = new byte[2000];
+        byte[] b = new byte[200];
         new Random().nextBytes(b);
         try {
-            db.billboards.addBillboard("Billboard 1", "Test 1", "test1info", "data", b, "red", "Blue", "black");
-          /*  db.users.AddUser("test1", "password1", 1, hashCredentials.CreateSalt());
+           db.billboards.addBillboardName("Billboard 1", "Test 1", "test1info", "data", b, "red", "Blue", "black");
+
+     /*       db.users.AddUser("test1", "password1", 1, hashCredentials.CreateSalt());
             db.users.AddUser("test2", "password2", 2, hashCredentials.CreateSalt());
             db.users.AddUser("test3", "password3", 3, hashCredentials.CreateSalt());
             System.out.println(db.users.GetUserSalt("test1"));
             db.users.EditUser("test1", "password4", 4, hashCredentials.CreateSalt());
-            // db.DeleteUser("test2");
-            System.out.println(db.users.GetUserSalt("test1"));*/
-
+            //db.DeleteUser("test2");
+            System.out.println(db.users.GetUserSalt("test1"));
+*/
         } catch (SQLException e) {
             e.printStackTrace();
         }
