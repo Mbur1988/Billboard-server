@@ -13,8 +13,13 @@ public class HashCredentials {
      * @return Hashed salt and password as string
      * @throws NoSuchAlgorithmException
      */
-    public static String Hash(String userPassword, byte[] salt) throws NoSuchAlgorithmException {
-        MessageDigest hash = MessageDigest.getInstance("SHA-256");
+    public static String Hash(String userPassword, byte[] salt) {
+        MessageDigest hash = null;
+        try {
+            hash = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         hash.reset();
         if (salt != null) {
             hash.update(salt);
@@ -29,7 +34,7 @@ public class HashCredentials {
      * @return Hashed salt and password as string
      * @throws NoSuchAlgorithmException
      */
-    public static String Hash(String userPassword) throws NoSuchAlgorithmException {
+    public static String Hash(String userPassword) {
         return HashCredentials.Hash(userPassword, null);
     }
 

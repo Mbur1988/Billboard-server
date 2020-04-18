@@ -39,6 +39,13 @@ class HashCredentialsTest {
     }
 
     @Test
+    void testHash6() throws NoSuchAlgorithmException {
+        byte[] salt = HashCredentials.CreateSalt();
+        String password = Hash(userPassword);
+        assertEquals(Hash(password, salt), Hash(Hash(userPassword), salt));
+    }
+
+    @Test
     void createSalt1() {
         byte[] salt = HashCredentials.CreateSalt();
         assertEquals(salt instanceof byte[], true);
