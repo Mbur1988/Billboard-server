@@ -485,7 +485,7 @@ public class MariaDB {
          * @throws SQLException
          */
         private void CreateBillboardsTable() throws SQLException {
-            statement.executeQuery("CREATE TABLE billboards (name VARCHAR(64), msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB(MAX), msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64) );");
+            statement.executeUpdate("CREATE TABLE billboards (name VARCHAR(64) UNIQUE KEY, msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB, msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64));");
             Log.Confirmation("Table created: billboards");
             CreateDefaultBillboard();
         }
