@@ -209,8 +209,12 @@ public class MariaDB {
         else if (CheckForTable("users") && !users.CheckForUsers()) {
             users.CreateDefaultUser();
         }
-        if (!CheckForTable("billboards")) {
+        if (!CheckForTable("billboards") && billboards!=null) {
             billboards.CreateBillboardsTable();
+        }
+        else if (CheckForTable("billboard") && !billboards.checkForBillboard())
+        {
+            billboards.CreateDefaultBillboard();
         }
         if (!CheckForTable("scheduling")&& scheduling!=null) {
             scheduling.CreateSchedulingTable();
@@ -481,80 +485,57 @@ public class MariaDB {
          * @throws SQLException
          */
         private void CreateBillboardsTable() throws SQLException {
-            statement.executeQuery("CREATE TABLE billboards (billboardName VARCHAR(64), msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB(MAX), msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64) );");
+            statement.executeQuery("CREATE TABLE billboards (name VARCHAR(64), msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB(MAX), msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64) );");
             Log.Confirmation("Table created: billboards");
+            CreateDefaultBillboard();
         }
 
         /**
-         * Adds a Billboard to the Billboard table as long as it does not already exist
-         * @param billboardName The name of the billboard to be stored
-         * @param msg the billboard message of the entry as String
-         * @param info billboard information of the entry as String
-         * @param picURL picture URL of the entry as a String
-         * @param picDATA picture data of the entry as a Byte
-         * @param msgColour Colour of the message of the entry as a String
-         * @param backColour Colour of the background of the entry as a String
-         * @param infoColour information colour of the entry as a String
-         * @return true if the entry is successful and false if an entry already exists with the same billboard name
-         * @throws SQLException
-         */
-
-        public boolean addBillboardName(String billboardName, String msg, String info, String picURL, byte[] picDATA, String msgColour, String backColour, String infoColour ) throws SQLException {
-            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE billboardName = '" + billboardName + "';");
-            if (result.next()) {
-                return false;
-            } else {
-                statement.executeQuery("INSERT INTO billboards VALUES ('" + billboardName + "', '" + msg + "', '" + info + "', '" + picURL + "', '" + picDATA + "', '" + msgColour + "', '" + backColour + "', '" + infoColour + "');");
-                return true;
-            }
-        }
-
-        /**
-         * Edits existing user fields; billboardName, msg, info, picURL, msgColour, backColour, infoColour
+         * Creates a test board in the billboard table
          *
-         * @param billboardName to edit by user
-         * @param msg to edit by user
-         * @param info to edit by user
-         * @param picURL to edit by user
-         * @param backColour to edit by user
-         * @return infoColour to edit by user
-         * @return boolean value true if operation was successful else false
          * @throws SQLException
          */
 
-        public boolean EditBillboardName(String billboardName, String msg, String info, String picURL, byte[] picDATA, String msgColour, String backColour, String infoColour) throws SQLException {
-            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE billboardName = '" + billboardName + "';");
-            if (result.next()) {
-                if (billboardName != null)
-                    statement.executeQuery("UPDATE billboards SET billboardName ='" + billboardName + "'WHERE billboardName='" + billboardName + "';'");
-                if (msg != null)
-                    statement.executeQuery("UPDATE billboards SET msg ='" + msg + "' WHERE billboardName='" + billboardName + "';");
-                if (info != null)
-                    statement.executeQuery("UPDATE billboards SET info ='" + info + "' WHERE billboardName='" + billboardName + "';");
-                if (picURL != null)
-                    statement.executeQuery("UPDATE billboards SET picURL ='" + picURL + "' WHERE billboardName='" + billboardName + "';");
-               // if (picDATA != null)
-                  //  statement.executeQuery("UPDATE Billboards SET picDATA ='" + picDATA + "' WHERE billboardName='" + billboardName + "';");
-                if (msgColour != null)
-                    statement.executeQuery("UPDATE billboards SET msgColour ='" + msgColour + "' WHERE billboardName='" + billboardName + "';");
-                if (backColour != null)
-                    statement.executeQuery("UPDATE billboards SET backColour ='" + backColour + "' WHERE billboardName='" + billboardName + "';");
-                if (infoColour != null)
-                    statement.executeQuery("UPDATE billboards SET infoColour ='" + infoColour + "' WHERE billboardName='" + billboardName + "';");
-                return true;
+        private void CreateDefaultBillboard() throws SQLException {
+            String name = "testBoard";
+            String msg = "database test";
+            String info = "admin test";
+            String picURL = "test pic";
+            byte[] picData = new byte[200];
+            String msgColour = "Red";
+            String backColour = "Green";
+            String infoColour = "Blue";
+            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            pstmt.setString(1, name);
+            pstmt.setString(2, msg);
+            pstmt.setString(3, info);
+            pstmt.setString(4, picURL);
+            pstmt.setBytes(5, picData);
+            pstmt.setString(6, msgColour);
+            pstmt.setString(7, backColour);
+            pstmt.setString(8, infoColour);
+            pstmt.executeUpdate();
+            Log.Confirmation("Billboard Created: Test Board");
+        }
 
-            } else {
+        private boolean checkForBillboard(String name) throws SQLException {
+            ResultSet result;
+            if (name == null) {
+                result = statement.executeQuery("SELECT * FROM billboards;");
+            }
+            else {
+                result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            }
+            if (result.next()) {
+                return true;
+            }
+            else {
                 return false;
             }
         }
 
-        public String Getmsg(String billboardName, String msg) throws SQLException {
-            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE billboardName = '" + billboardName + "';");
-            if (result.next()) {
-                return result.getString("msg");
-            } else {
-                return null;
-            }
+        private boolean checkForBillboard() throws SQLException {
+            return checkForBillboard(null);
         }
 
 

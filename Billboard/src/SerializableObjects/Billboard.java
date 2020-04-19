@@ -46,7 +46,7 @@ public class Billboard implements Serializable {
     }
     /**
      *
-     * @param billboardName The name of the billboard for database control
+     * @param name The name of the billboard for database control
      * @param msg The message to be displayed at the top
      * @param info The message to be displayed at the bottom
      * @param picURL the URL to the pic to be displayed. (incompatible to picDATA)
@@ -224,7 +224,7 @@ public class Billboard implements Serializable {
      * @return String msg
      */
 
-    public String getBillboardName() {return billboardName;}
+    public String getBillboardName() {return name;}
     /**
      * Helper to get the billboard name stored
      * @return String info
@@ -299,7 +299,7 @@ public class Billboard implements Serializable {
      * @param name
      */
 
-    public void setName(String name) {this.billboardName = name;}
+    public void setName(String name) {this.name = name;}
 
     /**
      * sets message
@@ -307,11 +307,6 @@ public class Billboard implements Serializable {
      */
     public void setMsg(String message) {this.msg = message;}
 
-    /**
-     * Sets name, useful for storage
-     * @param name String of Billboard name
-     */
-    public void setName(String name) {this.name = name;}
     /**
      * sets info
      * @param info String Informaiton to be displayed
