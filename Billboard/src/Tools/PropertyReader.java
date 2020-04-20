@@ -26,6 +26,7 @@ public class PropertyReader {
      */
     public static String GetProperty(String file, String property) throws IOException {
         Properties prop = new Properties();
+
         FileInputStream ip= new FileInputStream(ProjectPath.RootString() + "\\Resources\\" + file + ".props");
         prop.load(ip);
         return prop.getProperty(property);

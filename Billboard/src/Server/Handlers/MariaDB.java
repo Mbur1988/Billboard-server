@@ -203,16 +203,20 @@ public class MariaDB {
      * @throws SQLException
      */
     private void CheckForTables() throws SQLException {
-        if (!CheckForTable("users")) {
+        if (!CheckForTable("users") && users!=null) {
             users.CreateUsersTable();
         }
         else if (CheckForTable("users") && !users.CheckForUsers()) {
             users.CreateDefaultUser();
         }
-        if (!CheckForTable("billboards")) {
+        if (!CheckForTable("billboards") && billboards!=null) {
             billboards.CreateBillboardsTable();
         }
-        if (!CheckForTable("scheduling")) {
+        else if (CheckForTable("billboard") && !billboards.checkForBillboard())
+        {
+            billboards.CreateDefaultBillboard();
+        }
+        if (!CheckForTable("scheduling")&& scheduling!=null) {
             scheduling.CreateSchedulingTable();
         }
     }
@@ -481,9 +485,62 @@ public class MariaDB {
          * @throws SQLException
          */
         private void CreateBillboardsTable() throws SQLException {
-            statement.executeQuery("CREATE TABLE billboards (name VARCHAR(64) UNIQUE KEY);");
+            statement.executeUpdate("CREATE TABLE billboards (name VARCHAR(64) UNIQUE KEY, msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB, msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64));");
             Log.Confirmation("Table created: billboards");
+            CreateDefaultBillboard();
         }
+
+        /**
+         * Creates a test board in the billboard table
+         *
+         * @throws SQLException
+         */
+
+        private void CreateDefaultBillboard() throws SQLException {
+            String name = "testBoard";
+            String msg = "database test";
+            String info = "admin test";
+            String picURL = "test pic";
+            byte[] picData = new byte[200];
+            String msgColour = "Red";
+            String backColour = "Green";
+            String infoColour = "Blue";
+            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            pstmt.setString(1, name);
+            pstmt.setString(2, msg);
+            pstmt.setString(3, info);
+            pstmt.setString(4, picURL);
+            pstmt.setBytes(5, picData);
+            pstmt.setString(6, msgColour);
+            pstmt.setString(7, backColour);
+            pstmt.setString(8, infoColour);
+            pstmt.executeUpdate();
+            Log.Confirmation("Billboard Created: Test Board");
+        }
+
+        private boolean checkForBillboard(String name) throws SQLException {
+            ResultSet result;
+            if (name == null) {
+                result = statement.executeQuery("SELECT * FROM billboards;");
+            }
+            else {
+                result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            }
+            if (result.next()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        private boolean checkForBillboard() throws SQLException {
+            return checkForBillboard(null);
+        }
+
+
+
+
     }
 
     public class Scheduling {
