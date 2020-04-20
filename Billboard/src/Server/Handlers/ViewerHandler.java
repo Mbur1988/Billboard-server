@@ -4,6 +4,9 @@ import Tools.Log;
 import Tools.ObjectStreamer;
 import java.io.*;
 import java.net.Socket;
+import java.sql.SQLException;
+import java.util.Random;
+import static Server.Server.mariaDB;
 
 public class ViewerHandler extends ConnectionHandler {
 
@@ -21,6 +24,8 @@ public class ViewerHandler extends ConnectionHandler {
     @Override
     public void run() {
         Log.Message(socket + " viewer handler started");
+
+
 
         // Create a new ObjectStreamHandler to send billboards to the viewer
         ObjectStreamer stream = new ObjectStreamer(socket);
