@@ -1,6 +1,5 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
-
 import SerializableObjects.Billboard;
 
 import javax.swing.*;
@@ -14,12 +13,10 @@ public class CreatePanel extends ControlPanelInterface {
         createPanel.setLayout(null);
         Billboard BillboardBeingMade = new Billboard();
 
-
         // Create new Billboard Panel:
         JLabel label_nameBoard = new JLabel("Set Billboard Name: ");
         label_nameBoard.setBounds(0,0,150,30);
         createPanel.add(label_nameBoard);
-
 
         JTextField Name = new JTextField();
         Name.setBounds(120,0,150,30);
@@ -101,7 +98,6 @@ public class CreatePanel extends ControlPanelInterface {
         createPanel.add(upperTextPanel);
         // Clear the hint text when the field is clicked.
 
-
         upperTextPanel.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -116,10 +112,6 @@ public class CreatePanel extends ControlPanelInterface {
                 BillboardBeingMade.setMsg(msgText);
             }
         });
-
-
-
-
 
         // Lower billboard text.
         String default_LowerText = "Text to be displayed at the bottom of the billboard...";
@@ -145,14 +137,11 @@ public class CreatePanel extends ControlPanelInterface {
             }
         });
 
-
         // Preview button.
         JButton b_Preview = new JButton("Preview");
 
         b_Preview.setBounds((0) ,  screenHeight - 60, screenWidth/2, 30);
         createPanel.add(b_Preview);
-
-
 
         b_Preview.addActionListener(new ActionListener() {
             @Override
@@ -185,18 +174,6 @@ public class CreatePanel extends ControlPanelInterface {
             }
         });
 
-        JButton b_Exit = new JButton("Exit"); // Exit button.
-        b_Exit.setBounds(screenWidth - 105, screenHeight - 60, 100, 30);
-        createPanel.add(b_Exit);
-
-        b_Exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {            // Close the screen on exit.
-                controlPanelScreen.dispose();
-            }
-        });
-
     }
-
 
 }
