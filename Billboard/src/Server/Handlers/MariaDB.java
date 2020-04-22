@@ -174,6 +174,7 @@ public class MariaDB {
             connection = DriverManager.getConnection(url + "/" + schema, username, password);
             statement = connection.createStatement();
             CheckForTables();
+            //deleteTest();
             Log.Confirmation("Database connection established");
         } catch (ClassNotFoundException | SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             Log.Error("Database connection failed due to:\n" + e);
@@ -219,7 +220,12 @@ public class MariaDB {
         if (!CheckForTable("scheduling")&& scheduling!=null) {
             scheduling.CreateSchedulingTable();
         }
+
     }
+
+    /*private void deleteTest() throws SQLException{
+        billboards.deleteBillboard();
+    }*/
 
     /**
      * Checks whether the specified table exists within the database
@@ -538,6 +544,18 @@ public class MariaDB {
             return checkForBillboard(null);
         }
 
+        public void deleteBillboard(String name) throws SQLException {
+            String deleteBoard = "DELETE FROM billboards WHERE name = ?";
+
+            PreparedStatement executeDelete = connection.prepareStatement(deleteBoard);
+            executeDelete.setString(1, name);
+
+            int rowsDeleted = executeDelete.executeUpdate();
+            if (rowsDeleted > 0) {
+                Log.Confirmation("Billboard Deleted: Test board");
+            }
+
+        }
 
 
 

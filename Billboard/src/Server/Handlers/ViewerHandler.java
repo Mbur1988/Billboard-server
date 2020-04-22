@@ -27,6 +27,7 @@ public class ViewerHandler extends ConnectionHandler {
 
 
 
+
         // Create a new ObjectStreamHandler to send billboards to the viewer
         ObjectStreamer stream = new ObjectStreamer(socket);
 
