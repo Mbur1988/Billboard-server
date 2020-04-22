@@ -14,18 +14,6 @@ public class EditUsersPanel extends ControlPanelInterface {
         label_editUser.setBounds(0,0,300,300);
         editUserPanel.add(label_editUser);
 
-        JButton b_Exit = new JButton("Exit"); // Exit button.
-        b_Exit.setBounds(screenWidth - 105, screenHeight - 60, 100, 30);
-        editUserPanel.add(b_Exit);
-
-        b_Exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controlPanelScreen.dispose();
-            }
-        });
-
-
     }
 
 }

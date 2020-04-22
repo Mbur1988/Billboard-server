@@ -49,16 +49,6 @@ public class ListPanel extends ControlPanelInterface {
         b_Delete.setBounds(0,420, 300,30);
         listPanel.add(b_Delete);
 
-        JButton b_Exit = new JButton("Exit"); // Exit button.
-        b_Exit.setBounds(screenWidth - 105, screenHeight - 60, 100, 30);
-        listPanel.add(b_Exit);
-
-        b_Exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controlPanelScreen.dispose();
-            }
-        });
 
     }
 

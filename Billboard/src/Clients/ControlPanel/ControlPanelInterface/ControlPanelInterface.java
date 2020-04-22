@@ -1,5 +1,7 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
+import Clients.ControlPanel.ControlPanelTools.Tools;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -7,17 +9,17 @@ import java.io.IOException;
 
 public class ControlPanelInterface {
 
-    static JFrame controlPanelScreen = new JFrame();
-    static JPanel createPanel = new JPanel();
-    static JPanel listPanel = new JPanel();
-    static JPanel schedulePanel = new JPanel();
-    static JPanel passwordPanel = new JPanel();
-    static JPanel editUserPanel = new JPanel();
+    public static JFrame controlPanelScreen = new JFrame();
+    public static JPanel createPanel = new JPanel();
+    public static JPanel listPanel = new JPanel();
+    public static JPanel schedulePanel = new JPanel();
+    public static JPanel passwordPanel = new JPanel();
+    public static JPanel editUserPanel = new JPanel();
 
     // Get the size of the screen.
     static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    static int screenWidth = screenSize.width;
-    static int screenHeight = screenSize.height;
+    public static int screenWidth = screenSize.width;
+    public static int screenHeight = screenSize.height;
 
     public static void controlPanelScreen() {
 
@@ -53,6 +55,8 @@ public class ControlPanelInterface {
         SchedulePanel.schedulePanelScreen();
         ChangePWPanel.changePWScreen();
         EditUsersPanel.editUserScreen();
+
+        Tools.addExitButton(screenWidth - 105, screenHeight - 60, 100, 30);
 
         controlPanelScreen.getContentPane().add(tabs);
         controlPanelScreen.setLayout(null);
