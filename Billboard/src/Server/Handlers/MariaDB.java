@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import static java.lang.System.exit;
+import static java.lang.System.out;
 
 public class MariaDB {
 
@@ -174,6 +175,7 @@ public class MariaDB {
             connection = DriverManager.getConnection(url + "/" + schema, username, password);
             statement = connection.createStatement();
             CheckForTables();
+            //deleteTest();
             Log.Confirmation("Database connection established");
         } catch (ClassNotFoundException | SQLException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             Log.Error("Database connection failed due to:\n" + e);
@@ -219,7 +221,12 @@ public class MariaDB {
         if (!CheckForTable("scheduling")&& scheduling!=null) {
             scheduling.CreateSchedulingTable();
         }
+
     }
+
+    /*private void deleteTest() throws SQLException{
+        billboards.deleteBillboard();
+    }*/
 
     /**
      * Checks whether the specified table exists within the database
@@ -488,6 +495,7 @@ public class MariaDB {
             statement.executeUpdate("CREATE TABLE billboards (name VARCHAR(64) UNIQUE KEY, msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB, msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64));");
             Log.Confirmation("Table created: billboards");
             CreateDefaultBillboard();
+            getBillboard();
         }
 
         /**
@@ -518,6 +526,29 @@ public class MariaDB {
             Log.Confirmation("Billboard Created: Test Board");
         }
 
+        public void addBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour ) throws SQLException {
+            String addBoard = ("INSERT INTO billboards (name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+            PreparedStatement executeAdd = connection.prepareStatement(addBoard);
+
+            executeAdd.setString(1, name);
+            executeAdd.setString(2, msg);
+            executeAdd.setString(3, info);
+            executeAdd.setString(4, picURL);
+            executeAdd.setBytes(5, picData);
+            executeAdd.setString(6, msgColour);
+            executeAdd.setString(7, backColour);
+            executeAdd.setString(8, infoColour);
+
+            int rowsAdded = executeAdd.executeUpdate();
+            if (rowsAdded > 0) {
+                Log.Confirmation("Billboard added to Database");
+            }
+
+
+
+        }
+
         private boolean checkForBillboard(String name) throws SQLException {
             ResultSet result;
             if (name == null) {
@@ -538,7 +569,40 @@ public class MariaDB {
             return checkForBillboard(null);
         }
 
+        public void deleteBillboard(String name) throws SQLException {
+            String deleteBoard = "DELETE FROM billboards WHERE name = ?";
 
+            PreparedStatement executeDelete = connection.prepareStatement(deleteBoard);
+            executeDelete.setString(1, name);
+
+            int rowsDeleted = executeDelete.executeUpdate();
+            if (rowsDeleted > 0) {
+                Log.Confirmation("Billboard Deleted: Test board");
+            }
+
+        }
+
+        public void getBillboard() throws SQLException {
+            String retrieve = "SELECT * FROM billboards";
+            Statement query = connection.createStatement();
+            ResultSet result = statement.executeQuery(retrieve);
+
+            int count = 0;
+
+            while (result.next())
+            {
+                String name = result.getString("name");
+                String msg = result.getString("msg");
+                String info = result.getString("info");
+                String picURL = result.getString("picURL");
+                String msgColour = result.getString("msgColour");
+                String backColour = result.getString("backColour");
+                String infoColour = result.getString("infoColour");
+
+                String output = "Billboard #%d: %s - %s - %s - %s - %s - %s - %s";
+                System.out.println(String.format(output, ++count, name, msg, info, picURL, msgColour, backColour, infoColour));
+            }
+        }
 
 
     }

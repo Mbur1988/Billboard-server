@@ -26,6 +26,7 @@ public class ViewerHandler extends ConnectionHandler {
         Log.Message(socket + " viewer handler started");
 
 
+        
 
         // Create a new ObjectStreamHandler to send billboards to the viewer
         ObjectStreamer stream = new ObjectStreamer(socket);
