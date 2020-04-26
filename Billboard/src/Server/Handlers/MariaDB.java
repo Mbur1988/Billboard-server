@@ -524,6 +524,29 @@ public class MariaDB {
             Log.Confirmation("Billboard Created: Test Board");
         }
 
+        public void addBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour ) throws SQLException {
+            String addBoard = ("INSERT INTO billboards (name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+            PreparedStatement executeAdd = connection.prepareStatement(addBoard);
+
+            executeAdd.setString(1, name);
+            executeAdd.setString(2, msg);
+            executeAdd.setString(3, info);
+            executeAdd.setString(4, picURL);
+            executeAdd.setBytes(5, picData);
+            executeAdd.setString(6, msgColour);
+            executeAdd.setString(7, backColour);
+            executeAdd.setString(8, backColour);
+
+            int rowsAdded = executeAdd.executeUpdate();
+            if (rowsAdded > 0) {
+                Log.Confirmation("Billboard added to Database");
+            }
+
+
+
+        }
+
         private boolean checkForBillboard(String name) throws SQLException {
             ResultSet result;
             if (name == null) {
