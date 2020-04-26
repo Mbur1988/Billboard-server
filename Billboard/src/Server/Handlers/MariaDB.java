@@ -495,6 +495,7 @@ public class MariaDB {
             statement.executeUpdate("CREATE TABLE billboards (name VARCHAR(64) UNIQUE KEY, msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB, msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64));");
             Log.Confirmation("Table created: billboards");
             CreateDefaultBillboard();
+            getBillboard();
         }
 
         /**
@@ -599,7 +600,7 @@ public class MariaDB {
                 String infoColour = result.getString("infoColour");
 
                 String output = "Billboard #%d: %s - %s - %s - %s - %s - %s - %s";
-                System.out.println(String.format(output, ++ count, name, msg, info, picURL, msgColour, backColour, infoColour));
+                System.out.println(String.format(output, ++count, name, msg, info, picURL, msgColour, backColour, infoColour));
             }
         }
 
