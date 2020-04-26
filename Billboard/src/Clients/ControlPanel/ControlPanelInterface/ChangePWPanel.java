@@ -1,8 +1,9 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
+import Clients.ControlPanel.ControlPanelTools.Tools;
+
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
 
 public class ChangePWPanel extends ControlPanelInterface {
 
@@ -10,20 +11,12 @@ public class ChangePWPanel extends ControlPanelInterface {
 
         passwordPanel.setLayout(null);
 
-        JLabel label_changePW = new JLabel("Don't forget to change your password every 12 years!!!");
-        label_changePW.setBounds(0,0,500,300);
-        passwordPanel.add(label_changePW);
+//        JLabel label_changePW = new JLabel("Don't forget to change your password every 12 years!!!");
+//        label_changePW.setBounds(0,0,500,300);
+//        passwordPanel.add(label_changePW);
 
-        JButton b_Exit = new JButton("Exit"); // Exit button.
-        b_Exit.setBounds(screenWidth - 105, screenHeight - 60, 100, 30);
-        passwordPanel.add(b_Exit);
-
-        b_Exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controlPanelScreen.dispose();
-            }
-        });
+        Tools.addLabel_panel(ControlPanelInterface.passwordPanel, "lbl_pw", "Change pw", 0, 0,
+                500, 300, "Courier", 1, 20, 2, 0);
 
     }
 
