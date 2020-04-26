@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import static java.lang.System.exit;
+import static java.lang.System.out;
 
 public class MariaDB {
 
@@ -536,7 +537,7 @@ public class MariaDB {
             executeAdd.setBytes(5, picData);
             executeAdd.setString(6, msgColour);
             executeAdd.setString(7, backColour);
-            executeAdd.setString(8, backColour);
+            executeAdd.setString(8, infoColour);
 
             int rowsAdded = executeAdd.executeUpdate();
             if (rowsAdded > 0) {
@@ -580,6 +581,27 @@ public class MariaDB {
 
         }
 
+        public void getBillboard() throws SQLException {
+            String retrieve = "SELECT * FROM billboards";
+            Statement query = connection.createStatement();
+            ResultSet result = statement.executeQuery(retrieve);
+
+            int count = 0;
+
+            while (result.next())
+            {
+                String name = result.getString("name");
+                String msg = result.getString("msg");
+                String info = result.getString("info");
+                String picURL = result.getString("picURL");
+                String msgColour = result.getString("msgColour");
+                String backColour = result.getString("backColour");
+                String infoColour = result.getString("infoColour");
+
+                String output = "Billboard #%d: %s - %s - %s - %s - %s - %s - %s";
+                System.out.println(String.format(output, ++ count, name, msg, info, picURL, msgColour, backColour, infoColour));
+            }
+        }
 
 
     }
