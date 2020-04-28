@@ -2,6 +2,14 @@ package Server.Handlers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
+import Tools.HashCredentials;
+import Tools.Log;
+import Tools.PropertyReader;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.*;
+import static java.lang.System.exit;
+import static java.lang.System.out;
 /*************************************************** This is the test class for the MariaDB****************************************************************
  *
  *
@@ -28,7 +36,7 @@ public class MariaDBTest {
      */
     @Test
     public void AddTester() throws SQLException {
-        undertest.Billboards.addBillboard("name", "msg", "info", "picURL", testBytes, "msgColour", "backColour", "infoColour"){
+        MariaDB.Billboards.addBillboard("name", "msg", "info", "picURL", testBytes, "msgColour", "backColour", "infoColour");{
         }
     }
 }

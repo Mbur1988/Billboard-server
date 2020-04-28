@@ -504,7 +504,7 @@ public class MariaDB {
          * @throws SQLException
          */
 
-        private void CreateDefaultBillboard() throws SQLException {
+        public void CreateDefaultBillboard() throws SQLException {
             String name = "testBoard";
             String msg = "database test";
             String info = "admin test";
@@ -526,7 +526,7 @@ public class MariaDB {
             Log.Confirmation("Billboard Created: Test Board");
         }
 
-        public void addBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour ) throws SQLException {
+        public void addBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
             String addBoard = ("INSERT INTO billboards (name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
             PreparedStatement executeAdd = connection.prepareStatement(addBoard);
