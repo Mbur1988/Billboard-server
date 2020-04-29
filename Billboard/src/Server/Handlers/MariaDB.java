@@ -487,7 +487,7 @@ public class MariaDB {
     public class Billboards {
 
         /**
-         * Creates a new billboards table
+         * Creates a new billboards table "billboards"
          *
          * @throws SQLException
          */
@@ -499,8 +499,17 @@ public class MariaDB {
         }
 
         /**
-         * Creates a test board in the billboard table
+         * Adds a default test billboard to the billboard table.
          *
+         * name the name of the billboard being added
+         * msg  msg of the displaying billboard being added
+         * info information about the billboard being added
+         * picURL Picture url included in the billboard
+         * picData data of the picture included in the billboard to be added
+         * msgColour The colour of msg in the billboard
+         * backColour The back colour of the billboard
+         * infoColour The colour of the information of the billboard
+         * Logs confirmation that the billboard was added
          * @throws SQLException
          */
 
@@ -525,6 +534,20 @@ public class MariaDB {
             pstmt.executeUpdate();
             Log.Confirmation("Billboard Created: Test Board");
         }
+        /**
+         * Adds a new billboard to the billboard table as long as the username does not already exist
+         *
+         * @param name the name of the billboard being added
+         * @param msg  msg of the displaying billboard being added
+         * @param info information about the billboard being added
+         * @param picURL Picture url included in the billboard
+         * @param picData data of the picture included in the billboard to be added
+         * @param msgColour The colour of msg in the billboard
+         * @param backColour The back colour of the billboard
+         * @param infoColour The colour of the information of the billboard
+         * Logs confimation that the billboard was added
+         * @throws SQLException
+         */
 
         public void addBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
             String addBoard = ("INSERT INTO billboards (name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -542,14 +565,21 @@ public class MariaDB {
 
             int rowsAdded = executeAdd.executeUpdate();
             if (rowsAdded > 0) {
-                Log.Confirmation("Billboard added to Database");
+                String addConfirmation = "%s Billboard was added to the Database";
+                Log.Confirmation(String.format(addConfirmation, name));
             }
 
 
 
         }
 
-        private boolean checkForBillboard(String name) throws SQLException {
+        /**
+         * Checks for a billboard in the billboard table as returning true or false depending on existance
+         * @param name the name of the billboard being checked for
+         *
+         * @throws SQLException
+         */
+        public boolean checkForBillboard(String name) throws SQLException {
             ResultSet result;
             if (name == null) {
                 result = statement.executeQuery("SELECT * FROM billboards;");
@@ -569,6 +599,13 @@ public class MariaDB {
             return checkForBillboard(null);
         }
 
+        /**
+         * Method to delete a specified billboard from the billboards database.
+         * @param name the name of the billboard being deleted
+         * Confirms deletion of requested billboard in the log.
+         * @throws SQLException
+         */
+
         public void deleteBillboard(String name) throws SQLException {
             String deleteBoard = "DELETE FROM billboards WHERE name = ?";
 
@@ -577,10 +614,19 @@ public class MariaDB {
 
             int rowsDeleted = executeDelete.executeUpdate();
             if (rowsDeleted > 0) {
-                Log.Confirmation("Billboard Deleted: Test board");
+                String deleteConfirmation = "%s Billboard was Deleted";
+                Log.Confirmation(String.format(deleteConfirmation, name));
             }
 
         }
+
+        /**
+         * Method to retrive all entires currently in the billboard database.
+         *
+         * Confirms all billboards in the database via a log confirmation.
+         * 
+         * @throws SQLException
+         */
 
         public void getBillboard() throws SQLException {
             String retrieve = "SELECT * FROM billboards";
@@ -600,7 +646,7 @@ public class MariaDB {
                 String infoColour = result.getString("infoColour");
 
                 String output = "Billboard #%d: %s - %s - %s - %s - %s - %s - %s";
-                System.out.println(String.format(output, ++count, name, msg, info, picURL, msgColour, backColour, infoColour));
+                Log.Confirmation(String.format(output, ++count, name, msg, info, picURL, msgColour, backColour, infoColour));
             }
         }
 
