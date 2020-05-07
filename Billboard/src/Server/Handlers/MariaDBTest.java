@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import static java.lang.System.exit;
 import static java.lang.System.out;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /*************************************************** This is the test class for the billboards database in MariaDB*******************************************
@@ -136,48 +137,124 @@ public class MariaDBTest {
  *
  *************************************************************************************************************************************************************/
 
-//**
-//Test1 Adds a user to the database, user1, with password1, level 1 access.
-//**
+    //**
+    //Test1 Adds a user to the database, user1, with password1, level 1 access.
+    //**
 
-@Test
+    @Test
     public void userTest1() throws SQLException{
-    undertest.users.AddUser("user1", "password1", 1, salt );
-    assertTrue(true);
-}
+        undertest.users.AddUser("user1", "password1", 1, salt );
+        assertTrue(true);
+    }
 
-//**
-//Test2 Adds a user to the database, user2, with password2, level 2 access.
-//**
+    //**
+    //Test2 Adds a user to the database, user2, with password2, level 2 access.
+    //**
 
-
-@Test
+    @Test
     public void userTest2() throws SQLException{
         undertest.users.AddUser("user2", "password2", 2, salt );
         assertTrue(true);
     }
 
-//**
-//Test3 Adds a user to the database, user3, with password3, level 3 access.
-//**
+    //**
+    //Test3 Adds a user to the database, user3, with password3, level 3 access.
+    //**
 
-@Test
-public void userTest3() throws SQLException{
-    undertest.users.AddUser("user3", "password3", 3, salt );
-    assertTrue(true);
-}
+    @Test
+    public void userTest3() throws SQLException{
+        undertest.users.AddUser("user3", "password3", 3, salt );
+        assertTrue(true);
+    }
+
+    //**
+    //Test4 Uses getPassword method to get password of user1.
+    //**
 
 
-
-@Test
+    @Test
     public void getPasswordTest1() throws SQLException {
-    undertest.users.GetUserPassword("user1");
-    assertTrue(true);
-}
+        assertEquals(undertest.users.GetUserPassword("user1"), "password1");
+    }
 
-@Test
+    //**
+    //Test5 Uses getPassword method to get password of user2.
+    //**
+
+    @Test
     public void getPasswordTest2() throws SQLException {
-    undertest.users.GetUserPassword("user1");
-    assertTrue(true);
-}
+        assertEquals(undertest.users.GetUserPassword("user2"), "password2");
+
+    }
+    //**
+    //Test6 Uses getPassword method to get password of user3.
+    //**
+
+    @Test
+    public void getPasswordTest3() throws SQLException {
+        assertEquals(undertest.users.GetUserPassword("user3"), "password3");
+    }
+
+    //**
+    //Test7 Uses GetUserAccess method to get the user access of user1.
+    //**
+
+    @Test
+    public void getUserAccessTest1() throws SQLException {
+        assertEquals(undertest.users.GetUserAccess("user1"), 1);
+    }
+
+    //**
+    //Test8 Uses GetUserAccess method to get the user access of user2.
+    //**
+
+    @Test
+    public void getUserAccessTest2() throws SQLException {
+        assertEquals(undertest.users.GetUserAccess("user2"), 2);
+    }
+
+    //**
+    //Test9 GetUserAccess method to get the user access of user2.
+    //**
+
+    @Test
+    public void getUserAccessTest3() throws SQLException {
+        assertEquals(undertest.users.GetUserAccess("user3"), 3);
+    }
+
+    //**
+    //Test10 DeleteUser method to delete user1 from the users database
+    //**
+
+    @Test
+    public void deleteUserTest1() throws SQLException{
+        undertest.users.DeleteUser("user1");
+        assertTrue(true);
+
+    }
+
+    //**
+    //Test11 DeleteUser method to delete user2 from the users database
+    //**
+
+
+    @Test
+    public void deleteUserTest2() throws SQLException{
+        undertest.users.DeleteUser("user2");
+        assertTrue(true);
+
+    }
+
+    //**
+    //Test10 DeleteUser method to delete user1 from the users database
+    //**
+
+    @Test
+    public void deleteUserTest3() throws SQLException{
+        undertest.users.DeleteUser("user3");
+        assertTrue(true);
+
+    }
+
+
 }
