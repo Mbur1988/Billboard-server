@@ -313,6 +313,7 @@ public class MariaDB {
                 pstmt.executeUpdate();
                 return true;
             }
+
         }
 
         /**
@@ -329,6 +330,7 @@ public class MariaDB {
             } else {
                 return null;
             }
+
         }
 
         /**
@@ -550,6 +552,7 @@ public class MariaDB {
          */
 
         public void addBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
+            checkForBillboard(name);
             String addBoard = ("INSERT INTO billboards (name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
             PreparedStatement executeAdd = connection.prepareStatement(addBoard);
