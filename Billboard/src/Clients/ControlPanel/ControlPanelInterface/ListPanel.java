@@ -24,10 +24,14 @@ public class ListPanel extends ControlPanelInterface {
         list_allBillboards.addElement("to get");
         list_allBillboards.addElement("all boards");
         list_allBillboards.addElement("from server");
+
         // This forms the list and adds it.
         JList<String> list = new JList<>(list_allBillboards);
-        list.setBounds(0,50,300,300);
-        listPanel.add(list);
+
+        JScrollPane scrollPane = new JScrollPane(list);
+        scrollPane.setBounds(0,50,300,300);
+
+        listPanel.add(scrollPane);
 
         // Add a text area that's unable to be edited to show scheduling info etc...
         JTextArea boardInformation = new JTextArea("Select a billboard to view details. \n \n Will need an if statement to show " +
