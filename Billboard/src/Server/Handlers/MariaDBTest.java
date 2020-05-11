@@ -120,6 +120,121 @@ public class MariaDBTest {
         undertest.billboards.getBillboard();
     }
 
+    //**
+    //Test9 adds a billboard to the database using boolean add method, assert true is used to determine success of test.
+    //**
+
+    @Test
+    public void AddTest1() throws SQLException{
+        undertest.billboards.AddBillboard("boolean test1", "msg1", "info1", "picURL", testBytes, "msgColour", "backColour", "infoColour" );
+        assertTrue(true);
+    }
+
+    //**
+    //Test10 adds a billboard to the database using boolean add method, assert true is used to determine success of test.
+    //**
+
+    @Test
+    public void AddTest2() throws SQLException{
+        undertest.billboards.AddBillboard("boolean test2", "msg2", "info2", "picURL", testBytes, "msgColour", "backColour", "infoColour" );
+        assertTrue(true);
+    }
+
+    //**
+    //Test11 adds a billboard to the database using boolean add method, assert true is used to determine success of test.
+    //**
+
+    @Test
+    public void AddTest3() throws SQLException{
+        undertest.billboards.AddBillboard("boolean test3", "msg3", "info3", "picURL", testBytes, "msgColour", "backColour", "infoColour" );
+        assertTrue(true);
+    }
+
+    //**
+    //Test12 uses getBillboardName method to retrieve the specified billboard name from the database. Uses assertequals method to confirm success.
+    //**
+
+    @Test
+    public void getBillboardName1() throws SQLException{
+        assertEquals(undertest.billboards.getBillboardName("boolean test1"), "boolean test1");
+    }
+    //**
+    //Test13 uses getBillboardName method to retrieve the specified billboard name from the database. Uses assertequals method to confirm success.
+    //**
+
+    @Test
+    public void getBillboardName2() throws SQLException{
+        assertEquals(undertest.billboards.getBillboardName("boolean test2"), "boolean test2");
+    }
+
+    //**
+    //Test14 uses getBillboardName method to retrieve the specified billboard name from the database. Uses assertequals method to confirm success.
+    //**
+
+    @Test
+    public void getBillboardName3() throws SQLException{
+        assertEquals(undertest.billboards.getBillboardName("boolean test3"), "boolean test3");
+    }
+
+    //**
+    //Test15 uses getBillboardinfo method to retrieve the specified billboard information from the database. Uses assertequals method to confirm success.
+    //**
+
+    @Test
+    public void getBillboardinfo1() throws SQLException{
+        assertEquals(undertest.billboards.getBillboardinfo("boolean test1"), "info1");
+    }
+
+    //**
+    //Test16 uses uses getBillboardinfo method to retrieve the specified billboard information from the database. Uses assertequals method to confirm success.
+    //**
+
+    @Test
+    public void getBillboardinfo2() throws SQLException{
+        assertEquals(undertest.billboards.getBillboardinfo("boolean test2"), "info2");
+    }
+
+    //**
+    //Test17 uses uses getBillboardinfo method to retrieve the specified billboard information from the database. Uses assertequals method to confirm success.
+    //**
+
+    @Test
+    public void getBillboardinfo3() throws SQLException{
+        assertEquals(undertest.billboards.getBillboardinfo("boolean test3"), "info3");
+    }
+
+    //**
+    //Test18 uses uses DeleteBillboardinfo method to delete the specified billboard from the database. Uses assertTrue method to confirm success.
+    //**
+
+    @Test
+    public void deleteBillboard1() throws SQLException{
+        undertest.billboards.DeleteBillboard("boolean test1");
+        assertTrue(true);
+    }
+
+    //**
+    //Test19 uses uses DeleteBillboardinfo method to delete the specified billboard from the database. Uses assertTrue method to confirm success.
+    //**
+
+    @Test
+    public void deleteBillboard2() throws SQLException{
+        undertest.billboards.DeleteBillboard("boolean test2");
+        assertTrue(true);
+    }
+
+    //**
+    //Test20 uses uses DeleteBillboardinfo method to delete the specified billboard from the database. Uses assertTrue method to confirm success.
+    //**
+
+    @Test
+    public void deleteBillboard3() throws SQLException{
+        undertest.billboards.DeleteBillboard("boolean test3");
+        assertTrue(true);
+    }
+
+
+
 /*************************************************** This is the test class for the users database in MariaDB****************************************************************
 
  *A range of tests to determine viability of mariaDB user methods. The Methods tested range from adding users, getting user passwords,
