@@ -6,8 +6,10 @@ import Tools.PropertyReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.stream.Stream;
+
 import static java.lang.System.exit;
-import static java.lang.System.out;
 
 public class MariaDB {
 
@@ -502,7 +504,7 @@ public class MariaDB {
 
         /**
          * Adds a default test billboard to the billboard table.
-         *
+         * <p>
          * name the name of the billboard being added
          * msg  msg of the displaying billboard being added
          * info information about the billboard being added
@@ -512,6 +514,7 @@ public class MariaDB {
          * backColour The back colour of the billboard
          * infoColour The colour of the information of the billboard
          * Logs confirmation that the billboard was added
+         *
          * @throws SQLException
          */
 
@@ -536,18 +539,19 @@ public class MariaDB {
             pstmt.executeUpdate();
             Log.Confirmation("Billboard Created: Test Board");
         }
+
         /**
-         * Adds a new billboard to the billboard table as long as the username does not already exist
+         * Adds a new billboard to the billboard table
          *
-         * @param name the name of the billboard being added
-         * @param msg  msg of the displaying billboard being added
-         * @param info information about the billboard being added
-         * @param picURL Picture url included in the billboard
-         * @param picData data of the picture included in the billboard to be added
-         * @param msgColour The colour of msg in the billboard
+         * @param name       the name of the billboard being added
+         * @param msg        msg of the displaying billboard being added
+         * @param info       information about the billboard being added
+         * @param picURL     Picture url included in the billboard
+         * @param picData    data of the picture included in the billboard to be added
+         * @param msgColour  The colour of msg in the billboard
          * @param backColour The back colour of the billboard
          * @param infoColour The colour of the information of the billboard
-         * Logs confimation that the billboard was added
+         *                   Logs confimation that the billboard was added
          * @throws SQLException
          */
 
@@ -573,27 +577,58 @@ public class MariaDB {
             }
 
 
+        }
+
+        /**
+         * Adds a new billboard to the billboard table as long as the username does not already exist
+         *
+         * @param name       the name of the billboard being added
+         * @param msg        msg of the displaying billboard being added
+         * @param info       information about the billboard being added
+         * @param picURL     Picture url included in the billboard
+         * @param picData    data of the picture included in the billboard to be added
+         * @param msgColour  The colour of msg in the billboard
+         * @param backColour The back colour of the billboard
+         * @param infoColour The colour of the information of the billboard
+         *                   Checks to see if billboard already exists, otherwise adds the billboard and returns true.
+         * @throws SQLException
+         */
+
+        public boolean AddBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
+            if (checkForBillboard(name)) {
+                return false;
+            } else {
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                prepareAdd.setString(1, name);
+                prepareAdd.setString(2, msg);
+                prepareAdd.setString(3, info);
+                prepareAdd.setString(4, picURL);
+                prepareAdd.setBytes(5, picData);
+                prepareAdd.setString(6, msgColour);
+                prepareAdd.setString(7, backColour);
+                prepareAdd.setString(8, infoColour);
+                prepareAdd.executeUpdate();
+                return true;
+            }
 
         }
 
         /**
          * Checks for a billboard in the billboard table as returning true or false depending on existance
-         * @param name the name of the billboard being checked for
          *
+         * @param name the name of the billboard being checked for
          * @throws SQLException
          */
         public boolean checkForBillboard(String name) throws SQLException {
             ResultSet result;
             if (name == null) {
                 result = statement.executeQuery("SELECT * FROM billboards;");
-            }
-            else {
+            } else {
                 result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             }
             if (result.next()) {
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
         }
@@ -604,8 +639,9 @@ public class MariaDB {
 
         /**
          * Method to delete a specified billboard from the billboards database.
+         *
          * @param name the name of the billboard being deleted
-         * Confirms deletion of requested billboard in the log.
+         *             Confirms deletion of requested billboard in the log.
          * @throws SQLException
          */
 
@@ -624,10 +660,28 @@ public class MariaDB {
         }
 
         /**
+         * Method to delete a specified billboard from the billboards database.Uses boolean method.
+         * @param name the name of the billboard being deleted
+         * Confirms deletion of requested billboard in the log.
+         * @throws SQLException
+         */
+        public boolean DeleteBillboard(String name) throws SQLException {
+            if (checkForBillboard(name)) {
+                statement.executeQuery("DELETE FROM billboards WHERE name='" + name + "';");
+                if (checkForBillboard(name)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        /**
          * Method to retrive all entires currently in the billboard database.
-         *
+         * <p>
          * Confirms all billboards in the database via a log confirmation.
-         * 
          * @throws SQLException
          */
 
@@ -638,8 +692,7 @@ public class MariaDB {
 
             int count = 0;
 
-            while (result.next())
-            {
+            while (result.next()) {
                 String name = result.getString("name");
                 String msg = result.getString("msg");
                 String info = result.getString("info");
@@ -652,9 +705,40 @@ public class MariaDB {
                 Log.Confirmation(String.format(output, ++count, name, msg, info, picURL, msgColour, backColour, infoColour));
             }
         }
+        
+        /**
+         * Method to retrive all specified billboard name currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
+        
 
+        public String getBillboardName(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("name");
+            } else {
+                return null;
+            }
+        }
+        
+        /**
+         * Method to retrive all specified billboard info currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
+
+        public String getBillboardinfo(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("info");
+            } else {
+                return null;
+            }
+        }
 
     }
+
 
     public class Scheduling {
 
@@ -669,3 +753,9 @@ public class MariaDB {
         }
     }
 }
+
+
+
+
+
+
