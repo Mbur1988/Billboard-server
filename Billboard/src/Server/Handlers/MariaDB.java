@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.stream.Stream;
 
 import static java.lang.System.exit;
 
@@ -679,7 +678,7 @@ public class MariaDB {
         }
 
         /**
-         * Method to retrive all entires currently in the billboard database.
+         * Method to retrieve all entries currently in the billboard database.
          * <p>
          * Confirms all billboards in the database via a log confirmation.
          * @throws SQLException
@@ -707,7 +706,7 @@ public class MariaDB {
         }
         
         /**
-         * Method to retrive all specified billboard name currently in the billboard database.
+         * Method to retrieve all specified billboard name currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -723,7 +722,7 @@ public class MariaDB {
         }
         
         /**
-         * Method to retrive all specified billboard info currently in the billboard database.
+         * Method to retrieve all specified billboard info currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -736,6 +735,26 @@ public class MariaDB {
                 return null;
             }
         }
+
+        /**
+         * Method to retrieve all of the billboards in the database, saving the names in a list.
+         * Returns the list as a String list.
+         * @throws SQLException
+         */
+
+
+        public ArrayList<String> getAllBillboards() throws SQLException {
+            String retrieve = "SELECT * FROM billboards";
+            ResultSet result = statement.executeQuery(retrieve);
+            ArrayList<String> allBillboards = new ArrayList<>();
+            while (result.next()){
+                String name = result.getString("name");
+                allBillboards.add(name);
+            }
+            return allBillboards;
+        }
+
+
 
     }
 
