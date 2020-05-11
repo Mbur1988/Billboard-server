@@ -68,15 +68,7 @@ public class Billboard implements Serializable {
         BillboardScreen = null;
 
     }
-    public static void main(String[] args) {
-        new Billboard();
-
-//        JFrame frame = new JFrame();
-//
-//        frame.setBackground(Color.cyan);
-        //new DisplayImage("C:\\sally.jpg");
-
-    }
+    public static void main(String[] args) { new Billboard();}
 
 
     // - - - - - - -     Workers    - - - - - - - - - //
@@ -120,7 +112,7 @@ public class Billboard implements Serializable {
      * @return returns a label to be added into the panel elsewhere
      * @exception. If name != message or info  or Message or Info
      */
-    public static JLabel CreateTextArea(String Name, String message_input) throws Exception {//display as output change!!!!
+    public static JLabel CreateTextArea(String Name, String message_input) throws Exception {
         if(Name == "message" || Name == "Message") {
             JLabel upperText = new JLabel(message_input,SwingConstants.CENTER);
             upperText.setOpaque(false);
@@ -161,6 +153,28 @@ public class Billboard implements Serializable {
 
         return Image;
     }
+    public boolean messageInserted(){
+        if(msg !=null){
+            return true;
+        }
+        else
+            return false;
+    }
+    public boolean infoInserted(){
+        if(info !=null){
+            return true;
+        }
+        else
+            return false;
+    }
+    public boolean picInserted(){
+        if(picURL !=null || picDATA != null){
+            return true;
+        }
+        else
+            return false;
+    }
+
 
     public void showBillboard() throws Exception {
         BillboardScreen = createFrame();
@@ -168,7 +182,17 @@ public class Billboard implements Serializable {
         BillboardScreenPannel.setBackground(getBackColour());
         BillboardScreenPannel.setOpaque(true);
         BillboardScreen.setContentPane(BillboardScreenPannel);
+        if(msg != null && info == null && (picDATA == null && picURL == null)){
+            //msg solo
+        }
 
+        else if(msg == null && info != null && (picDATA == null && picURL == null)){
+            //info solo
+        }
+
+        else if(msg == null && info == null && (picDATA != null || picURL != null)){
+            //Image solo
+        }
         JLabel MessageText =CreateTextArea("message", msg);
         JLabel InfoText = CreateTextArea("info", info);
         BillboardScreen.add(MessageText,BorderLayout.PAGE_START);
@@ -184,18 +208,19 @@ public class Billboard implements Serializable {
         }
         BillboardScreenPannel.repaint();
         BillboardScreenPannel.revalidate();
-//DELETE--------->
-        JButton b3 = new JButton("CLOSE");
+
+        //close preview.
+        JButton b3 = new JButton("Exit Preview");
 
         b3.setBounds(0, 0, 250, 50);
         BillboardScreenPannel.add(b3);
         b3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
-                System.exit(0);
+                BillboardScreen.dispose();
             }   // need to change to a keep changes button
         });
-//---------->DELETE
+
     }
 
     // - - - - - - - helpers bellow - - - - - - - - - //
