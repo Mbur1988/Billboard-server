@@ -70,7 +70,7 @@ public class LoginInterface {
         loginScreen.getContentPane().add(label_Username);
         loginScreen.getContentPane().add(labelMessage);
         //loginScreen.getContentPane().add(label_Password);
-        //loginScreen.getContentPane().add(b_Login);
+        loginScreen.getContentPane().add(b_Login);
         //loginScreen.getContentPane().add(b_Exit);
         loginScreen.getContentPane().add(un);
 
@@ -134,6 +134,8 @@ public class LoginInterface {
                 }
             }
         });
+
+        loginScreen.getRootPane().setDefaultButton(b_Login);
     }
 
 }
