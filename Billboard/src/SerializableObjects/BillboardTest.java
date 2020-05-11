@@ -560,6 +560,69 @@ public class BillboardTest {
         //Visual check Passed. Image is on the correct panel.
         assertTrue(true);
     }
+    /*
+        11-5-2020
+        (task 74)
+        implementing conditions for certain situations with msg or info or image only.
+        Also setting max bounds of image.
+        FIXME - msg by its self
+              - info by its self
+              - Image By self
+              - Image by self
+     */
+
+    /**
+     * Test 44,
+     *      adjust displaying text if only msg
+     */
+    @Test
+    public void TestMsgOnly() throws Exception {
+        underTestEmpty.setMsg("Message Only");
+        underTestEmpty.showBillboard();
+
+        Thread.sleep((2000));
+        //Visual check
+        assertTrue(false);
+    }
+    /**
+     * Test 44,
+     *      adjust displaying text if only msg
+     */
+    @Test
+    public void TestInfoOnly() throws Exception {
+        underTestEmpty.setInfo("Message Only");
+        underTestEmpty.showBillboard();
+
+        Thread.sleep((2000));
+        //Visual check
+        assertTrue(false);
+    }    /**
+     * Test 44,
+     *      adjust displaying text if only msg
+     */
+    @Test
+    public void TestImageOnly() throws Exception {
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
+        underTestEmpty.showBillboard();
+
+        Thread.sleep((2000));
+        //Visual check
+        assertTrue(false);
+    }
+    /**
+     * Test 44,
+     *      adjust displaying text if only msg
+     */
+    @Test
+    public void TestImageBounds() throws Exception {
+        underTestEmpty.setMsg("Message Only");
+        underTestEmpty.showBillboard();
+
+        Thread.sleep((2000));
+        //Visual check
+        assertTrue(false);
+    }
+
 
     //Test template
 //    /**
