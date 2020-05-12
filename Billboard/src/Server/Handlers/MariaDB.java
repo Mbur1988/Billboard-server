@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.stream.Stream;
 
 import static java.lang.System.exit;
 
@@ -486,6 +485,25 @@ public class MariaDB {
                 return false;
             }
         }
+
+        /**
+         * ArrayList Method to return all username's from the user's database.
+         *
+         * @return ArrayList as a string list
+         * @throws SQLException
+         */
+
+
+        public ArrayList<String> getAllUsers() throws SQLException {
+            String retrieve = "SELECT * FROM users";
+            ResultSet result = statement.executeQuery(retrieve);
+            ArrayList<String> allUsers = new ArrayList<>();
+            while (result.next()){
+                String username = result.getString("username");
+                allUsers.add(username);
+            }
+            return allUsers;
+        }
     }
 
     public class Billboards {
@@ -679,7 +697,7 @@ public class MariaDB {
         }
 
         /**
-         * Method to retrive all entires currently in the billboard database.
+         * Method to retrieve all entries currently in the billboard database.
          * <p>
          * Confirms all billboards in the database via a log confirmation.
          * @throws SQLException
@@ -707,7 +725,7 @@ public class MariaDB {
         }
         
         /**
-         * Method to retrive all specified billboard name currently in the billboard database.
+         * Method to retrieve all specified billboard name currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -723,12 +741,12 @@ public class MariaDB {
         }
         
         /**
-         * Method to retrive all specified billboard info currently in the billboard database.
+         * Method to retrieve all specified billboard info currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
 
-        public String getBillboardinfo(String name) throws SQLException {
+        public String getBillboardInfo(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
                 return result.getString("info");
@@ -736,6 +754,26 @@ public class MariaDB {
                 return null;
             }
         }
+
+        /**
+         * Method to retrieve all of the billboards in the database, saving the names in a list.
+         * Returns the list as a String list.
+         * @throws SQLException
+         */
+
+
+        public ArrayList<String> getAllBillboards() throws SQLException {
+            String retrieve = "SELECT * FROM billboards";
+            ResultSet result = statement.executeQuery(retrieve);
+            ArrayList<String> allBillboards = new ArrayList<>();
+            while (result.next()){
+                String name = result.getString("name");
+                allBillboards.add(name);
+            }
+            return allBillboards;
+        }
+
+
 
     }
 

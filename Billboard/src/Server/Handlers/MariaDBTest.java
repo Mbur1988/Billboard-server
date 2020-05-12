@@ -9,10 +9,12 @@ import Tools.PropertyReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.util.Arrays;
+import java.util.List;
+
 import static java.lang.System.exit;
 import static java.lang.System.out;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /*************************************************** This is the test class for the billboards database in MariaDB*******************************************
  *First set of Tests will check multiple instances of the addBillboard method, with confirmation in the log confirming that particular billboard was added.
@@ -182,7 +184,7 @@ public class MariaDBTest {
 
     @Test
     public void getBillboardinfo1() throws SQLException{
-        assertEquals(undertest.billboards.getBillboardinfo("boolean test1"), "info1");
+        assertEquals(undertest.billboards.getBillboardInfo("boolean test1"), "info1");
     }
 
     //**
@@ -191,7 +193,7 @@ public class MariaDBTest {
 
     @Test
     public void getBillboardinfo2() throws SQLException{
-        assertEquals(undertest.billboards.getBillboardinfo("boolean test2"), "info2");
+        assertEquals(undertest.billboards.getBillboardInfo("boolean test2"), "info2");
     }
 
     //**
@@ -200,7 +202,7 @@ public class MariaDBTest {
 
     @Test
     public void getBillboardinfo3() throws SQLException{
-        assertEquals(undertest.billboards.getBillboardinfo("boolean test3"), "info3");
+        assertEquals(undertest.billboards.getBillboardInfo("boolean test3"), "info3");
     }
 
     //**
@@ -231,6 +233,19 @@ public class MariaDBTest {
     public void deleteBillboard3() throws SQLException{
         undertest.billboards.DeleteBillboard("boolean test3");
         assertTrue(true);
+    }
+
+    //**
+    //Test21 uses uses getAllBillboards method to retrieve the names of all billboards in the database. Uses a predefined list to test against.
+    //**
+
+    @Test
+    public void allEntries() throws SQLException{
+        List<String> actual = undertest.billboards.getAllBillboards();
+        List<String> expected = Arrays.asList("testBoard", "test1", "test25", "boolean test1");
+
+       assertEquals(actual, expected);
+
     }
 
 
@@ -368,6 +383,19 @@ public class MariaDBTest {
     public void deleteUserTest3() throws SQLException{
         undertest.users.DeleteUser("user3");
         assertTrue(true);
+
+    }
+
+    //**
+    //Test11 Retrieves all usernames from the user's database.
+    //**
+
+    @Test
+    public void allUserEntries() throws SQLException{
+        List<String> actual = undertest.users.getAllUsers();
+        List<String> expected = Arrays.asList("admin", "user1", "user2", "user3");
+
+        assertEquals(actual, expected);
 
     }
 
