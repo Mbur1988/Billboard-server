@@ -193,22 +193,35 @@ public class Billboard implements Serializable {
         else if(msg == null && info == null && (picDATA != null || picURL != null)){
             //Image solo
         }
-        JLabel MessageText =CreateTextArea("message", msg);
-        JLabel InfoText = CreateTextArea("info", info);
-        BillboardScreen.add(MessageText,BorderLayout.PAGE_START);
-        BillboardScreen.add(InfoText,BorderLayout.PAGE_END);
-        BillboardScreen.setVisible(true);
-        BillboardScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        if(picDATA != null) {
-            JLabel Image = CreateImageData(picDATA);
-            Image.setVerticalAlignment(SwingConstants.CENTER);
-            Image.setHorizontalAlignment(SwingConstants.CENTER);
-            BillboardScreen.getContentPane().add(Image,BorderLayout.CENTER);
+        else if(msg != null && info == null && (picDATA != null) || (picURL != null))
+        {
+            //msg and image
         }
-        BillboardScreenPannel.repaint();
-        BillboardScreenPannel.revalidate();
+        else if(msg == null && info != null && (picDATA != null || picURL != null)){
+            //info and image
+        }
+        else if(msg != null && info != null && (picDATA == null && picURL == null)){
+            //info and msg
+        }
+        else{
 
+            JLabel MessageText = CreateTextArea("message", msg);
+            JLabel InfoText = CreateTextArea("info", info);
+            BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
+            BillboardScreen.add(InfoText, BorderLayout.PAGE_END);
+            BillboardScreen.setVisible(true);
+            BillboardScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+            if (picDATA != null) {
+                JLabel Image = CreateImageData(picDATA);
+                Image.setVerticalAlignment(SwingConstants.CENTER);
+                Image.setHorizontalAlignment(SwingConstants.CENTER);
+                BillboardScreen.getContentPane().add(Image, BorderLayout.CENTER);
+            }
+            BillboardScreenPannel.repaint();
+            BillboardScreenPannel.revalidate();
+        }
         //close preview.
         JButton b3 = new JButton("Exit Preview");
 
