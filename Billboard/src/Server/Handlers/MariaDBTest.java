@@ -184,7 +184,7 @@ public class MariaDBTest {
 
     @Test
     public void getBillboardinfo1() throws SQLException{
-        assertEquals(undertest.billboards.getBillboardinfo("boolean test1"), "info1");
+        assertEquals(undertest.billboards.getBillboardInfo("boolean test1"), "info1");
     }
 
     //**
@@ -193,7 +193,7 @@ public class MariaDBTest {
 
     @Test
     public void getBillboardinfo2() throws SQLException{
-        assertEquals(undertest.billboards.getBillboardinfo("boolean test2"), "info2");
+        assertEquals(undertest.billboards.getBillboardInfo("boolean test2"), "info2");
     }
 
     //**
@@ -202,7 +202,7 @@ public class MariaDBTest {
 
     @Test
     public void getBillboardinfo3() throws SQLException{
-        assertEquals(undertest.billboards.getBillboardinfo("boolean test3"), "info3");
+        assertEquals(undertest.billboards.getBillboardInfo("boolean test3"), "info3");
     }
 
     //**
@@ -383,6 +383,19 @@ public class MariaDBTest {
     public void deleteUserTest3() throws SQLException{
         undertest.users.DeleteUser("user3");
         assertTrue(true);
+
+    }
+
+    //**
+    //Test11 Retrieves all usernames from the user's database.
+    //**
+
+    @Test
+    public void allUserEntries() throws SQLException{
+        List<String> actual = undertest.users.getAllUsers();
+        List<String> expected = Arrays.asList("admin", "user1", "user2", "user3");
+
+        assertEquals(actual, expected);
 
     }
 

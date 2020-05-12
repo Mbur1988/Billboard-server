@@ -485,6 +485,25 @@ public class MariaDB {
                 return false;
             }
         }
+
+        /**
+         * ArrayList Method to return all username's from the user's database.
+         *
+         * @return ArrayList as a string list
+         * @throws SQLException
+         */
+
+
+        public ArrayList<String> getAllUsers() throws SQLException {
+            String retrieve = "SELECT * FROM users";
+            ResultSet result = statement.executeQuery(retrieve);
+            ArrayList<String> allUsers = new ArrayList<>();
+            while (result.next()){
+                String username = result.getString("username");
+                allUsers.add(username);
+            }
+            return allUsers;
+        }
     }
 
     public class Billboards {
@@ -727,7 +746,7 @@ public class MariaDB {
          * @throws SQLException
          */
 
-        public String getBillboardinfo(String name) throws SQLException {
+        public String getBillboardInfo(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
                 return result.getString("info");
