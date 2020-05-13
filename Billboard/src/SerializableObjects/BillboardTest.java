@@ -405,7 +405,7 @@ public class BillboardTest {
     public void MsgLabel() throws Exception {
         JFrame testframe = underTestEmpty.createFrame();
 
-        JLabel Test = Billboard.CreateTextArea("message","message input");
+        JLabel Test = Billboard.CreateTextArea("message","message input","msg only");
 
         //underTestEmpty.SetVisible(true,underTestEmpty.getJPanel());
         testframe.getContentPane().add(Test);
@@ -422,7 +422,7 @@ public class BillboardTest {
     public void infoLabel() throws Exception {
         JFrame testframe = underTestEmpty.createFrame();
         //Uses DisplayImage function CreateLabel()
-        JLabel Test = Billboard.CreateTextArea("info","info input");
+        JLabel Test = Billboard.CreateTextArea("info","info input","msg and info");
         //underTestEmpty.SetVisible(true,underTestEmpty.getJPanel());
         testframe.getContentPane().add(Test);
         //check visually
