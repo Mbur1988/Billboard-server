@@ -93,7 +93,7 @@ public class EditUsersPanel extends ControlPanelInterface {
         b_add.setBounds(150, 400, 150, 30);
         editUserPanel.add(b_add);
 
-        JButton b_save = new JButton("Add User");
+        JButton b_save = new JButton("Save User");
         b_save.setBounds(150, 400, 150, 30);
         //editUserPanel.add(b_save);
 
@@ -109,7 +109,7 @@ public class EditUsersPanel extends ControlPanelInterface {
         b_delete.setBounds(screenWidth/2 + 150, 400, 150, 30);
         editUserPanel.add(b_delete);
 
-        b_save.addActionListener(event -> {
+        b_add.addActionListener(event -> {
             String password = tf_password.getText();
             password = HashCredentials.Hash(password);
             int access = UserAccess.bool2dec(
