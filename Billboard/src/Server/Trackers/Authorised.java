@@ -21,7 +21,7 @@ public class Authorised {
             ActiveUsers.put(username, uuid);
         }
         else {
-            Log.Error("User: " + username + "already authorised");
+            Log.Error("User: " + username + " already authorised");
         }
     }
 
@@ -34,7 +34,7 @@ public class Authorised {
             ActiveUsers.remove(username);
         }
         else {
-            Log.Error("User: " + username + " already authorised");
+            Log.Error("User: " + username + " not authorised");
         }
     }
 

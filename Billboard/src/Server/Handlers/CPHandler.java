@@ -47,7 +47,7 @@ public class CPHandler extends ConnectionHandler {
                 switch(user.getAction()) {
                     // Handle requested action
                     case ("userExit"):
-                        UserExit();
+                        Authorised.Remove(user.getUsername());
                         break;
                     case ("addUser"):
                         AddNewUser();
@@ -139,10 +139,6 @@ public class CPHandler extends ConnectionHandler {
         }
         // clear user password variable for security
         user.setPassword("");
-    }
-
-    private void UserExit() {
-
     }
 
     /**

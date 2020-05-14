@@ -6,15 +6,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import Tools.Log;
+import static Clients.Client.objectStreamer;
+import static Clients.ControlPanel.ControlPanel.*;
 
+/**
+ List of tools:
+ addExitButton adds the exit button to each panel.
+ addLabel single line command to add a label.
+ */
 public class Tools {
-
-
-    /**
-    List of tools:
-    addExitButton adds the exit button to each panel.
-    addLabel single line command to add a label.
-    */
 
     /**
      * addExitButton will add the exit button to each panel and utilise the one action
@@ -33,8 +35,30 @@ public class Tools {
         class ExitButton implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
-                ControlPanelInterface.controlPanelScreen.dispose();
-                LoginInterface.loginScreen.dispose();
+                if (user.isVerified()) {
+                    user.setAction("userExit");
+                    // Attempt connection to server
+                    if (AttemptConnect()) {
+                        // Try a login attempt
+                        try {
+                            // Send user object to server
+                            objectStreamer.Send(user);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            Log.Error("User attempt request failed");
+                        }
+                        // Disconnect from server
+                        AttemptDisconnect();
+                    }
+                    // Post message to user if unable to connect to server
+                    else {
+                        Log.Error("Unable to connect to server");
+                    }
+                    ControlPanelInterface.controlPanelScreen.dispose();
+                }
+                else {
+                    LoginInterface.loginScreen.dispose();
+                }
             }
         }
 

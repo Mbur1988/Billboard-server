@@ -2,7 +2,6 @@ package Clients.ControlPanel.ControlPanelInterface;
 
 import Clients.ControlPanel.ControlPanelTools.Tools;
 import Clients.ControlPanel.ControlPanelTools.UserAccess;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
