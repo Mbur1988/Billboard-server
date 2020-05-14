@@ -1,12 +1,12 @@
 package Server.Trackers;
 
 import CustomExceptions.ActiveViewerException;
-
+import Tools.Log;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
-public class Authaurised {
+public class Authorised {
 
     private static Map<String, UUID> ActiveUsers = new TreeMap<String, UUID>();
 
@@ -16,16 +16,12 @@ public class Authaurised {
      * @param uuid the uuid of the user
      * @throws ActiveViewerException
      */
-    public void Add(String username, UUID uuid) {
-        if (ActiveUsers.containsKey(username)) {
-            try {
-                throw new ActiveViewerException("User: " + username + "already authorised");
-            } catch (ActiveViewerException e) {
-                e.printStackTrace();
-            }
+    public static void Add(String username, UUID uuid) {
+        if (!ActiveUsers.containsKey(username)) {
+            ActiveUsers.put(username, uuid);
         }
         else {
-            ActiveUsers.put(username, uuid);
+            Log.Error("User: " + username + "already authorised");
         }
     }
 
@@ -33,8 +29,13 @@ public class Authaurised {
      * Remove a user from the list of authorised users
      * @param username the username of the user
      */
-    public void Remove(String username) {
-        ActiveUsers.remove(username);
+    public static void Remove(String username) {
+        if (ActiveUsers.containsKey(username)) {
+            ActiveUsers.remove(username);
+        }
+        else {
+            Log.Error("User: " + username + " already authorised");
+        }
     }
 
     /**
@@ -43,8 +44,8 @@ public class Authaurised {
      * @param uuid the uuid of the user
      * @return a boolean value
      */
-    public boolean Check(String username, UUID uuid) {
-        if (ActiveUsers.get(username) == uuid){
+    public static boolean Check(String username, UUID uuid) {
+        if (ActiveUsers.get(username).equals(uuid)) {
             return true;
         }
         else {

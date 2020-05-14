@@ -261,7 +261,7 @@ public class MariaDB {
         private void CreateDefaultUser() throws SQLException {
             String username = "admin";
             String password = HashCredentials.Hash("default");
-            int access = 5;
+            int access = 15;
             byte[] salt = HashCredentials.CreateSalt();
             password = HashCredentials.Hash(password, salt);
             PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `users`(username, password, access, salt) VALUES (?, ?, ?, ?)");
@@ -314,7 +314,6 @@ public class MariaDB {
                 pstmt.executeUpdate();
                 return true;
             }
-
         }
 
         /**

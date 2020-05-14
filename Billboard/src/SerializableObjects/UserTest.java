@@ -38,7 +38,7 @@ class UserTest {
 
     @Test
     void getUsername() {
-        assertEquals(user.getUsername(), "");
+        assertEquals(user.getUsername(), null);
     }
 
     @Test
@@ -49,7 +49,7 @@ class UserTest {
 
     @Test
     void getPassword() {
-        assertEquals(user.getPassword(), "");
+        assertEquals(user.getPassword(), null);
     }
 
     @Test
