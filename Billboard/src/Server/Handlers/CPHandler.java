@@ -58,9 +58,6 @@ public class CPHandler extends ConnectionHandler {
                     case ("deleteUser"):
                         DeleteUser();
                         break;
-                    case ("changePassword"):
-                        ChangePassword();
-                        break;
                     case ("addNewBillboard"):
                         AddNewBillboard();
                         break;
@@ -116,17 +113,17 @@ public class CPHandler extends ConnectionHandler {
         String password = user.getPassword();
         try {
             // get the relevant salt for the user from the database
-            byte[] salt = mariaDB.users.GetUserSalt(username);
+            byte[] salt = mariaDB.users.getSalt(username);
             // salt-hash the password using the relevant salt
             String toCheck = HashCredentials.Hash(password, salt);
             // check whether the salt-hashed password matches that stored on the database
-            if (toCheck.equals(mariaDB.users.GetUserPassword(username))) {
+            if (toCheck.equals(mariaDB.users.getPassword(username))) {
                 // if passwords match then validate user and update authorised list
                 user.setVerified(true);
                 UUID uuid = UUID.randomUUID();
                 Authorised.Add(username, uuid);
                 user.setId(uuid);
-                user.setAccess(mariaDB.users.GetUserAccess(username));
+                user.setAccess(mariaDB.users.getAccess(username));
                 // print confirmation log message
                 Log.Confirmation("User credentials validated");
             }
@@ -150,7 +147,7 @@ public class CPHandler extends ConnectionHandler {
             Log.Message("User object received from control panel");
             byte[] salt = HashCredentials.CreateSalt();
             String password = HashCredentials.Hash(newUser.getPassword(), salt);
-            dos.writeBoolean(mariaDB.users.AddUser(
+            dos.writeBoolean(mariaDB.users.add(
                     newUser.getUsername(),
                     password,
                     newUser.getAccess(),
@@ -162,14 +159,28 @@ public class CPHandler extends ConnectionHandler {
     }
 
     private void EditUser() {
-
+//        try {
+//            User newUser = (User) objectStreamer.Receive();
+//            Log.Message("User object received from control panel");
+//            if (!newUser.getPassword().equals(mariaDB.users.GetUserPassword(newUser.getUsername()))) {
+//                byte[] salt = HashCredentials.CreateSalt();
+//                String password = HashCredentials.Hash(newUser.getPassword(), salt);
+//            }
+//            if (newUser.getAccess() != mariaDB.users.GetUserAccess(newUser.getUsername())) {
+//
+//            }
+//            dos.writeBoolean(mariaDB.users.AddUser(
+//                    newUser.getUsername(),
+//                    password,
+//                    newUser.getAccess(),
+//                    salt));
+//        }
+//        catch (IOException | ClassNotFoundException | SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void DeleteUser() {
-
-    }
-
-    private void ChangePassword() {
 
     }
 

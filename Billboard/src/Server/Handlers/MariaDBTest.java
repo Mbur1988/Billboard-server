@@ -1,4 +1,6 @@
 package Server.Handlers;
+import SerializableObjects.User;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,219 +36,218 @@ import static org.junit.jupiter.api.Assertions.*;
  *************************************************************************************************************************************************************/
 public class MariaDBTest {
 
-    byte[] testBytes = new byte[]{0, 1, 2};
-    MariaDB undertest;
-    byte[] salt = HashCredentials.CreateSalt();
+    static MariaDB undertest;
+    static String password;
+    static int access;
+    static byte[] salt;
+    static boolean existing = false;
 
-
-    @BeforeEach
-    void NewMariaDB() {
+    @BeforeAll
+    static void NewMariaDB() throws SQLException {
         undertest = new MariaDB();
         undertest.Connect();
+        if (undertest.users.checkForUser("user1")) {
+            existing = true;
+            password = undertest.users.getPassword("user1");
+            access = undertest.users.getAccess("user1");
+            salt = undertest.users.getSalt("user1");
+        }
+
 
     }
-
-    //**
-    //Test1 to check if test1 billboard is added to the database correctly. Get billboard method is called to confirm addition.
-    //**
-    @Test
-    public void AddTester1() throws SQLException {
-        undertest.billboards.checkForBillboard("test1");
-        undertest.billboards.addBillboard("test1", "msg", "info", "picURL", testBytes, "msgColour", "backColour", "infoColour");{
-        undertest.billboards.getBillboard();
+    @AfterAll
+    static void cleanup() throws SQLException {
+        if (undertest.users.checkForUser("user1")) {
+            undertest.users.delete("user1");
+        }
+        if (existing) {
+            undertest.users.add("user1", password, access, salt);
         }
     }
-    //**
-    //Test2 to check if test2 billboard is added to the database correctly. Get billboard method is called to confirm addition.
-    //**
-    @Test
-    public void AddTester2() throws SQLException {
-        undertest.billboards.addBillboard("test2", "msg", "info", "picURL", testBytes, "msgColour", "backColour", "infoColour");
-        undertest.billboards.getBillboard();
-    }
-    //**
-    //Test3 to check if test3 billboard is added to the database correctly. Get billboard method is called to confirm addition.
-    //**
 
-    @Test
-    public void AddTester3() throws SQLException {
-        undertest.billboards.addBillboard("test3", "msg", "info", "picURL", testBytes, "msgColour", "backColour", "infoColour");
-        undertest.billboards.getBillboard();
-    }
-
-    //**
-    //Test4 to check if billboard method is called to confirm additions.
-    //**
-
-    @Test
-    public void GetTest1() throws SQLException{
-        undertest.billboards.getBillboard();
-    }
-
-    //**
-    //Test5 to check if deleteBillboard method correctly deletes the right billboard. Get billboard method is called to confirm addition.
-    //**
-
-    @Test
-    public void DeleteTest1() throws SQLException {
-        undertest.billboards.deleteBillboard("test1");
-        undertest.billboards.getBillboard();
-    }
-
-    //**
-    //Test6 to check if deleteBillboard method correctly deletes the right billboard. Get billboard method is called to confirm addition.
-    //**
-
-    @Test
-    public void DeleteTest2() throws SQLException {
-        undertest.billboards.deleteBillboard("test2");
-        undertest.billboards.getBillboard();
-    }
-
-    //**
-    //Test7 to check if deleteBillboard method correctly deletes the right billboard. Get billboard method is called to confirm addition.
-    //**
-
-    @Test
-    public void DeleteTest3() throws SQLException {
-        undertest.billboards.deleteBillboard("test3");
-        undertest.billboards.getBillboard();
-    }
-
-    //**
-    //Test8 to check if billboard method is called to confirm additions and ensure all tests were deleted successfully.
-    //**
-
-    @Test
-    public void GetTest2() throws SQLException{
-        undertest.billboards.getBillboard();
-    }
-
-    //**
-    //Test9 adds a billboard to the database using boolean add method, assert true is used to determine success of test.
-    //**
-
-    @Test
-    public void AddTest1() throws SQLException{
-        undertest.billboards.AddBillboard("boolean test1", "msg1", "info1", "picURL", testBytes, "msgColour", "backColour", "infoColour" );
-        assertTrue(true);
-    }
-
-    //**
-    //Test10 adds a billboard to the database using boolean add method, assert true is used to determine success of test.
-    //**
-
-    @Test
-    public void AddTest2() throws SQLException{
-        undertest.billboards.AddBillboard("boolean test2", "msg2", "info2", "picURL", testBytes, "msgColour", "backColour", "infoColour" );
-        assertTrue(true);
-    }
-
-    //**
-    //Test11 adds a billboard to the database using boolean add method, assert true is used to determine success of test.
-    //**
-
-    @Test
-    public void AddTest3() throws SQLException{
-        undertest.billboards.AddBillboard("boolean test3", "msg3", "info3", "picURL", testBytes, "msgColour", "backColour", "infoColour" );
-        assertTrue(true);
-    }
-
-    //**
-    //Test12 uses getBillboardName method to retrieve the specified billboard name from the database. Uses assertequals method to confirm success.
-    //**
-
-    @Test
-    public void getBillboardName1() throws SQLException{
-        assertEquals(undertest.billboards.getBillboardName("boolean test1"), "boolean test1");
-    }
-    //**
-    //Test13 uses getBillboardName method to retrieve the specified billboard name from the database. Uses assertequals method to confirm success.
-    //**
-
-    @Test
-    public void getBillboardName2() throws SQLException{
-        assertEquals(undertest.billboards.getBillboardName("boolean test2"), "boolean test2");
-    }
-
-    //**
-    //Test14 uses getBillboardName method to retrieve the specified billboard name from the database. Uses assertequals method to confirm success.
-    //**
-
-    @Test
-    public void getBillboardName3() throws SQLException{
-        assertEquals(undertest.billboards.getBillboardName("boolean test3"), "boolean test3");
-    }
-
-    //**
-    //Test15 uses getBillboardinfo method to retrieve the specified billboard information from the database. Uses assertequals method to confirm success.
-    //**
-
-    @Test
-    public void getBillboardinfo1() throws SQLException{
-        assertEquals(undertest.billboards.getBillboardInfo("boolean test1"), "info1");
-    }
-
-    //**
-    //Test16 uses uses getBillboardinfo method to retrieve the specified billboard information from the database. Uses assertequals method to confirm success.
-    //**
-
-    @Test
-    public void getBillboardinfo2() throws SQLException{
-        assertEquals(undertest.billboards.getBillboardInfo("boolean test2"), "info2");
-    }
-
-    //**
-    //Test17 uses uses getBillboardinfo method to retrieve the specified billboard information from the database. Uses assertequals method to confirm success.
-    //**
-
-    @Test
-    public void getBillboardinfo3() throws SQLException{
-        assertEquals(undertest.billboards.getBillboardInfo("boolean test3"), "info3");
-    }
-
-    //**
-    //Test18 uses uses DeleteBillboardinfo method to delete the specified billboard from the database. Uses assertTrue method to confirm success.
-    //**
-
-    @Test
-    public void deleteBillboard1() throws SQLException{
-        undertest.billboards.DeleteBillboard("boolean test1");
-        assertTrue(true);
-    }
-
-    //**
-    //Test19 uses uses DeleteBillboardinfo method to delete the specified billboard from the database. Uses assertTrue method to confirm success.
-    //**
-
-    @Test
-    public void deleteBillboard2() throws SQLException{
-        undertest.billboards.DeleteBillboard("boolean test2");
-        assertTrue(true);
-    }
-
-    //**
-    //Test20 uses uses DeleteBillboardinfo method to delete the specified billboard from the database. Uses assertTrue method to confirm success.
-    //**
-
-    @Test
-    public void deleteBillboard3() throws SQLException{
-        undertest.billboards.DeleteBillboard("boolean test3");
-        assertTrue(true);
-    }
-
-    //**
-    //Test21 uses uses getAllBillboards method to retrieve the names of all billboards in the database. Uses a predefined list to test against.
-    //**
-
-    @Test
-    public void allEntries() throws SQLException{
-        List<String> actual = undertest.billboards.getAllBillboards();
-        List<String> expected = Arrays.asList("testBoard", "test1", "test25", "boolean test1");
-
-       assertEquals(actual, expected);
-
-    }
+//    //**
+//    //Test1 to check if test1 billboard is added to the database correctly. Get billboard method is called to confirm addition.
+//    //**
+//    @Test
+//    public void AddTest() throws SQLException {
+//        if (!undertest.billboards.checkForBillboard("test1")) {
+//            undertest.billboards.addBillboard("test1", "msg", "info", "picURL", new byte[]{0, 1, 2}, "msgColour", "backColour", "infoColour");
+//        }
+//            assertEquals(undertest.billboards.checkForBillboard("test1"), true);
+//    }
+//
+//    //**
+//    //Test2 to check if billboard method is called to confirm additions.
+//    //**
+//    @Test
+//    public void GetTest1() throws SQLException{
+//        undertest.billboards.getBillboard();
+//    }
+//
+//    //**
+//    //Test5 to check if deleteBillboard method correctly deletes the right billboard. Get billboard method is called to confirm addition.
+//    //**
+//
+//    @Test
+//    public void DeleteTest1() throws SQLException {
+//        undertest.billboards.deleteBillboard("test1");
+//        undertest.billboards.getBillboard();
+//    }
+//
+//    //**
+//    //Test6 to check if deleteBillboard method correctly deletes the right billboard. Get billboard method is called to confirm addition.
+//    //**
+//
+//    @Test
+//    public void DeleteTest2() throws SQLException {
+//        undertest.billboards.deleteBillboard("test2");
+//        undertest.billboards.getBillboard();
+//    }
+//
+//    //**
+//    //Test7 to check if deleteBillboard method correctly deletes the right billboard. Get billboard method is called to confirm addition.
+//    //**
+//
+//    @Test
+//    public void DeleteTest3() throws SQLException {
+//        undertest.billboards.deleteBillboard("test3");
+//        undertest.billboards.getBillboard();
+//    }
+//
+//    //**
+//    //Test8 to check if billboard method is called to confirm additions and ensure all tests were deleted successfully.
+//    //**
+//
+//    @Test
+//    public void GetTest2() throws SQLException{
+//        undertest.billboards.getBillboard();
+//    }
+//
+//    //**
+//    //Test9 adds a billboard to the database using boolean add method, assert true is used to determine success of test.
+//    //**
+//
+//    @Test
+//    public void AddTest1() throws SQLException{
+//        undertest.billboards.AddBillboard("boolean test1", "msg1", "info1", "picURL", new byte[]{0, 1, 2}, "msgColour", "backColour", "infoColour" );
+//        assertTrue(true);
+//    }
+//
+//    //**
+//    //Test10 adds a billboard to the database using boolean add method, assert true is used to determine success of test.
+//    //**
+//
+//    @Test
+//    public void AddTest2() throws SQLException{
+//        undertest.billboards.AddBillboard("boolean test2", "msg2", "info2", "picURL", new byte[]{0, 1, 2}, "msgColour", "backColour", "infoColour" );
+//        assertTrue(true);
+//    }
+//
+//    //**
+//    //Test11 adds a billboard to the database using boolean add method, assert true is used to determine success of test.
+//    //**
+//
+//    @Test
+//    public void AddTest3() throws SQLException{
+//        undertest.billboards.AddBillboard("boolean test3", "msg3", "info3", "picURL", new byte[]{0, 1, 2}, "msgColour", "backColour", "infoColour" );
+//        assertTrue(true);
+//    }
+//
+//    //**
+//    //Test12 uses getBillboardName method to retrieve the specified billboard name from the database. Uses assertequals method to confirm success.
+//    //**
+//
+//    @Test
+//    public void getBillboardName1() throws SQLException{
+//        assertEquals(undertest.billboards.getBillboardName("boolean test1"), "boolean test1");
+//    }
+//    //**
+//    //Test13 uses getBillboardName method to retrieve the specified billboard name from the database. Uses assertequals method to confirm success.
+//    //**
+//
+//    @Test
+//    public void getBillboardName2() throws SQLException{
+//        assertEquals(undertest.billboards.getBillboardName("boolean test2"), "boolean test2");
+//    }
+//
+//    //**
+//    //Test14 uses getBillboardName method to retrieve the specified billboard name from the database. Uses assertequals method to confirm success.
+//    //**
+//
+//    @Test
+//    public void getBillboardName3() throws SQLException{
+//        assertEquals(undertest.billboards.getBillboardName("boolean test3"), "boolean test3");
+//    }
+//
+//    //**
+//    //Test15 uses getBillboardinfo method to retrieve the specified billboard information from the database. Uses assertequals method to confirm success.
+//    //**
+//
+//    @Test
+//    public void getBillboardinfo1() throws SQLException{
+//        assertEquals(undertest.billboards.getBillboardInfo("boolean test1"), "info1");
+//    }
+//
+//    //**
+//    //Test16 uses uses getBillboardinfo method to retrieve the specified billboard information from the database. Uses assertequals method to confirm success.
+//    //**
+//
+//    @Test
+//    public void getBillboardinfo2() throws SQLException{
+//        assertEquals(undertest.billboards.getBillboardInfo("boolean test2"), "info2");
+//    }
+//
+//    //**
+//    //Test17 uses uses getBillboardinfo method to retrieve the specified billboard information from the database. Uses assertequals method to confirm success.
+//    //**
+//
+//    @Test
+//    public void getBillboardinfo3() throws SQLException{
+//        assertEquals(undertest.billboards.getBillboardInfo("boolean test3"), "info3");
+//    }
+//
+//    //**
+//    //Test18 uses uses DeleteBillboardinfo method to delete the specified billboard from the database. Uses assertTrue method to confirm success.
+//    //**
+//
+//    @Test
+//    public void deleteBillboard1() throws SQLException{
+//        undertest.billboards.DeleteBillboard("boolean test1");
+//        assertTrue(true);
+//    }
+//
+//    //**
+//    //Test19 uses uses DeleteBillboardinfo method to delete the specified billboard from the database. Uses assertTrue method to confirm success.
+//    //**
+//
+//    @Test
+//    public void deleteBillboard2() throws SQLException{
+//        undertest.billboards.DeleteBillboard("boolean test2");
+//        assertTrue(true);
+//    }
+//
+//    //**
+//    //Test20 uses uses DeleteBillboardinfo method to delete the specified billboard from the database. Uses assertTrue method to confirm success.
+//    //**
+//
+//    @Test
+//    public void deleteBillboard3() throws SQLException{
+//        undertest.billboards.DeleteBillboard("boolean test3");
+//        assertTrue(true);
+//    }
+//
+//    //**
+//    //Test21 uses uses getAllBillboards method to retrieve the names of all billboards in the database. Uses a predefined list to test against.
+//    //**
+//
+//    @Test
+//    public void allEntries() throws SQLException{
+//        List<String> actual = undertest.billboards.getAllBillboards();
+//        List<String> expected = Arrays.asList("testBoard", "test1", "test25", "boolean test1");
+//
+//       assertEquals(actual, expected);
+//
+//    }
 
 
 
@@ -272,132 +273,72 @@ public class MariaDBTest {
     //**
 
     @Test
-    public void userTest1() throws SQLException{
-        undertest.users.AddUser("user1", "password1", 1, salt );
-        assertTrue(true);
+    public void userTest() throws SQLException {
+        if (!undertest.users.checkForUser("user1")) {
+            undertest.users.add("user1", "password1", 1, HashCredentials.CreateSalt());
+        }
+        assertTrue(undertest.users.checkForUser("user1"));
+        undertest.users.delete("user1");
     }
 
     //**
-    //Test2 Adds a user to the database, user2, with password2, level 2 access.
+    //Test2 Uses getPassword method to get password of user1.
     //**
-
     @Test
-    public void userTest2() throws SQLException{
-        undertest.users.AddUser("user2", "password2", 2, salt );
-        assertTrue(true);
+    public void getPasswordTest() throws SQLException {
+        if (!undertest.users.checkForUser("user1")) {
+            undertest.users.add("user1", "password1", 1, HashCredentials.CreateSalt());
+        }
+        assertEquals(undertest.users.getPassword("user1"), "password1");
+        undertest.users.delete("user1");
     }
 
     //**
-    //Test3 Adds a user to the database, user3, with password3, level 3 access.
+    //Test3 Uses GetUserAccess method to get the user access of user1.
     //**
-
     @Test
-    public void userTest3() throws SQLException{
-        undertest.users.AddUser("user3", "password3", 3, salt );
-        assertTrue(true);
+    public void getUserAccessTest() throws SQLException {
+        if (!undertest.users.checkForUser("user1")) {
+            undertest.users.add("user1", "password1", 1, HashCredentials.CreateSalt());
+        }
+        assertEquals(undertest.users.getAccess("user1"), 1);
+        undertest.users.delete("user1");
     }
 
     //**
-    //Test4 Uses getPassword method to get password of user1.
+    //Test4 Uses GetUserAccess method to check user1 has salt.
     //**
-
-
     @Test
-    public void getPasswordTest1() throws SQLException {
-        assertEquals(undertest.users.GetUserPassword("user1"), "password1");
+    public void getUserSaltTest() throws SQLException {
+        if (!undertest.users.checkForUser("user1")) {
+            undertest.users.add("user1", "password1", 1, HashCredentials.CreateSalt());
+        }
+        assertNotEquals(undertest.users.getSalt("user1"), null);
+        undertest.users.delete("user1");
     }
 
     //**
-    //Test5 Uses getPassword method to get password of user2.
+    //Test5 Retrieves all usernames from the user's database.
     //**
-
     @Test
-    public void getPasswordTest2() throws SQLException {
-        assertEquals(undertest.users.GetUserPassword("user2"), "password2");
-
+    public void allUserEntries() throws SQLException {
+        undertest.users.add("user1", "password1", 1, HashCredentials.CreateSalt());
+        undertest.users.add("user2", "password1", 1, HashCredentials.CreateSalt());
+        undertest.users.add("user3", "password1", 1, HashCredentials.CreateSalt());
+        List<String> expected = Arrays.asList("admin", "user2", "user3", "user1");
+        assertEquals(undertest.users.getAllUsernames(), expected);
     }
-    //**
-    //Test6 Uses getPassword method to get password of user3.
-    //**
 
+    //**
+    //Test6 tests the edit of and existing user.
+    //**
     @Test
-    public void getPasswordTest3() throws SQLException {
-        assertEquals(undertest.users.GetUserPassword("user3"), "password3");
+    public void editUserEntry() throws SQLException {
+        if (!undertest.users.checkForUser("user1")) {
+            undertest.users.add("user1", "password1", 1, HashCredentials.CreateSalt());
+        }
+        undertest.users.edit("user1","password2", 2, HashCredentials.CreateSalt());
+        assertEquals(undertest.users.getPassword("user1"), "password2");
+        assertEquals(undertest.users.getAccess("user1"), 2);
     }
-
-    //**
-    //Test7 Uses GetUserAccess method to get the user access of user1.
-    //**
-
-    @Test
-    public void getUserAccessTest1() throws SQLException {
-        assertEquals(undertest.users.GetUserAccess("user1"), 1);
-    }
-
-    //**
-    //Test8 Uses GetUserAccess method to get the user access of user2.
-    //**
-
-    @Test
-    public void getUserAccessTest2() throws SQLException {
-        assertEquals(undertest.users.GetUserAccess("user2"), 2);
-    }
-
-    //**
-    //Test9 GetUserAccess method to get the user access of user2.
-    //**
-
-    @Test
-    public void getUserAccessTest3() throws SQLException {
-        assertEquals(undertest.users.GetUserAccess("user3"), 3);
-    }
-
-    //**
-    //Test10 DeleteUser method to delete user1 from the users database
-    //**
-
-    @Test
-    public void deleteUserTest1() throws SQLException{
-        undertest.users.DeleteUser("user1");
-        assertTrue(true);
-
-    }
-
-    //**
-    //Test11 DeleteUser method to delete user2 from the users database
-    //**
-
-
-    @Test
-    public void deleteUserTest2() throws SQLException{
-        undertest.users.DeleteUser("user2");
-        assertTrue(true);
-
-    }
-
-    //**
-    //Test10 DeleteUser method to delete user1 from the users database
-    //**
-
-    @Test
-    public void deleteUserTest3() throws SQLException{
-        undertest.users.DeleteUser("user3");
-        assertTrue(true);
-
-    }
-
-    //**
-    //Test11 Retrieves all usernames from the user's database.
-    //**
-
-    @Test
-    public void allUserEntries() throws SQLException{
-        List<String> actual = undertest.users.getAllUsers();
-        List<String> expected = Arrays.asList("admin", "user1", "user2", "user3");
-
-        assertEquals(actual, expected);
-
-    }
-
-
 }
