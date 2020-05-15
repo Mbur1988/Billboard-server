@@ -11,7 +11,8 @@ public class User implements Serializable {
     private UUID id;
     private String username;
     private String password;
-    private Integer access;
+    private int access;
+    private String action;
 
     /**
      * Class constructor that sets variables to default values
@@ -19,9 +20,10 @@ public class User implements Serializable {
     public User() {
         this.verified = false;
         this.id = null;
-        this.username = "";
-        this.password = "";
+        this.username = null;
+        this.password = null;
         this.access = 0;
+        this.action = null;
     }
 
     /**
@@ -29,12 +31,13 @@ public class User implements Serializable {
      * @param username the username as a string
      * @param password the password as a string
      */
-    public User(String username, String password) {
+    public User(String username, String password, int access) {
         this.verified = false;
         this.id = null;
         this.username = username;
         this.password = password;
-        this.access = 0;
+        this.access = access;
+        this.action = null;
     }
 
     /**
@@ -115,6 +118,22 @@ public class User implements Serializable {
      */
     public void setAccess(int access) {
         this.access = access;
+    }
+
+    /**
+     * returns the action that is currently set as a string
+     * @return the action
+     */
+    public String getAction() {
+        return action;
+    }
+
+    /**
+     * Sets the action request of the user
+     * @param action
+     */
+    public void setAction(String action) {
+        this.action = action;
     }
 
     /**

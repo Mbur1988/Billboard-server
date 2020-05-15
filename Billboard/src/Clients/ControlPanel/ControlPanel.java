@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class ControlPanel extends Client {
 
-    public static User user = new User();
+    public static User user;
 
     public static void main(String[] args) {
         Log.Message("Control panel started");
@@ -18,9 +18,9 @@ public class ControlPanel extends Client {
 
         //** Uncomment the below line for testing of control panel. **//
         //** Remember to comment it again before any pull request is made **//
-         ControlPanelInterface.controlPanelScreen();
+        // ControlPanelInterface.controlPanelScreen();
 
-        //LoginInterface.loginScreen();
+        LoginInterface.loginScreen();
     }
 
     /**

@@ -1,11 +1,11 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
 import Clients.ControlPanel.ControlPanelTools.Tools;
-
+import Clients.ControlPanel.ControlPanelTools.UserAccess;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-
+import static Clients.ControlPanel.ControlPanel.user;
 
 public class ControlPanelInterface {
 
@@ -37,11 +37,19 @@ public class ControlPanelInterface {
         // Elements for each pane:
 
         // Add the tabs to the tab pane.
-        tabs.add("Create Billboard",createPanel);
-        tabs.add("List Billboards",listPanel);
-        tabs.add("Schedule Billboard",schedulePanel);
+        if (UserAccess.dec2bin(user.getAccess())[0] == 1) {
+            tabs.add("Create Billboard",createPanel);
+        }
+        if (UserAccess.dec2bin(user.getAccess())[1] == 1) {
+            tabs.add("Edit Billboards", listPanel);
+        }
+        if (UserAccess.dec2bin(user.getAccess())[2] == 1) {
+            tabs.add("Schedule Billboards", schedulePanel);
+        }
         tabs.add("Change Password",passwordPanel);
-        tabs.add("Edit Users", editUserPanel);
+        if (UserAccess.dec2bin(user.getAccess())[3] == 1) {
+            tabs.add("Edit Users", editUserPanel);
+        }
 
         try {
             CreatePanel.createPanelScreen();
