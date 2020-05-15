@@ -84,7 +84,7 @@ public class CPHandler extends ConnectionHandler {
             // If the current control panel user is not verified then check credential validity
             else if (!user.isVerified() && user.getAction().equals("loginAttempt")) {
                 Log.Message("Login attempt received from control panel");
-                AttemptAuthentication();
+                AttemptLogin();
                 objectStreamer.Send(user);
                 Log.Message("User object sent to control panel");
             }
@@ -110,23 +110,23 @@ public class CPHandler extends ConnectionHandler {
      * Regardless of whether the user is validated or not, the password variable of the current user instance will be
      * cleared for security.
      */
-    private void AttemptAuthentication() {
+    private void AttemptLogin() {
         // Get login credentials from user instance
         String username = user.getUsername();
         String password = user.getPassword();
         try {
             // get the relevant salt for the user from the database
-            byte[] salt = mariaDB.users.GetUserSalt(username);
+            byte[] salt = mariaDB.users.getSalt(username);
             // salt-hash the password using the relevant salt
             String toCheck = HashCredentials.Hash(password, salt);
             // check whether the salt-hashed password matches that stored on the database
-            if (toCheck.equals(mariaDB.users.GetUserPassword(username))) {
+            if (toCheck.equals(mariaDB.users.getPassword(username))) {
                 // if passwords match then validate user and update authorised list
                 user.setVerified(true);
                 UUID uuid = UUID.randomUUID();
                 Authorised.Add(username, uuid);
                 user.setId(uuid);
-                user.setAccess(mariaDB.users.GetUserAccess(username));
+                user.setAccess(mariaDB.users.getAccess(username));
                 // print confirmation log message
                 Log.Confirmation("User credentials validated");
             }
@@ -150,7 +150,7 @@ public class CPHandler extends ConnectionHandler {
             Log.Message("User object received from control panel");
             byte[] salt = HashCredentials.CreateSalt();
             String password = HashCredentials.Hash(newUser.getPassword(), salt);
-            dos.writeBoolean(mariaDB.users.AddUser(
+            dos.writeBoolean(mariaDB.users.add(
                     newUser.getUsername(),
                     password,
                     newUser.getAccess(),
@@ -170,7 +170,27 @@ public class CPHandler extends ConnectionHandler {
     }
 
     private void ChangePassword() {
-
+        try {
+            String username = user.getUsername();
+            String password = dis.readUTF();
+            Log.Confirmation("message received from control panel");
+            byte[] salt = mariaDB.users.getSalt(username);
+            String toCheck = HashCredentials.Hash(password, salt);
+            if (toCheck.equals(mariaDB.users.getPassword(username))) {                Log.Confirmation("password correct");
+                dos.writeBoolean(true);
+                salt = HashCredentials.CreateSalt();
+                password = dis.readUTF();
+                Log.Confirmation("message received from control panel");
+                password = HashCredentials.Hash(password, salt);
+                dos.writeBoolean(mariaDB.users.edit(user.getUsername(), password, salt));
+            }
+            else {
+                Log.Confirmation("password incorrect");
+                dos.writeBoolean(false);
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void AddNewBillboard() {

@@ -33,30 +33,12 @@ public class MariaDB {
     }
 
     /**
-     * Returns the JDBC driver used by MariaDB class
-     *
-     * @return JDBC driver as string
-     */
-    public static String getJdbcDriver() {
-        return JDBC_DRIVER;
-    }
-
-    /**
      * Sets the URL to be used by the MariaDB class instance
      *
      * @param url URL as string
      */
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    /**
-     * Gets the URL used by the MariaDB class instance
-     *
-     * @return URL as string
-     */
-    public String getUrl() {
-        return url;
     }
 
     /**
@@ -69,30 +51,12 @@ public class MariaDB {
     }
 
     /**
-     * Gets the schema used by the MariaDB class instance
-     *
-     * @return Schema as string
-     */
-    public String getSchema() {
-        return schema;
-    }
-
-    /**
      * Sets the userName to be used by the MariaDB class instance
      *
      * @param userName
      */
     public void setUsername(String userName) {
         this.username = userName;
-    }
-
-    /**
-     * Gets the userName used by the MariaDB class instance
-     *
-     * @return Username as string
-     */
-    public String getUsername() {
-        return username;
     }
 
     /**
@@ -111,42 +75,6 @@ public class MariaDB {
      */
     public String getPassword() {
         return password;
-    }
-
-    /**
-     * Sets the connection to be used by the MariaDB class instance
-     *
-     * @param connection
-     */
-    private void setConnection(Connection connection) {
-        this.connection = connection;
-    }
-
-    /**
-     * Gets the connection used by the MariaDB class instance
-     *
-     * @return Connection
-     */
-    private Connection getConnection() {
-        return connection;
-    }
-
-    /**
-     * Sets the statement to be used by the MariaDB class instance
-     *
-     * @param statement
-     */
-    private void setStatement(Statement statement) {
-        this.statement = statement;
-    }
-
-    /**
-     * Gets the statement used by the MariaDB class instance
-     *
-     * @return Statement
-     */
-    private Statement getStatement() {
-        return statement;
     }
 
     /**
@@ -186,48 +114,18 @@ public class MariaDB {
         }
     }
 
-    /**
-     * Closes the current database connection
-     */
-    public void Disconnect() {
-        try {
-            statement.close();
-            connection.close();
-            Log.Warning("Database connection closed");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Checks the database for the required tables
-     * If any of the required tables does not exist then a default version is generated
-     *
-     * @throws SQLException
-     */
-    private void CheckForTables() throws SQLException {
-        if (!CheckForTable("users") && users!=null) {
-            users.CreateUsersTable();
-        }
-        else if (CheckForTable("users") && !users.CheckForUsers()) {
-            users.CreateDefaultUser();
-        }
-        if (!CheckForTable("billboards") && billboards!=null) {
-            billboards.CreateBillboardsTable();
-        }
-        else if (CheckForTable("billboard") && !billboards.checkForBillboard())
-        {
-            billboards.CreateDefaultBillboard();
-        }
-        if (!CheckForTable("scheduling")&& scheduling!=null) {
-            scheduling.CreateSchedulingTable();
-        }
-
-    }
-
-    /*private void deleteTest() throws SQLException{
-        billboards.deleteBillboard();
-    }*/
+//    /**
+//     * Closes the current database connection
+//     */
+//    public void Disconnect() {
+//        try {
+//            statement.close();
+//            connection.close();
+//            Log.Warning("Database connection closed");
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * Checks whether the specified table exists within the database
@@ -245,6 +143,29 @@ public class MariaDB {
         }
     }
 
+    /**
+     * Checks the database for the required tables
+     * If any of the required tables does not exist then a default version is generated
+     *
+     * @throws SQLException
+     */
+    private void CheckForTables() throws SQLException {
+        if (!CheckForTable("users") && users!=null) {
+            users.createTable();
+        }
+        else if (CheckForTable("users") && !users.checkForUsers()) {
+            users.createDefaultUser();
+        }
+        if (!CheckForTable("billboards") && billboards!=null) {
+            billboards.CreateBillboardsTable();
+        }
+        if (!CheckForTable("scheduling")&& scheduling!=null) {
+            scheduling.CreateSchedulingTable();
+        }
+    }
+
+
+
     public class Users {
 
         /**
@@ -252,13 +173,17 @@ public class MariaDB {
          *
          * @throws SQLException
          */
-        private void CreateUsersTable() throws SQLException {
+        private void createTable() throws SQLException {
             statement.executeUpdate("CREATE TABLE users (username VARCHAR(64) UNIQUE KEY, password VARCHAR(64), access INT NOT NULL, salt VARBINARY(10));");
             Log.Confirmation("Table created: users");
-            CreateDefaultUser();
+            createDefaultUser();
         }
 
-        private void CreateDefaultUser() throws SQLException {
+        /**
+         * Adds a default user to the users table
+         * @throws SQLException
+         */
+        private void createDefaultUser() throws SQLException {
             String username = "admin";
             String password = HashCredentials.Hash("default");
             int access = 15;
@@ -273,7 +198,36 @@ public class MariaDB {
             Log.Confirmation("User created: admin");
         }
 
-        private boolean CheckForUser(String username) throws SQLException {
+        /**
+         * Adds a new user to the users table as long as the username does not already exist
+         *
+         * @param username the username of the entry as String
+         * @param password the password of the entry as String
+         * @param access   the access level of the entry as an Integer
+         * @return true if the entry is successful and false if an entry already exists with the same username
+         * @throws SQLException
+         */
+        public boolean add(String username, String password, Integer access, byte[] salt) throws SQLException {
+            if (checkForUser(username)) {
+                return false;
+            } else {
+                PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `users`(username, password, access, salt) VALUES (?, ?, ?, ?)");
+                pstmt.setString(1, username);
+                pstmt.setString(2, password);
+                pstmt.setInt(3, access);
+                pstmt.setBytes(4, salt);
+                pstmt.executeUpdate();
+                return true;
+            }
+        }
+
+        /**
+         * Checks the users table for the specified entry
+         * @param username the username to search the database for
+         * @return boolean of whether the user exists
+         * @throws SQLException
+         */
+        public boolean checkForUser(String username) throws SQLException {
             ResultSet result;
             if (username == null) {
                 result = statement.executeQuery("SELECT * FROM users;");
@@ -289,31 +243,80 @@ public class MariaDB {
             }
         }
 
-        private boolean CheckForUsers() throws SQLException {
-            return CheckForUser(null);
+        private boolean checkForUsers() throws SQLException {
+            return checkForUser(null);
         }
 
         /**
-         * Adds a new user to the users table as long as the username does not already exist
-         *
-         * @param username the username of the entry as String
-         * @param password the password of the entry as String
-         * @param access   the access level of the entry as an Integer
-         * @return true if the entry is successful and false if an entry already exists with the same username
+         * Deletes existing user field
+         * @param username Username of the user to delete
+         * @return boolean value true if operation was successful else false
          * @throws SQLException
          */
-        public boolean AddUser(String username, String password, Integer access, byte[] salt) throws SQLException {
-            if (CheckForUser(username)) {
-                return false;
+        public boolean delete(String username) throws SQLException {
+            if (checkForUser(username)) {
+                statement.executeQuery("DELETE FROM users WHERE username='" + username + "';");
+                if (checkForUser(username)) {
+                    return false;
+                } else {
+                    return true;
+                }
             } else {
-                PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `users`(username, password, access, salt) VALUES (?, ?, ?, ?)");
-                pstmt.setString(1, username);
-                pstmt.setString(2, password);
-                pstmt.setInt(3, access);
-                pstmt.setBytes(4, salt);
-                pstmt.executeUpdate();
-                return true;
+                return false;
             }
+        }
+
+        /**
+         * Edits existing user fields; password, access and salt
+         * @param username Username of the user to edit
+         * @param password New password as string
+         * @param access new access level as integer
+         * @param salt new salt as byte array
+         * @return boolean value true if operation was successful else false
+         * @throws SQLException
+         */
+        public boolean edit(String username, String password, Integer access, byte[] salt) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
+            if (result.next()) {
+                if (password == null) {
+                    password = users.getPassword(username);
+                }
+                if (access == null) {
+                    access = users.getAccess(username);
+                }
+                if (salt == null) {
+                    salt = users.getSalt(username);
+                }
+                users.delete(username);
+                users.add(username, password, access, salt);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        /**
+         * Edits existing user access field
+         * @param username Username of the user to edit
+         * @param access new access level as integer
+         * @return boolean value true if operation was successful else false
+         * @throws SQLException
+         */
+        public boolean edit(String username, Integer access) throws SQLException {
+            return edit(username, null, access, null);
+        }
+
+        /**
+         * Edits existing user fields; password and salt
+         *
+         * @param username Username of the user to edit
+         * @param password New password as string
+         * @param salt new salt as byte array
+         * @return boolean value true if operation was successful else false
+         * @throws SQLException
+         */
+        public boolean edit(String username, String password, byte[] salt) throws SQLException {
+            return edit(username, password, null, salt);
         }
 
         /**
@@ -323,14 +326,13 @@ public class MariaDB {
          * @return the password as a string else null if the entry does not exist
          * @throws SQLException
          */
-        public String GetUserPassword(String username) throws SQLException {
+        public String getPassword(String username) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
             if (result.next()) {
                 return result.getString("password");
             } else {
                 return null;
             }
-
         }
 
         /**
@@ -340,7 +342,7 @@ public class MariaDB {
          * @return the access level as an integer else null if the entry does not exist
          * @throws SQLException
          */
-        public Integer GetUserAccess(String username) throws SQLException {
+        public Integer getAccess(String username) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
             if (result.next()) {
                 return result.getInt("access");
@@ -356,132 +358,12 @@ public class MariaDB {
          * @return the password as a byte array else null if the entry does not exist
          * @throws SQLException
          */
-        public byte[] GetUserSalt(String username) throws SQLException {
+        public byte[] getSalt(String username) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
             if (result.next()) {
                 return result.getBytes("salt");
             } else {
                 return null;
-            }
-        }
-
-//        /**
-//         * Edits existing user fields; password, access and salt
-//         *
-//         * @param username Username of the user to edit
-//         * @param password New password as string
-//         * @param access new access level as integer
-//         * @param salt new salt as byte array
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, String password, Integer access, byte[] salt) throws SQLException {
-//            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
-//            if (result.next()) {
-//                if (password != null)
-//                    statement.executeQuery("UPDATE users SET password='" + password + "' WHERE username='" + username + "';");
-//                if (access != null)
-//                    statement.executeQuery("UPDATE users SET access='" + access + "' WHERE username='" + username + "';");
-//                if (salt != null)
-//                    statement.executeQuery("UPDATE users SET salt='" + salt + "' WHERE username='" + username + "';");
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        }
-//
-//        /**
-//         * Edits existing user password field
-//         *
-//         * @param username Username of the user to edit
-//         * @param password New password as string
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, String password) throws SQLException {
-//            return EditUser(username, password, null, null);
-//        }
-//
-//        /**
-//         * Edits existing user access field
-//         *
-//         * @param username Username of the user to edit
-//         * @param access new access level as integer
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, Integer access) throws SQLException {
-//            return EditUser(username, null, access, null);
-//        }
-//
-//        /**
-//         * Edits existing user salt field
-//         *
-//         * @param username Username of the user to edit
-//         * @param salt new salt as byte array
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, byte[] salt) throws SQLException {
-//            return EditUser(username, null, null, salt);
-//        }
-//
-//        /**
-//         * Edits existing user fields; access and salt
-//         *
-//         * @param username Username of the user to edit
-//         * @param access new access level as integer
-//         * @param salt new salt as byte array
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, Integer access, byte[] salt) throws SQLException {
-//            return EditUser(username, null, access, salt);
-//        }
-//
-//        /**
-//         * Edits existing user fields; password and salt
-//         *
-//         * @param username Username of the user to edit
-//         * @param password New password as string
-//         * @param salt new salt as byte array
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, String password, byte[] salt) throws SQLException {
-//            return EditUser(username, password, null, salt);
-//        }
-//
-//        /**
-//         * Edits existing user fields; password and access
-//         *
-//         * @param username Username of the user to edit
-//         * @param password New password as string
-//         * @param access new access level as integer
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, String password, Integer access) throws SQLException {
-//            return EditUser(username, password, access, null);
-//        }
-
-        /**
-         * Deletes existing user field
-         *
-         * @param username Username of the user to delete
-         * @return boolean value true if operation was successful else false
-         * @throws SQLException
-         */
-        public boolean DeleteUser(String username) throws SQLException {
-            if (CheckForUser(username)) {
-                statement.executeQuery("DELETE FROM users WHERE username='" + username + "';");
-                if (CheckForUser(username)) {
-                    return false;
-                } else {
-                    return true;
-                }
-            } else {
-                return false;
             }
         }
 
@@ -491,9 +373,7 @@ public class MariaDB {
          * @return ArrayList as a string list
          * @throws SQLException
          */
-
-
-        public ArrayList<String> getAllUsers() throws SQLException {
+        public ArrayList<String> getAllUsernames() throws SQLException {
             String retrieve = "SELECT * FROM users";
             ResultSet result = statement.executeQuery(retrieve);
             ArrayList<String> allUsers = new ArrayList<>();
@@ -504,6 +384,8 @@ public class MariaDB {
             return allUsers;
         }
     }
+
+
 
     public class Billboards {
 
@@ -650,10 +532,6 @@ public class MariaDB {
             }
         }
 
-        private boolean checkForBillboard() throws SQLException {
-            return checkForBillboard(null);
-        }
-
         /**
          * Method to delete a specified billboard from the billboards database.
          *
@@ -775,6 +653,7 @@ public class MariaDB {
 
 
     }
+
 
 
     public class Scheduling {
