@@ -171,12 +171,12 @@ public class CPHandler extends ConnectionHandler {
 
     private void ChangePassword() {
         try {
+            String username = user.getUsername();
             String password = dis.readUTF();
             Log.Confirmation("message received from control panel");
-            byte[] salt = mariaDB.users.getSalt(user.getUsername());
-            password = HashCredentials.Hash(password, salt);
-            if (password.equals(user.getPassword())) {
-                Log.Confirmation("password correct");
+            byte[] salt = mariaDB.users.getSalt(username);
+            String toCheck = HashCredentials.Hash(password, salt);
+            if (toCheck.equals(mariaDB.users.getPassword(username))) {                Log.Confirmation("password correct");
                 dos.writeBoolean(true);
                 salt = HashCredentials.CreateSalt();
                 password = dis.readUTF();
@@ -185,7 +185,7 @@ public class CPHandler extends ConnectionHandler {
                 dos.writeBoolean(mariaDB.users.edit(user.getUsername(), password, salt));
             }
             else {
-                Log.Confirmation("password correct");
+                Log.Confirmation("password incorrect");
                 dos.writeBoolean(false);
             }
         } catch (IOException | SQLException e) {

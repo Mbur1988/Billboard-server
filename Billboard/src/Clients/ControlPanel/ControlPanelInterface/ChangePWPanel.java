@@ -64,9 +64,9 @@ public class ChangePWPanel extends ControlPanelInterface {
         passwordPanel.add(lbl_message);
 
         b_confirm.addActionListener(event -> {
-            String newPass = String.valueOf(tf_new.getPassword());
-            String confirmPassword = String.valueOf(tf_confirm.getPassword());
-            if (!tf_new.getPassword().equals(tf_confirm.getPassword())) {
+            String newPass = new String(tf_new.getPassword());
+            String confirmPassword = new String(tf_confirm.getPassword());
+            if (!newPass.equals(confirmPassword)) {
                 tf_old.setText("");
                 tf_new.setText("");
                 tf_confirm.setText("");
@@ -83,13 +83,15 @@ public class ChangePWPanel extends ControlPanelInterface {
                         // Send user object to server
                         objectStreamer.Send(user);
                         dos.writeUTF(oldPassword);
-                        if (dis.readBoolean()) {
+                        boolean success = dis.readBoolean();
+                        if (success) {
                             Log.Confirmation("Password check successful");
                             String newPassword = new String(tf_new.getPassword());
                             newPassword = HashCredentials.Hash(newPassword);
                             dos.writeUTF(newPassword);
                             // Await returned object from server
-                            if (dis.readBoolean()) {
+                            success = dis.readBoolean();
+                            if (success) {
                                 Log.Confirmation("Password changed successfully");
                                 lbl_message.setText("Password changed");
                             } else {
@@ -118,6 +120,7 @@ public class ChangePWPanel extends ControlPanelInterface {
             tf_old.setText("");
             tf_new.setText("");
             tf_confirm.setText("");
+            lbl_message.setText("");
         });
     }
 }
