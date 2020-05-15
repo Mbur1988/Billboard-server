@@ -1,13 +1,10 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
-import SerializableObjects.User;
 import Tools.HashCredentials;
 import Tools.Log;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-
 import static Clients.ControlPanel.ControlPanel.*;
 
 public class ChangePWPanel extends ControlPanelInterface {
@@ -64,53 +61,56 @@ public class ChangePWPanel extends ControlPanelInterface {
         JLabel lbl_message = new JLabel("");
         lbl_message.setBounds(250, 350, 300, 50);
         lbl_message.setFont(font);
+        passwordPanel.add(lbl_message);
 
         b_confirm.addActionListener(event -> {
+            String newPass = String.valueOf(tf_new.getPassword());
+            String confirmPassword = String.valueOf(tf_confirm.getPassword());
             if (!tf_new.getPassword().equals(tf_confirm.getPassword())) {
                 tf_old.setText("");
                 tf_new.setText("");
                 tf_confirm.setText("");
                 lbl_message.setText("New password fields must match");
-                passwordPanel.add(lbl_message);
-                return;
             }
-            tf_old.setText("");
-            tf_new.setText("");
-            tf_confirm.setText("");
-            String password = new String(tf_new.getPassword());
-            password = HashCredentials.Hash(password);
-            User newUser = new User(user.getUsername(), password, user.getAccess());
-            user.setAction("editUser");
-            // Attempt connection to server
-            if (AttemptConnect()) {
-                // Try a login attempt
-                try {
-                    // Send user object to server
-                    objectStreamer.Send(user);
-                    objectStreamer.Send(newUser);
-                    // Await returned object from server
-                    boolean userAdded = dis.readBoolean();
-                    if (userAdded) {
-                        Log.Confirmation("Password changed successfully");
-                        lbl_message.setText("Password changed");
-                        passwordPanel.add(lbl_message);
-                    }
-                    else {
-                        Log.Error("Error when changing password");
-                        lbl_message.setText("Unable to change password");
-                        passwordPanel.add(lbl_message);
-                    }
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                    Log.Error("Password change failed");
-                }
-                // Disconnect from server
-                AttemptDisconnect();
-            }
-            // Post message to user if unable to connect to server
             else {
-                Log.Error("Unable to connect to server");
+                Log.Confirmation("New password fields match");
+                String oldPassword = new String(tf_old.getPassword());
+                oldPassword = HashCredentials.Hash(oldPassword);
+                user.setAction("changePassword");
+                if (AttemptConnect()) {
+                    // Try a login attempt
+                    try {
+                        // Send user object to server
+                        objectStreamer.Send(user);
+                        dos.writeUTF(oldPassword);
+                        if (dis.readBoolean()) {
+                            Log.Confirmation("Password check successful");
+                            String newPassword = new String(tf_new.getPassword());
+                            newPassword = HashCredentials.Hash(newPassword);
+                            dos.writeUTF(newPassword);
+                            // Await returned object from server
+                            if (dis.readBoolean()) {
+                                Log.Confirmation("Password changed successfully");
+                                lbl_message.setText("Password changed");
+                            } else {
+                                Log.Error("Error when changing password");
+                                lbl_message.setText("Unable to change password");
+                            }
+                        }
+                        else {
+                            Log.Confirmation("Password check failed");
+                            lbl_message.setText("Existing password incorrect");
+                        }
+                        // Disconnect from server
+                        AttemptDisconnect();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.Error("Server unavailable");
+                    }
+                }
+                tf_old.setText("");
+                tf_new.setText("");
+                tf_confirm.setText("");
             }
         });
 
@@ -118,7 +118,6 @@ public class ChangePWPanel extends ControlPanelInterface {
             tf_old.setText("");
             tf_new.setText("");
             tf_confirm.setText("");
-            passwordPanel.remove(lbl_message);
         });
     }
 }

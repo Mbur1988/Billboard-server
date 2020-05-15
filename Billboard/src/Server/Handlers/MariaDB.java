@@ -296,17 +296,6 @@ public class MariaDB {
         }
 
         /**
-         * Edits existing user password field
-         * @param username Username of the user to edit
-         * @param password New password as string
-         * @return boolean value true if operation was successful else false
-         * @throws SQLException
-         */
-        public boolean edit(String username, String password) throws SQLException {
-            return edit(username, password, null, null);
-        }
-
-        /**
          * Edits existing user access field
          * @param username Username of the user to edit
          * @param access new access level as integer
@@ -315,31 +304,6 @@ public class MariaDB {
          */
         public boolean edit(String username, Integer access) throws SQLException {
             return edit(username, null, access, null);
-        }
-
-        /**
-         * Edits existing user salt field
-         *
-         * @param username Username of the user to edit
-         * @param salt new salt as byte array
-         * @return boolean value true if operation was successful else false
-         * @throws SQLException
-         */
-        public boolean edit(String username, byte[] salt) throws SQLException {
-            return edit(username, null, null, salt);
-        }
-
-        /**
-         * Edits existing user fields; access and salt
-         *
-         * @param username Username of the user to edit
-         * @param access new access level as integer
-         * @param salt new salt as byte array
-         * @return boolean value true if operation was successful else false
-         * @throws SQLException
-         */
-        public boolean edit(String username, Integer access, byte[] salt) throws SQLException {
-            return edit(username, null, access, salt);
         }
 
         /**
@@ -353,19 +317,6 @@ public class MariaDB {
          */
         public boolean edit(String username, String password, byte[] salt) throws SQLException {
             return edit(username, password, null, salt);
-        }
-
-        /**
-         * Edits existing user fields; password and access
-         *
-         * @param username Username of the user to edit
-         * @param password New password as string
-         * @param access new access level as integer
-         * @return boolean value true if operation was successful else false
-         * @throws SQLException
-         */
-        public boolean edit(String username, String password, Integer access) throws SQLException {
-            return edit(username, password, access, null);
         }
 
         /**

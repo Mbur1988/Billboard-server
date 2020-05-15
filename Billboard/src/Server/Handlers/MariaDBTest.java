@@ -322,11 +322,12 @@ public class MariaDBTest {
     //**
     @Test
     public void allUserEntries() throws SQLException {
-        undertest.users.add("user1", "password1", 1, HashCredentials.CreateSalt());
-        undertest.users.add("user2", "password1", 1, HashCredentials.CreateSalt());
-        undertest.users.add("user3", "password1", 1, HashCredentials.CreateSalt());
-        List<String> expected = Arrays.asList("admin", "user2", "user3", "user1");
+        if (!undertest.users.checkForUser("user1")) {
+            undertest.users.add("user1", "password1", 1, HashCredentials.CreateSalt());
+        }
+        List<String> expected = Arrays.asList("admin", "user1");
         assertEquals(undertest.users.getAllUsernames(), expected);
+        undertest.users.delete("user1");
     }
 
     //**
@@ -340,5 +341,6 @@ public class MariaDBTest {
         undertest.users.edit("user1","password2", 2, HashCredentials.CreateSalt());
         assertEquals(undertest.users.getPassword("user1"), "password2");
         assertEquals(undertest.users.getAccess("user1"), 2);
+        undertest.users.delete("user1");
     }
 }
