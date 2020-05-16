@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *************************************************************************************************************************************************************/
 
 public class BillboardTest {
+   // String TestImageLocation = getClass().getResource("/Resources/Images/cat.jpg"); //TODO
     Billboard underTestEmpty;
     Billboard underTestFull;
     byte[] testBytes = new byte[]{0, 1, 2};
@@ -414,6 +415,7 @@ public class BillboardTest {
         Thread.sleep(3000);
         assertTrue(true);
     }
+
     /**
      * Test 33,
      *      Tests making a JTextArea with msg in it
@@ -422,9 +424,70 @@ public class BillboardTest {
     public void infoLabel() throws Exception {
         JFrame testframe = underTestEmpty.createFrame();
         //Uses DisplayImage function CreateLabel()
-        JLabel Test = Billboard.CreateTextArea("info","info input","msg and info");
+        JLabel Test = Billboard.CreateTextArea("info","info input","info only");
         //underTestEmpty.SetVisible(true,underTestEmpty.getJPanel());
         testframe.getContentPane().add(Test);
+        //check visually
+        Thread.sleep(3000);
+        assertTrue(true);
+    }
+    /**
+     * Test 44,
+     *      Tests making a JTextArea with msg and info in it
+     */
+    @Test
+    public void MsgAndInfoLabels() throws Exception {
+
+        underTestEmpty.setInfo("Info");
+        underTestEmpty.setMsg("message");
+        underTestEmpty.showBillboard();
+
+
+        //check visually
+        Thread.sleep(3000);
+        assertTrue(true);
+    }
+    /**
+     * Test 45,
+     *      Tests making a JTextArea with msg and info in it
+     */
+    @Test
+    public void MsgAndImageLabels() throws Exception {
+
+        underTestEmpty.setMsg("message");
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\tavern.png"));
+        underTestEmpty.showBillboard();
+
+
+        //check visually
+        Thread.sleep(3000);
+        assertTrue(true);
+    }
+    /**
+     * Test 46,
+     *      Tests making a JTextArea with msg and info in it
+     */
+    @Test
+    public void ImageLabels() throws Exception {
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\tavern.png"));
+        underTestEmpty.showBillboard();
+
+        //check visually
+        Thread.sleep(3000);
+        assertTrue(true);
+    }
+    /**
+     * Test 45,
+     *      Tests making a JTextArea with msg and info in it
+     */
+    @Test
+    public void InfoAndImageLabels() throws Exception {
+
+        underTestEmpty.setInfo("This is the information");
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\tavern.png"));
+        underTestEmpty.showBillboard();
+
+
         //check visually
         Thread.sleep(3000);
         assertTrue(true);
@@ -533,7 +596,7 @@ public class BillboardTest {
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
         testFrame.setContentPane(testPanel);
-        JLabel LabTest =  underTestEmpty.CreateImageData(underTestEmpty.getPicData());
+        JLabel LabTest =  underTestEmpty.CreateImageData(underTestEmpty.getPicData(),"Image Only");
         testFrame.getContentPane().add(LabTest);
         testFrame.repaint();
 
@@ -553,7 +616,7 @@ public class BillboardTest {
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
         testFrame.setContentPane(testPanel);
-        JLabel LabTest = underTestEmpty.CreateImageData(underTestEmpty.getPicData());
+        JLabel LabTest = underTestEmpty.CreateImageData(underTestEmpty.getPicData(),"Image Only");
         testFrame.getContentPane().add(LabTest);
         testFrame.repaint();
 
@@ -566,8 +629,8 @@ public class BillboardTest {
         (task 74)
         implementing conditions for certain situations with msg or info or image only.
         Also setting max bounds of image.
-        FIXME - msg by its self
-              - info by its self
+        FIXME - msg by its self done
+              - info by its self done
               - Image By self
               - Image by self
      */

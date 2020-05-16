@@ -9,6 +9,8 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 
+import static java.awt.Font.*;
+
 public class Billboard implements Serializable {
     // Get the size of the screen.
     static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -118,54 +120,60 @@ public class Billboard implements Serializable {
         if(Name.equals("message") || Name.equals("Message")) {
             JLabel upperText = new JLabel(message_input,SwingConstants.CENTER);
             upperText.setOpaque(false);
-            switch(placement) {
-                case "msg only": {
-                    upperText.setFont(new Font("Courier", Font.BOLD, 200));
-                    upperText.setBounds(0, 0, screenWidth, screenHeight);
 
-                }
-                case "msg and info": {
-                    upperText.setFont(new Font("Courier", Font.BOLD, 40));
-                    upperText.setBounds(0, 0, screenWidth, screenHeight/2);
-                }
-                case "msg and pic": {
-                    upperText.setFont(new Font("Courier", Font.BOLD, 40));
-                    upperText.setBounds(0, 0, screenWidth, screenHeight / 3);
-                }
+            if(placement == "msg only") {
 
-                case "all": {
+                upperText.setFont(new Font("Courier", BOLD, 150));
+                upperText.setBounds(0, 0, screenWidth, screenHeight);
 
-                    upperText.setBounds(0, 0, screenWidth, screenHeight / 3);
-                }
+            }
+            else if(placement == "msg and info") {
+                upperText.setFont(new Font("Courier", BOLD, 100));
+                upperText.setBounds(0, 0, screenWidth, screenHeight/2);
+            }
+            else if(placement == "msg and pic") {
+                upperText.setFont(new Font("Courier", BOLD, 100));
+                upperText.setBounds(0, 0, screenWidth, screenHeight / 3);
+            }
+
+            else if(placement ==  "all") {
+                upperText.setFont(new Font("Courier", BOLD, 100));
+                upperText.setBounds(0, 0, screenWidth, screenHeight / 3);
             }
             return upperText;
         }
 
+
         else if(Name.equals("info") || Name.equals("Info")){
             JLabel lowerText = new JLabel(message_input,SwingConstants.CENTER);
-            switch(placement) {
 
-                case "info only":
-                    {
-                    lowerText.setFont(new Font("Courier", Font.BOLD, 200));
-                    lowerText.setBounds(0, 0, (3*screenWidth)/4, screenHeight/2);
+            if(placement ==  "info only")
+            {
+                lowerText.setFont(new Font("Courier", BOLD, 80));
 
-                }
-                case "msg and info":
-                    {
-                    lowerText.setFont(new Font("Courier", Font.BOLD, 40));
-                    lowerText.setBounds(0, screenHeight/2, screenWidth, screenHeight/2);
-                }
-                case "info and pic": {
-                    lowerText.setFont(new Font("Courier", Font.BOLD, 40));
-                    lowerText.setBounds(0, (2*screenHeight)/3, (3*screenWidth)/4, screenHeight / 3);
-                }
-                case "all": {
-                    lowerText.setFont(new Font("Courier", Font.BOLD, 40));
-                    lowerText.setBounds(0, (2*screenHeight)/3, screenWidth, screenHeight / 3);
+                lowerText.setBounds(new Rectangle((screenWidth/8),(screenHeight/4),(3*screenWidth/4),(screenHeight/2)));
+                lowerText.setHorizontalAlignment(SwingConstants.CENTER);
+                lowerText.setVerticalAlignment(SwingConstants.CENTER);
 
-                }
             }
+
+            else if(placement == "msg and info")
+                {
+                lowerText.setFont(new Font("Courier", BOLD, 75));
+                lowerText.setBounds(0, screenHeight/2, screenWidth, screenHeight/2);
+            }
+            else if(placement == "info and pic") {
+                lowerText.setFont(new Font("Courier", BOLD, 75));
+                lowerText.setBounds((screenWidth/8), (2*screenHeight)/3, (3*screenWidth)/4, screenHeight / 3);
+                lowerText.setHorizontalAlignment(SwingConstants.CENTER);
+            }
+            else if(placement == "all") {
+                lowerText.setFont(new Font("Courier", BOLD, 75));
+                lowerText.setBounds((screenWidth/8), (2*screenHeight)/3, (3*screenWidth)/4, screenHeight / 3);
+                lowerText.setHorizontalAlignment(SwingConstants.CENTER);
+
+            }
+
             return lowerText;
         }
         else {
@@ -173,7 +181,6 @@ public class Billboard implements Serializable {
         }
 
     }
-
     /**
      * This method finds the image that is stored at the location of the Filepath and creates an image in the system
      * @param Filepath location of image to use
@@ -198,7 +205,7 @@ public class Billboard implements Serializable {
      * @return returns JLabel to display
      * @throws Exception IO exception and brawd in case
      */
-    public static JLabel CreateImageData(byte[] Data) throws Exception {
+    public static JLabel CreateImageData(byte[] Data, String placement) throws Exception {
         // get image into BIS
         ByteArrayInputStream bis = new ByteArrayInputStream(Data);
         BufferedImage img = ImageIO.read(bis);
@@ -224,43 +231,60 @@ public class Billboard implements Serializable {
         //output section
         ImageIcon icon = new ImageIcon(scaledImage);
         JLabel Image = new JLabel(icon);
-        Image.setBounds((screenWidth/2)-(scaledWidth/2),(screenHeight/2)-(scaledHeight/2),screenWidth/2,screenHeight/2);
+
+        //placement adjustment
+        if (placement == "Image Only" || placement == "all"){
+            Image.setBounds(0,(screenHeight/2)-(scaledHeight/2),screenWidth,screenHeight/2);
+            Image.setHorizontalAlignment(SwingConstants.CENTER);
+        }
+        else if(placement == "msg and pic"){
+            Image.setBounds(0,(2*screenHeight/3)-(scaledHeight/2),screenWidth,screenHeight/2);
+            Image.setHorizontalAlignment(SwingConstants.CENTER);
+        }
+        else if(placement == "info and pic"){
+            Image.setBounds(0,(screenHeight/3)-(scaledHeight/2),screenWidth,screenHeight/2);
+            Image.setHorizontalAlignment(SwingConstants.CENTER);
+        }
+
+        //Image.setBounds((screenWidth/2)-(scaledWidth/2),(screenHeight/2)-(scaledHeight/2),screenWidth/2,screenHeight/2);
 
 
         return Image;
     }
 
     public void showBillboard() throws Exception {
-        //JLabel MessageText = null;
-        //JLabel InfoText = null;
+
         BillboardScreen = createFrame();
         BillboardScreenPannel = CreatePanel();
         BillboardScreenPannel.setBackground(getBackColour());
         BillboardScreenPannel.setOpaque(true);
         BillboardScreen.setContentPane(BillboardScreenPannel);
         //msg only
-        if(msg != null && info.equals(null) && (picDATA.equals(null) && picURL.equals(null))){
+        if(getMsg() != null && getInfo() == null && (getPicUrl() == null && getPicData() == null)){
             JLabel MessageText = CreateTextArea("message", msg,"msg only");
             BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
         }
         //info only
-        else if(msg == null && info != null && (picDATA == null && picURL == null)){
+        else if(getMsg() == null && getInfo() != null && (getPicUrl() == null && getPicData() == null)){
             JLabel InfoText = CreateTextArea("info", info,"info only");
-            BillboardScreen.add(InfoText, BorderLayout.PAGE_END);
+            BillboardScreen.add(InfoText, BorderLayout.PAGE_START);
         }
         //image only
         else if(msg == null && info == null && (picDATA != null || picURL != null)){
-            //Image solo //TODO
+            JLabel imageDisplay = CreateImageData(getPicData(), "Image Only");
+            BillboardScreen.getContentPane().add(imageDisplay, BorderLayout.CENTER);
         }
         //msg and image
         else if(msg != null && info == null && (picDATA != null) || (picURL != null)){
-            JLabel MessageText = CreateTextArea("message", msg, "msg and info");
+            JLabel MessageText = CreateTextArea("message", msg, "msg and pic");
             BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
-            //todo image
+            JLabel imageDisplay = CreateImageData(getPicData(), "msg and pic");
+            BillboardScreen.getContentPane().add(imageDisplay);
         }
         //info and image
         else if(msg == null && info != null && (picDATA != null || picURL != null)){
-            //todo image
+            JLabel imageDisplay = CreateImageData(getPicData(), "info and pic");
+            BillboardScreen.getContentPane().add(imageDisplay);
             JLabel InfoText = CreateTextArea("info", info, "info and pic");
             BillboardScreen.add(InfoText, BorderLayout.PAGE_END);
         }
@@ -273,21 +297,14 @@ public class Billboard implements Serializable {
         }
         else {
 
-//            MessageText = CreateTextArea("message", msg, "all");
-//            InfoText = CreateTextArea("info", info, "all");
+            JLabel MessageText = CreateTextArea("message", msg, "all");
+            JLabel InfoText = CreateTextArea("info", info, "all");
+            JLabel imageDisplay = CreateImageData(getPicData(), "all");
+            BillboardScreen.getContentPane().add(imageDisplay);
+            BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
+            BillboardScreen.add(InfoText, BorderLayout.PAGE_END);
         }
 
-
-
-        if (picDATA != null) {
-            JLabel Image = CreateImageData(picDATA);
-            Image.setVerticalAlignment(SwingConstants.CENTER);
-            Image.setHorizontalAlignment(SwingConstants.CENTER);
-            Dimension halfScreen = new Dimension(screenWidth/2,screenHeight/2);
-            Image.setPreferredSize(halfScreen);
-
-            BillboardScreen.getContentPane().add(Image, BorderLayout.CENTER);
-        }
         BillboardScreen.setVisible(true);
         BillboardScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
