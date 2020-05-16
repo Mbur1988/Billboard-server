@@ -136,12 +136,11 @@ public class EditUsersPanel extends ControlPanelInterface {
                         model.clear();
                         model.addAll(lists.users);
                         Log.Confirmation("New user added successfully");
-                        resetFields();
                     }
                     else {
                         Log.Error("Error when attempting to add new user");
-                        resetFields();
                     }
+                    resetFields();
                 }
                 catch (IOException e) {
                     e.printStackTrace();
@@ -185,6 +184,7 @@ public class EditUsersPanel extends ControlPanelInterface {
                     else {
                         Log.Error("Error when attempting to delete user");
                     }
+                    resetFields();
                 }
                 catch (IOException e) {
                     e.printStackTrace();
@@ -200,7 +200,36 @@ public class EditUsersPanel extends ControlPanelInterface {
         });
 
         b_load.addActionListener(event -> {
-
+            String username = (String) list.getSelectedValue();
+            user.setAction("getAccess");
+            if (AttemptConnect()) {
+                // Try a login attempt
+                try {
+                    // Send user object to server
+                    objectStreamer.Send(user);
+                    dos.writeUTF(username);
+                    boolean[] key = UserAccess.dec2bool(dis.read());
+                    tf_username.setEnabled(false);
+                    tf_username.setText(username);
+                    tf_password.setText("");
+                    cb_createNew.setSelected(key[0]);
+                    cb_editBoard.setSelected(key[1]);
+                    cb_schedule.setSelected(key[2]);
+                    cb_editUsers.setSelected(key[3]);
+                    editUserPanel.remove(b_add);
+                    editUserPanel.add(b_save);
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                    Log.Error("Failed to retrieve user credentials");
+                }
+                // Disconnect from server
+                AttemptDisconnect();
+            }
+            // Post message to user if unable to connect to server
+            else {
+                Log.Error("Unable to connect to server");
+            }
         });
     }
 

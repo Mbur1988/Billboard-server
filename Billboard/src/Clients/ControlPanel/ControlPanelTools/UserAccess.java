@@ -19,6 +19,26 @@ public class UserAccess {
     }
 
     /**
+     * converts a decimal integer to a boolean array. if the input is >15 or <0 returns null
+     * @param decimal integer between 0-15
+     * @return boolean array of the input param in binary form or null if input out of bounds
+     */
+    public static boolean[] dec2bool(int decimal) {
+        int binary[] = dec2bin(decimal);
+        if (binary == null) { return null; }
+        boolean bool[] = new boolean[4];
+        for (int idx = 0; idx < binary.length; idx++) {
+            if (binary[idx] == 1) {
+                bool[idx] = true;
+            }
+            else {
+                bool[idx] = false;
+            }
+        }
+        return bool;
+    }
+
+    /**
      * generates the access level as an integer based on the permissions
      * @param createBillboards
      * @param editBillboards

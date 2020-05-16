@@ -62,6 +62,9 @@ public class CPHandler extends ConnectionHandler {
                     case ("changePassword"):
                         ChangePassword();
                         break;
+                    case ("getAccess"):
+                        GetAccess();
+                        break;
                     case ("addNewBillboard"):
                         AddNewBillboard();
                         break;
@@ -203,6 +206,14 @@ public class CPHandler extends ConnectionHandler {
                 Log.Confirmation("password incorrect");
                 dos.writeBoolean(false);
             }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void GetAccess() {
+        try {
+            dos.write(mariaDB.users.getAccess(dis.readUTF()));
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
