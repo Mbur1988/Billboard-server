@@ -97,7 +97,6 @@ public class EditUsersPanel extends ControlPanelInterface {
 
         JButton b_save = new JButton("Save User");
         b_save.setBounds(150, 400, 150, 30);
-        //editUserPanel.add(b_save);
 
         JButton b_clear = new JButton("Clear");
         b_clear.setBounds(300, 400, 150, 30);
@@ -157,10 +156,51 @@ public class EditUsersPanel extends ControlPanelInterface {
             }
         });
 
+        b_save.addActionListener(event -> {
+
+        });
+
         b_clear.addActionListener(event -> {
             editUserPanel.remove(b_save);
             editUserPanel.add(b_add);
             resetFields();
+        });
+
+        b_delete.addActionListener(event -> {
+            String username = (String) list.getSelectedValue();
+            user.setAction("deleteUser");
+
+            // Attempt connection to server
+            if (AttemptConnect()) {
+                // Try a login attempt
+                try {
+                    // Send user object to server
+                    objectStreamer.Send(user);
+                    dos.writeUTF(username);
+                    if (dis.readBoolean()) {
+                        lists.users.remove(username);
+                        model.removeElement(username);
+                        Log.Confirmation("User successfully deleted");
+                    }
+                    else {
+                        Log.Error("Error when attempting to delete user");
+                    }
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                    Log.Error("Failed to delete user");
+                }
+                // Disconnect from server
+                AttemptDisconnect();
+            }
+            // Post message to user if unable to connect to server
+            else {
+                Log.Error("Unable to connect to server");
+            }
+        });
+
+        b_load.addActionListener(event -> {
+
         });
     }
 
