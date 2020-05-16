@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
+import static Clients.ControlPanel.ControlPanel.lists;
 import static java.lang.System.exit;
 
 public class MariaDB {
@@ -381,6 +383,7 @@ public class MariaDB {
                 String username = result.getString("username");
                 allUsers.add(username);
             }
+            Collections.sort(allUsers);
             return allUsers;
         }
     }

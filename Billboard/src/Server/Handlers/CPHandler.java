@@ -1,5 +1,6 @@
 package Server.Handlers;
 
+import SerializableObjects.Lists;
 import SerializableObjects.User;
 import Server.Trackers.Authorised;
 import Tools.HashCredentials;
@@ -87,6 +88,13 @@ public class CPHandler extends ConnectionHandler {
                 AttemptLogin();
                 objectStreamer.Send(user);
                 Log.Message("User object sent to control panel");
+                if (user.isVerified()) {
+                    Lists lists = new Lists(mariaDB.users.getAllUsernames(),
+                            mariaDB.billboards.getAllBillboards(),
+                            null);
+                    objectStreamer.Send(lists);
+                    Log.Message("Lists object sent to control panel");
+                }
             }
             // Close connection to control panel nicely
             socket.close();
@@ -94,7 +102,7 @@ public class CPHandler extends ConnectionHandler {
             this.dos.close();
             Log.Confirmation(socket.toString() + " closed successfully");
         }
-        catch (IOException | ClassNotFoundException e) {
+        catch (IOException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }

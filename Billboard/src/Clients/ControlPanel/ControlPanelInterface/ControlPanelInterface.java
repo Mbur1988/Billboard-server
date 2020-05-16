@@ -8,7 +8,6 @@ import java.io.IOException;
 import static Clients.ControlPanel.ControlPanel.user;
 
 public class ControlPanelInterface {
-
     public static JFrame controlPanelScreen = new JFrame();
     public static JPanel createPanel = new JPanel();
     public static JPanel listPanel = new JPanel();
