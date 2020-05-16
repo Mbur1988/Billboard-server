@@ -5,8 +5,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
@@ -175,7 +173,14 @@ public class Billboard implements Serializable {
         }
 
     }
-    public static JLabel CreateImageFilepath(String Filepath) throws Exception {//display as output change!!!!
+
+    /**
+     * This method finds the image that is stored at the location of the Filepath and creates an image in the system
+     * @param Filepath location of image to use
+     * @return Image of the file
+     * @throws Exception can through IO exception and left open for saftey.
+     */
+    public static JLabel CreateImageFilepath(String Filepath) throws Exception {
 
         BufferedImage img = ImageIO.read(new File(Filepath));
         ImageIcon icon = new ImageIcon(img);
@@ -185,23 +190,41 @@ public class Billboard implements Serializable {
 
         return Image;
     }
+
+    /**
+     * This is the method to display the image as a scaled version to be limited to half of the screen which ever
+     * x or y that is.
+     * @param Data byte[] of data to diplay, See ConvertImageToData
+     * @return returns JLabel to display
+     * @throws Exception IO exception and brawd in case
+     */
     public static JLabel CreateImageData(byte[] Data) throws Exception {
+        // get image into BIS
         ByteArrayInputStream bis = new ByteArrayInputStream(Data);
         BufferedImage img = ImageIO.read(bis);
-        BufferedImage scaledImage = new BufferedImage((screenWidth / 2),(screenHeight / 2), BufferedImage.TYPE_INT_ARGB);
+        //Helpers for neatness
         int imageWidth = img.getWidth();
+        int imageHeights = img.getHeight();
         double widthRatio = (double)(screenWidth/2)  / imageWidth;
-        double heightRatio =(double)(screenHeight/2) / img.getHeight();
-//        float widthRatio = img.getWidth()  / (screenWidth/2);
-//        float heightRatio =img.getHeight() / (screenHeight/2);
-        final AffineTransform at = AffineTransform.getScaleInstance(widthRatio,heightRatio);
-        final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
-        scaledImage = ato.filter(img, scaledImage);
-        img.getScaledInstance(screenWidth/2,screenHeight/2,Image.SCALE_SMOOTH);
+        double heightRatio =(double)(screenHeight/2) / imageHeights;
+        //start of scale calculation logic
 
+        //sets image changer as height as default as less likely
+        double imageChanger = heightRatio;
+        if (widthRatio <= heightRatio){
+            // if the image is taller then wid make it the width ratio
+            imageChanger = widthRatio;
+        }
+        //helpers for neetness
+        int scaledWidth = (int) (img.getWidth()*imageChanger);
+        int scaledHeight = (int) (img.getHeight()*imageChanger);
+        //scales image
+        Image scaledImage = img.getScaledInstance(scaledWidth,scaledHeight,Image.SCALE_SMOOTH);
+
+        //output section
         ImageIcon icon = new ImageIcon(scaledImage);
         JLabel Image = new JLabel(icon);
-        Image.setBounds(0,0,screenWidth,screenHeight);
+        Image.setBounds((screenWidth/2)-(scaledWidth/2),(screenHeight/2)-(scaledHeight/2),screenWidth/2,screenHeight/2);
 
 
         return Image;

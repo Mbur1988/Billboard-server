@@ -473,7 +473,8 @@ public class BillboardTest {
     @Test
     public void ShowBillboardColourTest() throws Exception {
 
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\tavern.png"));
+//        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
         underTestEmpty.setMsg("Message");
         underTestEmpty.setInfo("info");
         underTestEmpty.setBackColour(new Color(39, 255, 231, 202));
