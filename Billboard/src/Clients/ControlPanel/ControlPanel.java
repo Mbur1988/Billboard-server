@@ -3,6 +3,7 @@ package Clients.ControlPanel;
 import Clients.Client;
 import Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface;
 import Clients.ControlPanel.LoginInterface.LoginInterface;
+import SerializableObjects.Lists;
 import SerializableObjects.User;
 import Tools.Log;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 public class ControlPanel extends Client {
 
     public static User user;
+    public static Lists lists;
 
     public static void main(String[] args) {
         Log.Message("Control panel started");

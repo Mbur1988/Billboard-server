@@ -7,9 +7,18 @@ import Tools.Log;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Collections;
+
 import static Clients.ControlPanel.ControlPanel.*;
 
 public class EditUsersPanel extends ControlPanelInterface {
+
+    private static JTextField tf_username;
+    private static JTextField tf_password;
+    private static JCheckBox cb_createNew;
+    private static JCheckBox cb_editBoard;
+    private static JCheckBox cb_schedule;
+    private static JCheckBox cb_editUsers;
 
     public static void editUserScreen() {
 
@@ -27,7 +36,7 @@ public class EditUsersPanel extends ControlPanelInterface {
         lbl_username.setFont(font);
         editUserPanel.add(lbl_username);
 
-        JTextField tf_username = new JTextField();
+        tf_username = new JTextField();
         tf_username.setBounds(150, 100, 300, 50);
         tf_username.setFont(font);
         editUserPanel.add(tf_username);
@@ -37,7 +46,7 @@ public class EditUsersPanel extends ControlPanelInterface {
         lbl_password.setFont(font);
         editUserPanel.add(lbl_password);
 
-        JTextField tf_password = new JTextField();
+        tf_password = new JTextField();
         tf_password.setBounds(150, 150, 300, 50);
         tf_password.setFont(font);
         editUserPanel.add(tf_password);
@@ -47,22 +56,22 @@ public class EditUsersPanel extends ControlPanelInterface {
         lbl_privileges.setFont(font);
         editUserPanel.add(lbl_privileges);
 
-        JCheckBox cb_createNew = new JCheckBox("Create New Billboard");
+        cb_createNew = new JCheckBox("Create New Billboard");
         cb_createNew.setBounds(150, 200, 300, 50);
         cb_createNew.setFont(font);
         editUserPanel.add(cb_createNew);
 
-        JCheckBox cb_editBoard = new JCheckBox("Edit Existing Billboard");
+        cb_editBoard = new JCheckBox("Edit Existing Billboard");
         cb_editBoard.setBounds(150, 250, 300, 50);
         cb_editBoard.setFont(font);
         editUserPanel.add(cb_editBoard);
 
-        JCheckBox cb_schedule = new JCheckBox("Schedule Billboards");
+        cb_schedule = new JCheckBox("Schedule Billboards");
         cb_schedule.setBounds(150, 300, 300, 50);;
         cb_schedule.setFont(font);
         editUserPanel.add(cb_schedule);
 
-        JCheckBox cb_editUsers = new JCheckBox("Edit Users");
+        cb_editUsers = new JCheckBox("Edit Users");
         cb_editUsers.setBounds(150, 350, 300, 50);
         cb_editUsers.setFont(font);
         editUserPanel.add(cb_editUsers);
@@ -72,18 +81,11 @@ public class EditUsersPanel extends ControlPanelInterface {
         lbl_users.setFont(new Font("Courier", Font.PLAIN, 50));
         editUserPanel.add(lbl_users);
 
-        // Build a list of all the users.
-        DefaultListModel<String> list_allUsers = new DefaultListModel<>();
-        list_allUsers.addElement("user1");
-        list_allUsers.addElement("user2");
-        list_allUsers.addElement("user3");
-        list_allUsers.addElement("user4");
-        list_allUsers.addElement("user5");
-        list_allUsers.addElement("user6");
-        list_allUsers.addElement("user7");
+        DefaultListModel model = new DefaultListModel();
+        model.addAll(lists.users);
 
         // This forms the list and adds it.
-        JList<String> list = new JList<>(list_allUsers);
+        JList list = new JList(model);
 
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setBounds(screenWidth/2, 100, 300, 300);
@@ -130,10 +132,16 @@ public class EditUsersPanel extends ControlPanelInterface {
                     // Await returned object from server
                     boolean userAdded = dis.readBoolean();
                     if (userAdded) {
+                        lists.users.add(newUser.getUsername());
+                        Collections.sort(lists.users);
+                        model.clear();
+                        model.addAll(lists.users);
                         Log.Confirmation("New user added successfully");
+                        resetFields();
                     }
                     else {
                         Log.Error("Error when attempting to add new user");
+                        resetFields();
                     }
                 }
                 catch (IOException e) {
@@ -152,13 +160,17 @@ public class EditUsersPanel extends ControlPanelInterface {
         b_clear.addActionListener(event -> {
             editUserPanel.remove(b_save);
             editUserPanel.add(b_add);
-            tf_username.setEnabled(true);
-            tf_username.setText("");
-            tf_password.setText("");
-            cb_createNew.setSelected(false);
-            cb_editBoard.setSelected(false);
-            cb_schedule.setSelected(false);
-            cb_editUsers.setSelected(false);
+            resetFields();
         });
+    }
+
+    private static void resetFields() {
+        tf_username.setEnabled(true);
+        tf_username.setText("");
+        tf_password.setText("");
+        cb_createNew.setSelected(false);
+        cb_editBoard.setSelected(false);
+        cb_schedule.setSelected(false);
+        cb_editUsers.setSelected(false);
     }
 }
