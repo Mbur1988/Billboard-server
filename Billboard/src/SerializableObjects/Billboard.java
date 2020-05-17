@@ -9,8 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 
-import static java.awt.Font.*;
-
 public class Billboard implements Serializable {
     // Get the size of the screen.
     static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -42,8 +40,8 @@ public class Billboard implements Serializable {
         this.infoColour = null;
         this.BillboardScreenPannel = null;
         this.BillboardScreen = null;
-       //this.BillboardScreen = createFrame();
-       //this.BillboardScreenPannel = CreatePanel();
+        //this.BillboardScreen = createFrame();
+        //this.BillboardScreenPannel = CreatePanel();
 
     }
     /**
@@ -70,7 +68,15 @@ public class Billboard implements Serializable {
         BillboardScreen = null;
 
     }
-    public static void main(String[] args) { new Billboard();}
+    public static void main(String[] args) {
+        new Billboard();
+
+//        JFrame frame = new JFrame();
+//
+//        frame.setBackground(Color.cyan);
+        //new DisplayImage("C:\\sally.jpg");
+
+    }
 
 
     // - - - - - - -     Workers    - - - - - - - - - //
@@ -111,68 +117,22 @@ public class Billboard implements Serializable {
      *
      * @param Name this can be message or info
      * @param message_input this is what will be displayed in the text field associated with the name
-     * @param placement this is to determine the size of the label
      * @return returns a label to be added into the panel elsewhere
      * @exception. If name != message or info  or Message or Info
      */
-    public static JLabel CreateTextArea(String Name, String message_input,String placement) throws Exception {
-
-        if(Name.equals("message") || Name.equals("Message")) {
+    public static JLabel CreateTextArea(String Name, String message_input) throws Exception {//display as output change!!!!
+        if(Name == "message" || Name == "Message") {
             JLabel upperText = new JLabel(message_input,SwingConstants.CENTER);
             upperText.setOpaque(false);
+            upperText.setFont(new Font("Courier", Font.BOLD,40));
+            upperText.setBounds(0, 0, screenWidth, 100);
 
-            if(placement == "msg only") {
-
-                upperText.setFont(new Font("Courier", BOLD, 150));
-                upperText.setBounds(0, 0, screenWidth, screenHeight);
-
-            }
-            else if(placement == "msg and info") {
-                upperText.setFont(new Font("Courier", BOLD, 100));
-                upperText.setBounds(0, 0, screenWidth, screenHeight/2);
-            }
-            else if(placement == "msg and pic") {
-                upperText.setFont(new Font("Courier", BOLD, 100));
-                upperText.setBounds(0, 0, screenWidth, screenHeight / 3);
-            }
-
-            else if(placement ==  "all") {
-                upperText.setFont(new Font("Courier", BOLD, 100));
-                upperText.setBounds(0, 0, screenWidth, screenHeight / 3);
-            }
             return upperText;
         }
-
-
-        else if(Name.equals("info") || Name.equals("Info")){
+        else if(Name == "info" || Name == "Info"){
             JLabel lowerText = new JLabel(message_input,SwingConstants.CENTER);
-
-            if(placement ==  "info only")
-            {
-                lowerText.setFont(new Font("Courier", BOLD, 80));
-
-                lowerText.setBounds(new Rectangle((screenWidth/8),(screenHeight/4),(3*screenWidth/4),(screenHeight/2)));
-                lowerText.setHorizontalAlignment(SwingConstants.CENTER);
-                lowerText.setVerticalAlignment(SwingConstants.CENTER);
-
-            }
-
-            else if(placement == "msg and info")
-                {
-                lowerText.setFont(new Font("Courier", BOLD, 75));
-                lowerText.setBounds(0, screenHeight/2, screenWidth, screenHeight/2);
-            }
-            else if(placement == "info and pic") {
-                lowerText.setFont(new Font("Courier", BOLD, 75));
-                lowerText.setBounds((screenWidth/8), (2*screenHeight)/3, (3*screenWidth)/4, screenHeight / 3);
-                lowerText.setHorizontalAlignment(SwingConstants.CENTER);
-            }
-            else if(placement == "all") {
-                lowerText.setFont(new Font("Courier", BOLD, 75));
-                lowerText.setBounds((screenWidth/8), (2*screenHeight)/3, (3*screenWidth)/4, screenHeight / 3);
-                lowerText.setHorizontalAlignment(SwingConstants.CENTER);
-
-            }
+            lowerText.setFont(new Font("Courier", Font.BOLD,40));
+            lowerText.setBounds(0, screenHeight-100, screenWidth, 100);
 
             return lowerText;
         }
@@ -181,13 +141,7 @@ public class Billboard implements Serializable {
         }
 
     }
-    /**
-     * This method finds the image that is stored at the location of the Filepath and creates an image in the system
-     * @param Filepath location of image to use
-     * @return Image of the file
-     * @throws Exception can through IO exception and left open for saftey.
-     */
-    public static JLabel CreateImageFilepath(String Filepath) throws Exception {
+    public static JLabel CreateImageFilepath(String Filepath) throws Exception {//display as output change!!!!
 
         BufferedImage img = ImageIO.read(new File(Filepath));
         ImageIcon icon = new ImageIcon(img);
@@ -197,132 +151,51 @@ public class Billboard implements Serializable {
 
         return Image;
     }
-
-    /**
-     * This is the method to display the image as a scaled version to be limited to half of the screen which ever
-     * x or y that is.
-     * @param Data byte[] of data to diplay, See ConvertImageToData
-     * @return returns JLabel to display
-     * @throws Exception IO exception and brawd in case
-     */
-    public static JLabel CreateImageData(byte[] Data, String placement) throws Exception {
-        // get image into BIS
+    public static JLabel CreateImageData(byte[] Data) throws Exception {
         ByteArrayInputStream bis = new ByteArrayInputStream(Data);
         BufferedImage img = ImageIO.read(bis);
-        //Helpers for neatness
-        int imageWidth = img.getWidth();
-        int imageHeights = img.getHeight();
-        double widthRatio = (double)(screenWidth/2)  / imageWidth;
-        double heightRatio =(double)(screenHeight/2) / imageHeights;
-        //start of scale calculation logic
-
-        //sets image changer as height as default as less likely
-        double imageChanger = heightRatio;
-        if (widthRatio <= heightRatio){
-            // if the image is taller then wid make it the width ratio
-            imageChanger = widthRatio;
-        }
-        //helpers for neetness
-        int scaledWidth = (int) (img.getWidth()*imageChanger);
-        int scaledHeight = (int) (img.getHeight()*imageChanger);
-        //scales image
-        Image scaledImage = img.getScaledInstance(scaledWidth,scaledHeight,Image.SCALE_SMOOTH);
-
-        //output section
-        ImageIcon icon = new ImageIcon(scaledImage);
+        ImageIcon icon = new ImageIcon(img);
         JLabel Image = new JLabel(icon);
-
-        //placement adjustment
-        if (placement == "Image Only" || placement == "all"){
-            Image.setBounds(0,(screenHeight/2)-(scaledHeight/2),screenWidth,screenHeight/2);
-            Image.setHorizontalAlignment(SwingConstants.CENTER);
-        }
-        else if(placement == "msg and pic"){
-            Image.setBounds(0,(2*screenHeight/3)-(scaledHeight/2),screenWidth,screenHeight/2);
-            Image.setHorizontalAlignment(SwingConstants.CENTER);
-        }
-        else if(placement == "info and pic"){
-            Image.setBounds(0,(screenHeight/3)-(scaledHeight/2),screenWidth,screenHeight/2);
-            Image.setHorizontalAlignment(SwingConstants.CENTER);
-        }
-
-        //Image.setBounds((screenWidth/2)-(scaledWidth/2),(screenHeight/2)-(scaledHeight/2),screenWidth/2,screenHeight/2);
+        Image.setBounds(0,0,screenWidth,screenHeight);
 
 
         return Image;
     }
 
     public void showBillboard() throws Exception {
-
         BillboardScreen = createFrame();
         BillboardScreenPannel = CreatePanel();
         BillboardScreenPannel.setBackground(getBackColour());
         BillboardScreenPannel.setOpaque(true);
         BillboardScreen.setContentPane(BillboardScreenPannel);
-        //msg only
-        if(getMsg() != null && getInfo() == null && (getPicUrl() == null && getPicData() == null)){
-            JLabel MessageText = CreateTextArea("message", msg,"msg only");
-            BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
-        }
-        //info only
-        else if(getMsg() == null && getInfo() != null && (getPicUrl() == null && getPicData() == null)){
-            JLabel InfoText = CreateTextArea("info", info,"info only");
-            BillboardScreen.add(InfoText, BorderLayout.PAGE_START);
-        }
-        //image only
-        else if(msg == null && info == null && (picDATA != null || picURL != null)){
-            JLabel imageDisplay = CreateImageData(getPicData(), "Image Only");
-            BillboardScreen.getContentPane().add(imageDisplay, BorderLayout.CENTER);
-        }
-        //msg and image
-        else if(msg != null && info == null && (picDATA != null) || (picURL != null)){
-            JLabel MessageText = CreateTextArea("message", msg, "msg and pic");
-            BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
-            JLabel imageDisplay = CreateImageData(getPicData(), "msg and pic");
-            BillboardScreen.getContentPane().add(imageDisplay);
-        }
-        //info and image
-        else if(msg == null && info != null && (picDATA != null || picURL != null)){
-            JLabel imageDisplay = CreateImageData(getPicData(), "info and pic");
-            BillboardScreen.getContentPane().add(imageDisplay);
-            JLabel InfoText = CreateTextArea("info", info, "info and pic");
-            BillboardScreen.add(InfoText, BorderLayout.PAGE_END);
-        }
-        //info and msg
-        else if(msg != null && info != null && (picDATA == null && picURL == null)){
-           JLabel MessageText = CreateTextArea("message", msg, "msg and info");
-           JLabel InfoText = CreateTextArea("info", info, "msg and info");
-            BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
-            BillboardScreen.add(InfoText, BorderLayout.PAGE_END);
-        }
-        else {
 
-            JLabel MessageText = CreateTextArea("message", msg, "all");
-            JLabel InfoText = CreateTextArea("info", info, "all");
-            JLabel imageDisplay = CreateImageData(getPicData(), "all");
-            BillboardScreen.getContentPane().add(imageDisplay);
-            BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
-            BillboardScreen.add(InfoText, BorderLayout.PAGE_END);
-        }
-
+        JLabel MessageText =CreateTextArea("message", msg);
+        JLabel InfoText = CreateTextArea("info", info);
+        BillboardScreen.add(MessageText,BorderLayout.PAGE_START);
+        BillboardScreen.add(InfoText,BorderLayout.PAGE_END);
         BillboardScreen.setVisible(true);
         BillboardScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        if(picDATA != null) {
+            JLabel Image = CreateImageData(picDATA);
+            Image.setVerticalAlignment(SwingConstants.CENTER);
+            Image.setHorizontalAlignment(SwingConstants.CENTER);
+            BillboardScreen.getContentPane().add(Image,BorderLayout.CENTER);
+        }
         BillboardScreenPannel.repaint();
         BillboardScreenPannel.revalidate();
-
-        //close preview.
-        JButton b3 = new JButton("Exit Preview");
+//DELETE--------->
+        JButton b3 = new JButton("CLOSE");
 
         b3.setBounds(0, 0, 250, 50);
         BillboardScreenPannel.add(b3);
         b3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
-                BillboardScreen.dispose();
+                System.exit(0);
             }   // need to change to a keep changes button
         });
-
+//---------->DELETE
     }
 
     // - - - - - - - helpers bellow - - - - - - - - - //
@@ -335,14 +208,14 @@ public class Billboard implements Serializable {
      *
      */
     public void WishhyWassyTheBillyBoardy() {
-    setMsg(null);
-    setName(null);
-    setInfo(null);
-    setPicURL(null);
-    setPicData(null);
-    setMsgColour(null);
-    setBackColour(null);
-    setInfoColour(null);
+        setMsg(null);
+        setName(null);
+        setInfo(null);
+        setPicURL(null);
+        setPicData(null);
+        setMsgColour(null);
+        setBackColour(null);
+        setInfoColour(null);
     }
     //  Getters  //
 
@@ -517,11 +390,11 @@ public class Billboard implements Serializable {
      * @throws Exception if no file found
      */
     public byte[] ConvertImageToData(String filePath) throws Exception {
-                BufferedImage bImage = ImageIO.read(new File(filePath));
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                ImageIO.write(bImage, "jpg", bos );
-                byte [] data = bos.toByteArray();
-    return data;
+        BufferedImage bImage = ImageIO.read(new File(filePath));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(bImage, "jpg", bos );
+        byte [] data = bos.toByteArray();
+        return data;
     }
 
     /**
