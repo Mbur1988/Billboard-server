@@ -173,7 +173,20 @@ public class CPHandler extends ConnectionHandler {
     }
 
     private void EditUser() {
-
+        try {
+            String username = dis.readUTF();
+            String password = dis.readUTF();
+            int access = dis.read();
+            boolean confirm = true;
+            if (!password.equals("")) {
+                byte[] salt = HashCredentials.CreateSalt();
+                password = HashCredentials.Hash(password, salt);
+                confirm = mariaDB.users.edit(username, password, salt);
+            }
+            dos.writeBoolean(mariaDB.users.edit(username, access) && confirm);
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void DeleteUser() {
