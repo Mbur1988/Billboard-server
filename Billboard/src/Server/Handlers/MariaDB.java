@@ -6,8 +6,11 @@ import Tools.PropertyReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import static Clients.ControlPanel.ControlPanel.lists;
 import static java.lang.System.exit;
-import static java.lang.System.out;
 
 public class MariaDB {
 
@@ -32,30 +35,12 @@ public class MariaDB {
     }
 
     /**
-     * Returns the JDBC driver used by MariaDB class
-     *
-     * @return JDBC driver as string
-     */
-    public static String getJdbcDriver() {
-        return JDBC_DRIVER;
-    }
-
-    /**
      * Sets the URL to be used by the MariaDB class instance
      *
      * @param url URL as string
      */
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    /**
-     * Gets the URL used by the MariaDB class instance
-     *
-     * @return URL as string
-     */
-    public String getUrl() {
-        return url;
     }
 
     /**
@@ -68,30 +53,12 @@ public class MariaDB {
     }
 
     /**
-     * Gets the schema used by the MariaDB class instance
-     *
-     * @return Schema as string
-     */
-    public String getSchema() {
-        return schema;
-    }
-
-    /**
      * Sets the userName to be used by the MariaDB class instance
      *
      * @param userName
      */
     public void setUsername(String userName) {
         this.username = userName;
-    }
-
-    /**
-     * Gets the userName used by the MariaDB class instance
-     *
-     * @return Username as string
-     */
-    public String getUsername() {
-        return username;
     }
 
     /**
@@ -110,42 +77,6 @@ public class MariaDB {
      */
     public String getPassword() {
         return password;
-    }
-
-    /**
-     * Sets the connection to be used by the MariaDB class instance
-     *
-     * @param connection
-     */
-    private void setConnection(Connection connection) {
-        this.connection = connection;
-    }
-
-    /**
-     * Gets the connection used by the MariaDB class instance
-     *
-     * @return Connection
-     */
-    private Connection getConnection() {
-        return connection;
-    }
-
-    /**
-     * Sets the statement to be used by the MariaDB class instance
-     *
-     * @param statement
-     */
-    private void setStatement(Statement statement) {
-        this.statement = statement;
-    }
-
-    /**
-     * Gets the statement used by the MariaDB class instance
-     *
-     * @return Statement
-     */
-    private Statement getStatement() {
-        return statement;
     }
 
     /**
@@ -185,48 +116,18 @@ public class MariaDB {
         }
     }
 
-    /**
-     * Closes the current database connection
-     */
-    public void Disconnect() {
-        try {
-            statement.close();
-            connection.close();
-            Log.Warning("Database connection closed");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Checks the database for the required tables
-     * If any of the required tables does not exist then a default version is generated
-     *
-     * @throws SQLException
-     */
-    private void CheckForTables() throws SQLException {
-        if (!CheckForTable("users") && users!=null) {
-            users.CreateUsersTable();
-        }
-        else if (CheckForTable("users") && !users.CheckForUsers()) {
-            users.CreateDefaultUser();
-        }
-        if (!CheckForTable("billboards") && billboards!=null) {
-            billboards.CreateBillboardsTable();
-        }
-        else if (CheckForTable("billboard") && !billboards.checkForBillboard())
-        {
-            billboards.CreateDefaultBillboard();
-        }
-        if (!CheckForTable("scheduling")&& scheduling!=null) {
-            scheduling.CreateSchedulingTable();
-        }
-
-    }
-
-    /*private void deleteTest() throws SQLException{
-        billboards.deleteBillboard();
-    }*/
+//    /**
+//     * Closes the current database connection
+//     */
+//    public void Disconnect() {
+//        try {
+//            statement.close();
+//            connection.close();
+//            Log.Warning("Database connection closed");
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * Checks whether the specified table exists within the database
@@ -244,6 +145,29 @@ public class MariaDB {
         }
     }
 
+    /**
+     * Checks the database for the required tables
+     * If any of the required tables does not exist then a default version is generated
+     *
+     * @throws SQLException
+     */
+    private void CheckForTables() throws SQLException {
+        if (!CheckForTable("users") && users!=null) {
+            users.createTable();
+        }
+        else if (CheckForTable("users") && !users.checkForUsers()) {
+            users.createDefaultUser();
+        }
+        if (!CheckForTable("billboards") && billboards!=null) {
+            billboards.CreateBillboardsTable();
+        }
+        if (!CheckForTable("scheduling")&& scheduling!=null) {
+            scheduling.CreateSchedulingTable();
+        }
+    }
+
+
+
     public class Users {
 
         /**
@@ -251,16 +175,20 @@ public class MariaDB {
          *
          * @throws SQLException
          */
-        private void CreateUsersTable() throws SQLException {
+        private void createTable() throws SQLException {
             statement.executeUpdate("CREATE TABLE users (username VARCHAR(64) UNIQUE KEY, password VARCHAR(64), access INT NOT NULL, salt VARBINARY(10));");
             Log.Confirmation("Table created: users");
-            CreateDefaultUser();
+            createDefaultUser();
         }
 
-        private void CreateDefaultUser() throws SQLException {
+        /**
+         * Adds a default user to the users table
+         * @throws SQLException
+         */
+        private void createDefaultUser() throws SQLException {
             String username = "admin";
             String password = HashCredentials.Hash("default");
-            int access = 5;
+            int access = 15;
             byte[] salt = HashCredentials.CreateSalt();
             password = HashCredentials.Hash(password, salt);
             PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `users`(username, password, access, salt) VALUES (?, ?, ?, ?)");
@@ -272,7 +200,36 @@ public class MariaDB {
             Log.Confirmation("User created: admin");
         }
 
-        private boolean CheckForUser(String username) throws SQLException {
+        /**
+         * Adds a new user to the users table as long as the username does not already exist
+         *
+         * @param username the username of the entry as String
+         * @param password the password of the entry as String
+         * @param access   the access level of the entry as an Integer
+         * @return true if the entry is successful and false if an entry already exists with the same username
+         * @throws SQLException
+         */
+        public boolean add(String username, String password, Integer access, byte[] salt) throws SQLException {
+            if (checkForUser(username)) {
+                return false;
+            } else {
+                PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `users`(username, password, access, salt) VALUES (?, ?, ?, ?)");
+                pstmt.setString(1, username);
+                pstmt.setString(2, password);
+                pstmt.setInt(3, access);
+                pstmt.setBytes(4, salt);
+                pstmt.executeUpdate();
+                return true;
+            }
+        }
+
+        /**
+         * Checks the users table for the specified entry
+         * @param username the username to search the database for
+         * @return boolean of whether the user exists
+         * @throws SQLException
+         */
+        public boolean checkForUser(String username) throws SQLException {
             ResultSet result;
             if (username == null) {
                 result = statement.executeQuery("SELECT * FROM users;");
@@ -288,32 +245,80 @@ public class MariaDB {
             }
         }
 
-        private boolean CheckForUsers() throws SQLException {
-            return CheckForUser(null);
+        private boolean checkForUsers() throws SQLException {
+            return checkForUser(null);
         }
 
         /**
-         * Adds a new user to the users table as long as the username does not already exist
-         *
-         * @param username the username of the entry as String
-         * @param password the password of the entry as String
-         * @param access   the access level of the entry as an Integer
-         * @return true if the entry is successful and false if an entry already exists with the same username
+         * Deletes existing user field
+         * @param username Username of the user to delete
+         * @return boolean value true if operation was successful else false
          * @throws SQLException
          */
-        public boolean AddUser(String username, String password, Integer access, byte[] salt) throws SQLException {
-            if (CheckForUser(username)) {
-                return false;
+        public boolean delete(String username) throws SQLException {
+            if (checkForUser(username)) {
+                statement.executeQuery("DELETE FROM users WHERE username='" + username + "';");
+                if (checkForUser(username)) {
+                    return false;
+                } else {
+                    return true;
+                }
             } else {
-                PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `users`(username, password, access, salt) VALUES (?, ?, ?, ?)");
-                pstmt.setString(1, username);
-                pstmt.setString(2, password);
-                pstmt.setInt(3, access);
-                pstmt.setBytes(4, salt);
-                pstmt.executeUpdate();
-                return true;
+                return false;
             }
+        }
 
+        /**
+         * Edits existing user fields; password, access and salt
+         * @param username Username of the user to edit
+         * @param password New password as string
+         * @param access new access level as integer
+         * @param salt new salt as byte array
+         * @return boolean value true if operation was successful else false
+         * @throws SQLException
+         */
+        public boolean edit(String username, String password, Integer access, byte[] salt) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
+            if (result.next()) {
+                if (password == null) {
+                    password = users.getPassword(username);
+                }
+                if (access == null) {
+                    access = users.getAccess(username);
+                }
+                if (salt == null) {
+                    salt = users.getSalt(username);
+                }
+                users.delete(username);
+                users.add(username, password, access, salt);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        /**
+         * Edits existing user access field
+         * @param username Username of the user to edit
+         * @param access new access level as integer
+         * @return boolean value true if operation was successful else false
+         * @throws SQLException
+         */
+        public boolean edit(String username, Integer access) throws SQLException {
+            return edit(username, null, access, null);
+        }
+
+        /**
+         * Edits existing user fields; password and salt
+         *
+         * @param username Username of the user to edit
+         * @param password New password as string
+         * @param salt new salt as byte array
+         * @return boolean value true if operation was successful else false
+         * @throws SQLException
+         */
+        public boolean edit(String username, String password, byte[] salt) throws SQLException {
+            return edit(username, password, null, salt);
         }
 
         /**
@@ -323,14 +328,13 @@ public class MariaDB {
          * @return the password as a string else null if the entry does not exist
          * @throws SQLException
          */
-        public String GetUserPassword(String username) throws SQLException {
+        public String getPassword(String username) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
             if (result.next()) {
                 return result.getString("password");
             } else {
                 return null;
             }
-
         }
 
         /**
@@ -340,7 +344,7 @@ public class MariaDB {
          * @return the access level as an integer else null if the entry does not exist
          * @throws SQLException
          */
-        public Integer GetUserAccess(String username) throws SQLException {
+        public Integer getAccess(String username) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
             if (result.next()) {
                 return result.getInt("access");
@@ -356,7 +360,7 @@ public class MariaDB {
          * @return the password as a byte array else null if the entry does not exist
          * @throws SQLException
          */
-        public byte[] GetUserSalt(String username) throws SQLException {
+        public byte[] getSalt(String username) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
             if (result.next()) {
                 return result.getBytes("salt");
@@ -365,126 +369,26 @@ public class MariaDB {
             }
         }
 
-//        /**
-//         * Edits existing user fields; password, access and salt
-//         *
-//         * @param username Username of the user to edit
-//         * @param password New password as string
-//         * @param access new access level as integer
-//         * @param salt new salt as byte array
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, String password, Integer access, byte[] salt) throws SQLException {
-//            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username = '" + username + "';");
-//            if (result.next()) {
-//                if (password != null)
-//                    statement.executeQuery("UPDATE users SET password='" + password + "' WHERE username='" + username + "';");
-//                if (access != null)
-//                    statement.executeQuery("UPDATE users SET access='" + access + "' WHERE username='" + username + "';");
-//                if (salt != null)
-//                    statement.executeQuery("UPDATE users SET salt='" + salt + "' WHERE username='" + username + "';");
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        }
-//
-//        /**
-//         * Edits existing user password field
-//         *
-//         * @param username Username of the user to edit
-//         * @param password New password as string
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, String password) throws SQLException {
-//            return EditUser(username, password, null, null);
-//        }
-//
-//        /**
-//         * Edits existing user access field
-//         *
-//         * @param username Username of the user to edit
-//         * @param access new access level as integer
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, Integer access) throws SQLException {
-//            return EditUser(username, null, access, null);
-//        }
-//
-//        /**
-//         * Edits existing user salt field
-//         *
-//         * @param username Username of the user to edit
-//         * @param salt new salt as byte array
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, byte[] salt) throws SQLException {
-//            return EditUser(username, null, null, salt);
-//        }
-//
-//        /**
-//         * Edits existing user fields; access and salt
-//         *
-//         * @param username Username of the user to edit
-//         * @param access new access level as integer
-//         * @param salt new salt as byte array
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, Integer access, byte[] salt) throws SQLException {
-//            return EditUser(username, null, access, salt);
-//        }
-//
-//        /**
-//         * Edits existing user fields; password and salt
-//         *
-//         * @param username Username of the user to edit
-//         * @param password New password as string
-//         * @param salt new salt as byte array
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, String password, byte[] salt) throws SQLException {
-//            return EditUser(username, password, null, salt);
-//        }
-//
-//        /**
-//         * Edits existing user fields; password and access
-//         *
-//         * @param username Username of the user to edit
-//         * @param password New password as string
-//         * @param access new access level as integer
-//         * @return boolean value true if operation was successful else false
-//         * @throws SQLException
-//         */
-//        public boolean EditUser(String username, String password, Integer access) throws SQLException {
-//            return EditUser(username, password, access, null);
-//        }
-
         /**
-         * Deletes existing user field
+         * ArrayList Method to return all username's from the user's database.
          *
-         * @param username Username of the user to delete
-         * @return boolean value true if operation was successful else false
+         * @return ArrayList as a string list
          * @throws SQLException
          */
-        public boolean DeleteUser(String username) throws SQLException {
-            if (CheckForUser(username)) {
-                statement.executeQuery("DELETE FROM users WHERE username='" + username + "';");
-                if (CheckForUser(username)) {
-                    return false;
-                } else {
-                    return true;
-                }
-            } else {
-                return false;
+        public ArrayList<String> getAllUsernames() throws SQLException {
+            String retrieve = "SELECT * FROM users";
+            ResultSet result = statement.executeQuery(retrieve);
+            ArrayList<String> allUsers = new ArrayList<>();
+            while (result.next()){
+                String username = result.getString("username");
+                allUsers.add(username);
             }
+            Collections.sort(allUsers);
+            return allUsers;
         }
     }
+
+
 
     public class Billboards {
 
@@ -502,7 +406,7 @@ public class MariaDB {
 
         /**
          * Adds a default test billboard to the billboard table.
-         *
+         * <p>
          * name the name of the billboard being added
          * msg  msg of the displaying billboard being added
          * info information about the billboard being added
@@ -512,6 +416,7 @@ public class MariaDB {
          * backColour The back colour of the billboard
          * infoColour The colour of the information of the billboard
          * Logs confirmation that the billboard was added
+         *
          * @throws SQLException
          */
 
@@ -536,18 +441,19 @@ public class MariaDB {
             pstmt.executeUpdate();
             Log.Confirmation("Billboard Created: Test Board");
         }
+
         /**
-         * Adds a new billboard to the billboard table as long as the username does not already exist
+         * Adds a new billboard to the billboard table
          *
-         * @param name the name of the billboard being added
-         * @param msg  msg of the displaying billboard being added
-         * @param info information about the billboard being added
-         * @param picURL Picture url included in the billboard
-         * @param picData data of the picture included in the billboard to be added
-         * @param msgColour The colour of msg in the billboard
+         * @param name       the name of the billboard being added
+         * @param msg        msg of the displaying billboard being added
+         * @param info       information about the billboard being added
+         * @param picURL     Picture url included in the billboard
+         * @param picData    data of the picture included in the billboard to be added
+         * @param msgColour  The colour of msg in the billboard
          * @param backColour The back colour of the billboard
          * @param infoColour The colour of the information of the billboard
-         * Logs confimation that the billboard was added
+         *                   Logs confimation that the billboard was added
          * @throws SQLException
          */
 
@@ -573,39 +479,67 @@ public class MariaDB {
             }
 
 
+        }
+
+        /**
+         * Adds a new billboard to the billboard table as long as the username does not already exist
+         *
+         * @param name       the name of the billboard being added
+         * @param msg        msg of the displaying billboard being added
+         * @param info       information about the billboard being added
+         * @param picURL     Picture url included in the billboard
+         * @param picData    data of the picture included in the billboard to be added
+         * @param msgColour  The colour of msg in the billboard
+         * @param backColour The back colour of the billboard
+         * @param infoColour The colour of the information of the billboard
+         *                   Checks to see if billboard already exists, otherwise adds the billboard and returns true.
+         * @throws SQLException
+         */
+
+        public boolean AddBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
+            if (checkForBillboard(name)) {
+                return false;
+            } else {
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                prepareAdd.setString(1, name);
+                prepareAdd.setString(2, msg);
+                prepareAdd.setString(3, info);
+                prepareAdd.setString(4, picURL);
+                prepareAdd.setBytes(5, picData);
+                prepareAdd.setString(6, msgColour);
+                prepareAdd.setString(7, backColour);
+                prepareAdd.setString(8, infoColour);
+                prepareAdd.executeUpdate();
+                return true;
+            }
 
         }
 
         /**
          * Checks for a billboard in the billboard table as returning true or false depending on existance
-         * @param name the name of the billboard being checked for
          *
+         * @param name the name of the billboard being checked for
          * @throws SQLException
          */
         public boolean checkForBillboard(String name) throws SQLException {
             ResultSet result;
             if (name == null) {
                 result = statement.executeQuery("SELECT * FROM billboards;");
-            }
-            else {
+            } else {
                 result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             }
             if (result.next()) {
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
         }
 
-        private boolean checkForBillboard() throws SQLException {
-            return checkForBillboard(null);
-        }
-
         /**
          * Method to delete a specified billboard from the billboards database.
+         *
          * @param name the name of the billboard being deleted
-         * Confirms deletion of requested billboard in the log.
+         *             Confirms deletion of requested billboard in the log.
          * @throws SQLException
          */
 
@@ -624,10 +558,28 @@ public class MariaDB {
         }
 
         /**
-         * Method to retrive all entires currently in the billboard database.
-         *
+         * Method to delete a specified billboard from the billboards database.Uses boolean method.
+         * @param name the name of the billboard being deleted
+         * Confirms deletion of requested billboard in the log.
+         * @throws SQLException
+         */
+        public boolean DeleteBillboard(String name) throws SQLException {
+            if (checkForBillboard(name)) {
+                statement.executeQuery("DELETE FROM billboards WHERE name='" + name + "';");
+                if (checkForBillboard(name)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        /**
+         * Method to retrieve all entries currently in the billboard database.
+         * <p>
          * Confirms all billboards in the database via a log confirmation.
-         * 
          * @throws SQLException
          */
 
@@ -638,8 +590,7 @@ public class MariaDB {
 
             int count = 0;
 
-            while (result.next())
-            {
+            while (result.next()) {
                 String name = result.getString("name");
                 String msg = result.getString("msg");
                 String info = result.getString("info");
@@ -652,9 +603,61 @@ public class MariaDB {
                 Log.Confirmation(String.format(output, ++count, name, msg, info, picURL, msgColour, backColour, infoColour));
             }
         }
+        
+        /**
+         * Method to retrieve all specified billboard name currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
+        
+
+        public String getBillboardName(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("name");
+            } else {
+                return null;
+            }
+        }
+        
+        /**
+         * Method to retrieve all specified billboard info currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
+
+        public String getBillboardInfo(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("info");
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * Method to retrieve all of the billboards in the database, saving the names in a list.
+         * Returns the list as a String list.
+         * @throws SQLException
+         */
+
+
+        public ArrayList<String> getAllBillboards() throws SQLException {
+            String retrieve = "SELECT * FROM billboards";
+            ResultSet result = statement.executeQuery(retrieve);
+            ArrayList<String> allBillboards = new ArrayList<>();
+            while (result.next()){
+                String name = result.getString("name");
+                allBillboards.add(name);
+            }
+            return allBillboards;
+        }
+
 
 
     }
+
+
 
     public class Scheduling {
 
@@ -669,3 +672,9 @@ public class MariaDB {
         }
     }
 }
+
+
+
+
+
+

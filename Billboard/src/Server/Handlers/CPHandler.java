@@ -1,6 +1,8 @@
 package Server.Handlers;
 
+import SerializableObjects.Lists;
 import SerializableObjects.User;
+import Server.Trackers.Authorised;
 import Tools.HashCredentials;
 import Tools.Log;
 import Tools.ObjectStreamer;
@@ -10,7 +12,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.UUID;
-import static Server.Server.authorised;
 import static Server.Server.mariaDB;
 
 public class CPHandler extends ConnectionHandler {
@@ -20,7 +21,6 @@ public class CPHandler extends ConnectionHandler {
 
     /**
      * Class constructor
-     *
      * @param socket the socket reference to use
      * @param dis    the existing data input stream
      * @param dos    the existing data output stream
@@ -43,24 +43,66 @@ public class CPHandler extends ConnectionHandler {
             user = (User) objectStreamer.Receive();
             Log.Message("User object received from control panel");
             // If the current control panel user is verified then handle the requested action
-            if (user.isVerified()) {
-                // Must first check users uuid is valid
+            if (user.isVerified() && Authorised.Check(user.getUsername(), user.getId())) {
                 // Next, receive action command from control panel
-                // Handle requested action
+                switch(user.getAction()) {
+                    // Handle requested action
+                    case ("userExit"):
+                        Authorised.Remove(user.getUsername());
+                        break;
+                    case ("addUser"):
+                        AddNewUser();
+                        break;
+                    case ("editUser"):
+                        EditUser();
+                        break;
+                    case ("deleteUser"):
+                        DeleteUser();
+                        break;
+                    case ("changePassword"):
+                        ChangePassword();
+                        break;
+                    case ("addNewBillboard"):
+                        AddNewBillboard();
+                        break;
+                    case ("editBillboard"):
+                        EditBillboard();
+                        break;
+                    case ("deleteBillboard"):
+                        DeleteBillboard();
+                        break;
+                    case ("addNewSchedule"):
+                        AddNewSchedule();
+                        break;
+                    case ("editSchedule"):
+                        EditSchedule();
+                        break;
+                    case ("deleteSchedule"):
+                        DeleteSchedule();
+                        break;
+                }
             }
             // If the current control panel user is not verified then check credential validity
-            else {
+            else if (!user.isVerified() && user.getAction().equals("loginAttempt")) {
                 Log.Message("Login attempt received from control panel");
-                AttemptAuthentication();
+                AttemptLogin();
                 objectStreamer.Send(user);
                 Log.Message("User object sent to control panel");
+                if (user.isVerified()) {
+                    Lists lists = new Lists(mariaDB.users.getAllUsernames(),
+                            mariaDB.billboards.getAllBillboards(),
+                            null);
+                    objectStreamer.Send(lists);
+                    Log.Message("Lists object sent to control panel");
+                }
             }
             // Close connection to control panel nicely
             socket.close();
             this.dis.close();
             this.dos.close();
             Log.Confirmation(socket.toString() + " closed successfully");
-        } catch (IOException | ClassNotFoundException e) {
+        }
+        catch (IOException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
@@ -76,23 +118,23 @@ public class CPHandler extends ConnectionHandler {
      * Regardless of whether the user is validated or not, the password variable of the current user instance will be
      * cleared for security.
      */
-    private void AttemptAuthentication() {
+    private void AttemptLogin() {
         // Get login credentials from user instance
         String username = user.getUsername();
         String password = user.getPassword();
         try {
             // get the relevant salt for the user from the database
-            byte[] salt = mariaDB.users.GetUserSalt(username);
+            byte[] salt = mariaDB.users.getSalt(username);
             // salt-hash the password using the relevant salt
             String toCheck = HashCredentials.Hash(password, salt);
             // check whether the salt-hashed password matches that stored on the database
-            if (toCheck.equals(mariaDB.users.GetUserPassword(username))) {
+            if (toCheck.equals(mariaDB.users.getPassword(username))) {
                 // if passwords match then validate user and update authorised list
                 user.setVerified(true);
                 UUID uuid = UUID.randomUUID();
-                authorised.Add(username, uuid);
+                Authorised.Add(username, uuid);
                 user.setId(uuid);
-                user.setAccess(mariaDB.users.GetUserAccess(username));
+                user.setAccess(mariaDB.users.getAccess(username));
                 // print confirmation log message
                 Log.Confirmation("User credentials validated");
             }
@@ -105,5 +147,81 @@ public class CPHandler extends ConnectionHandler {
         }
         // clear user password variable for security
         user.setPassword("");
+    }
+
+    /**
+     * Method to add a new user to the users table in the database
+     */
+    private void AddNewUser() {
+        try {
+            User newUser = (User) objectStreamer.Receive();
+            Log.Message("User object received from control panel");
+            byte[] salt = HashCredentials.CreateSalt();
+            String password = HashCredentials.Hash(newUser.getPassword(), salt);
+            dos.writeBoolean(mariaDB.users.add(
+                    newUser.getUsername(),
+                    password,
+                    newUser.getAccess(),
+                    salt));
+        }
+        catch (IOException | ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void EditUser() {
+
+    }
+
+    private void DeleteUser() {
+
+    }
+
+    private void ChangePassword() {
+        try {
+            String username = user.getUsername();
+            String password = dis.readUTF();
+            Log.Confirmation("message received from control panel");
+            byte[] salt = mariaDB.users.getSalt(username);
+            String toCheck = HashCredentials.Hash(password, salt);
+            if (toCheck.equals(mariaDB.users.getPassword(username))) {                Log.Confirmation("password correct");
+                dos.writeBoolean(true);
+                salt = HashCredentials.CreateSalt();
+                password = dis.readUTF();
+                Log.Confirmation("message received from control panel");
+                password = HashCredentials.Hash(password, salt);
+                dos.writeBoolean(mariaDB.users.edit(user.getUsername(), password, salt));
+            }
+            else {
+                Log.Confirmation("password incorrect");
+                dos.writeBoolean(false);
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void AddNewBillboard() {
+
+    }
+
+    private void EditBillboard() {
+
+    }
+
+    private void DeleteBillboard() {
+
+    }
+
+    private void AddNewSchedule() {
+
+    }
+
+    private void EditSchedule() {
+
+    }
+
+    private void DeleteSchedule() {
+
     }
 }
