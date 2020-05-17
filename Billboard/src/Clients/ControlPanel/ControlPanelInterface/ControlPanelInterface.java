@@ -36,17 +36,17 @@ public class ControlPanelInterface {
         // Elements for each pane:
 
         // Add the tabs to the tab pane.
-        if (UserAccess.dec2bin(user.getAccess())[0] == 1) {
+        if (UserAccess.dec2bool(user.getAccess())[0]) {
             tabs.add("Create Billboard",createPanel);
         }
-        if (UserAccess.dec2bin(user.getAccess())[1] == 1) {
+        if (UserAccess.dec2bool(user.getAccess())[1]) {
             tabs.add("Edit Billboards", listPanel);
         }
-        if (UserAccess.dec2bin(user.getAccess())[2] == 1) {
+        if (UserAccess.dec2bool(user.getAccess())[2]) {
             tabs.add("Schedule Billboards", schedulePanel);
         }
         tabs.add("Change Password",passwordPanel);
-        if (UserAccess.dec2bin(user.getAccess())[3] == 1) {
+        if (UserAccess.dec2bool(user.getAccess())[3]) {
             tabs.add("Edit Users", editUserPanel);
         }
 
