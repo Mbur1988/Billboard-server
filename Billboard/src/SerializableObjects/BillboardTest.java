@@ -1,11 +1,11 @@
 package SerializableObjects;
 
 import Tools.DisplayImage;
+import Tools.ProjectPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
-
 import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.*;
  *************************************************************************************************************************************************************/
 
 public class BillboardTest {
+    String testAddress = ProjectPath.RootString() +  "\\\\Resources\\\\Images\\\\Rick_Astley.jpg";
+//    File testFile = getClass().getResource("/path/to/your/resource.txt");
     Billboard underTestEmpty;
     Billboard underTestFull;
     byte[] testBytes = new byte[]{0, 1, 2};
@@ -346,7 +348,7 @@ public class BillboardTest {
     public void ConvertImageToData() throws Exception {
         //uses ConvertImageToData funct
        // File file = new File("C:\\sally.jpg");
-        byte[] S = underTestEmpty.ConvertImageToData("C:\\sally.jpg");
+        byte[] S = underTestEmpty.ConvertImageToData(testAddress);
         underTestEmpty.setPicData(S);
         //In this test we will need to convert to data and see what it says then change im and then see differences and try to make one back using next test
         assertEquals(S, underTestEmpty.getPicData());
@@ -365,7 +367,7 @@ public class BillboardTest {
     public void ConvertDataToImage() throws Exception {
         //This will have to be a visual confirmation
 //        File file = new File("C:\\sally.jpg");
-        byte[] S = underTestEmpty.ConvertImageToData("C:\\sally.jpg");
+        byte[] S = underTestEmpty.ConvertImageToData(testAddress);
         underTestEmpty.setPicData(S);
         new DisplayImage(underTestEmpty.getPicData());
         Thread.sleep(10000);
@@ -439,7 +441,7 @@ public class BillboardTest {
      */
     @Test
     public void ShowBillboardTest() throws Exception {
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
         underTestEmpty.setMsg("Message");
         underTestEmpty.setInfo("info");
         underTestEmpty.showBillboard();
@@ -473,7 +475,7 @@ public class BillboardTest {
     @Test
     public void ShowBillboardColourTest() throws Exception {
 
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
         underTestEmpty.setMsg("Message");
         underTestEmpty.setInfo("info");
         underTestEmpty.setBackColour(new Color(39, 255, 231, 202));
@@ -492,7 +494,7 @@ public class BillboardTest {
 //    @Test
 //    public void DisplayImageTester() throws Exception {
 //        JFrame TestFrame = underTestEmpty.createFrame();
-//        byte[] Data = underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg");
+//        byte[] Data = underTestEmpty.ConvertImageToData("testAddress");
 //        JLabel testLab =  DisplayImage.DisplayImageLabel(Data);
 //        //new DisplayImage("E:\\DND\\TEST.jpg");
 //
@@ -513,7 +515,7 @@ public class BillboardTest {
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
         testFrame.setContentPane(testPanel);
-        JLabel LabTest =  underTestEmpty.CreateImageFilepath("E:\\DND\\TEST.jpg");
+        JLabel LabTest =  underTestEmpty.CreateImageFilepath(testAddress);
         testFrame.getContentPane().add(LabTest);
         testFrame.repaint();
 
@@ -528,7 +530,7 @@ public class BillboardTest {
      */
     @Test
     public void DisplayImageTester3() throws Exception {
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
         testFrame.setContentPane(testPanel);
@@ -547,7 +549,7 @@ public class BillboardTest {
     @Test
     public void GettingAndSavingUrl() throws Exception {
         byte[] testFromUrl = underTestEmpty.UrlToData("https://images2.minutemediacdn.com/image/upload/c_crop,h_1193,w_2121,x_0,y_64/f_auto,q_auto,w_1100/v1565279671/shape/mentalfloss/578211-gettyimages-542930526.jpg");
-        byte[] testFromSave = underTestEmpty.ConvertImageToData("E:\\DND\\TEST2Copy.jpg");
+        byte[] testFromSave = underTestEmpty.ConvertImageToData(testAddress);
         underTestEmpty.setPicData(testFromUrl);
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
