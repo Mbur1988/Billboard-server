@@ -8,8 +8,9 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.util.Base64;
 
-import static java.awt.Font.*;
+import static java.awt.Font.BOLD;
 
 public class Billboard implements Serializable {
     // Get the size of the screen.
@@ -567,6 +568,16 @@ public class Billboard implements Serializable {
             ImageIO.write(image, type, out);
             return out.toByteArray();
         }
+    }
+
+    public String BytesToSixFour(byte[] testS) {
+        String Output = Base64.getEncoder().encodeToString(testS);
+        return Output;
+    }
+
+    public byte[] SixFourToByte(String stringInSixFour) {
+        byte[] Output = Base64.getDecoder().decode(stringInSixFour);
+        return Output;
     }
 }
 

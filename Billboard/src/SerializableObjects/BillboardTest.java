@@ -384,16 +384,16 @@ public class BillboardTest {
      */
     @Test
     public void ConvertByteArrayToBase64AndBack(){
+        //create string for HW
+        String testerString ="hello world";
         //converts hello world to bytes
-        byte[] testS = "hello world".getBytes();
+        byte[] testS = testerString.getBytes();
         //changes hello world into 64 from bytes
-        String bytesIn64 =  underTestEmpty.BytesTo64(testS);
-
+        String bytesInSixFour =  underTestEmpty.BytesToSixFour(testS);
         //convert it back
-
-        byte[] testB = underTestEmpty.SixFourToByte(bytesIn64);
-
-        assertEquals(testS,testB);
+        byte[] testB = underTestEmpty.SixFourToByte(bytesInSixFour);
+        String End = new String(testB);
+        assertEquals(testerString,End);
     }
 
 
