@@ -19,8 +19,8 @@ public class Billboard implements Serializable {
     static int screenHeight = screenSize.height;
 
     // Globals
-    private String msg;
     private String name;
+    private String msg;
     private String info;
     private String picURL;
     private byte[] picDATA;
@@ -33,8 +33,8 @@ public class Billboard implements Serializable {
 
     //setting a blank Billboard
     public Billboard(){
-        this.msg = null;
         this.name = null;
+        this.msg = null;
         this.info = null;
         this.picURL = null;
         this.picDATA = null;
@@ -56,10 +56,10 @@ public class Billboard implements Serializable {
      * @param BackColour colour of the back ground in hex
      * @param InfoColour colour of info writing
      */
-    public Billboard(String msg,String name, String info, String picURL, byte[] picDATA, Color MsgColour, Color BackColour, Color InfoColour) {
+    public Billboard(String name, String msg, String info, String picURL, byte[] picDATA, Color MsgColour, Color BackColour, Color InfoColour) {
 
-        this.msg = msg;
         this.name = name;
+        this.msg = msg;
         this.info = info;
         this.picURL = picURL;
         this.picDATA = picDATA;
@@ -486,7 +486,7 @@ public class Billboard implements Serializable {
      * @param string String that represents a hex colour Ex %FFFFFF
      * @return String representing red green blue Ex 255255255
      */
-    public String ConvertStringToRGB(String string) {
+    public static String ConvertStringToRGB(String string) {
         String Out;
         int R =(Integer.parseInt(string.substring(1,3),16));
         int G =(Integer.parseInt(string.substring(3,5),16));
@@ -504,7 +504,7 @@ public class Billboard implements Serializable {
      * @param b = blue  (0-255)
      * @return String of the entered RGB as a Hex representation in a string. Ex #FFFFFF
      */
-    public String ConvertRGBtoString(int r, int g, int b) {
+    public static String ConvertRGBtoString(int r, int g, int b) {
         String hex = String.format("#%02X%02X%02X", r, g, b);
         return hex;
     }
@@ -515,7 +515,7 @@ public class Billboard implements Serializable {
      * @return image in byte[] form
      * @throws Exception if no file found
      */
-    public byte[] ConvertImageToData(String filePath) throws Exception {
+    public static byte[] ConvertImageToData(String filePath) throws Exception {
         BufferedImage bImage = ImageIO.read(new File(filePath));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ImageIO.write(bImage, "jpg", bos );
@@ -530,7 +530,7 @@ public class Billboard implements Serializable {
      * @throws IOException if cant read
      */
 
-    public BufferedImage ConvertDataToImage(byte[] imageData) throws IOException {
+    public static BufferedImage ConvertDataToImage(byte[] imageData) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
         BufferedImage image = ImageIO.read(bais);
         return image;
@@ -543,7 +543,7 @@ public class Billboard implements Serializable {
      * @throws Exception in case
      */
 
-    public byte[] UrlToData(String input) throws Exception {
+    public static byte[] UrlToData(String input) throws Exception {
         URL url = new URL(input);
         BufferedImage image = ImageIO.read(url);
         byte[] byteArray = ByteArrayHelper(image, "png");
@@ -564,12 +564,12 @@ public class Billboard implements Serializable {
         }
     }
 
-    public String BytesToSixFour(byte[] testS) {
+    public static String BytesToSixFour(byte[] testS) {
         String Output = Base64.getEncoder().encodeToString(testS);
         return Output;
     }
 
-    public byte[] SixFourToByte(String stringInSixFour) {
+    public static byte[] SixFourToByte(String stringInSixFour) {
         byte[] Output = Base64.getDecoder().decode(stringInSixFour);
         return Output;
     }
