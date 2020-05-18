@@ -1,26 +1,16 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
 import SerializableObjects.Billboard;
+import Tools.ColorIndex;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import static Clients.ControlPanel.ControlPanel.*;
+import static Tools.ColorIndex.*;
 
 public class CreatePanel extends ControlPanelInterface {
-
-    private static final String[] colors = {
-            "black",
-            "white",
-            "gray",
-            "red",
-            "blue",
-            "yellow",
-            "orange",
-            "green",
-            "purple",
-            "brown"};
 
     private static Billboard billboard;
     private static JLabel lbl_name;
@@ -57,6 +47,7 @@ public class CreatePanel extends ControlPanelInterface {
     public static void createPanelScreen() {
 
         createPanel.setLayout(null);
+        //billboard = new Billboard();
 
         // Add title labels
         JLabel label_editUser = new JLabel("Billboard details");
@@ -100,9 +91,9 @@ public class CreatePanel extends ControlPanelInterface {
         addTextfield(createPanel, tf_path, 190, 450, 300, 50);
 
         // Add combo boxes
-        cb_bgColor = new JComboBox<>(colors);
-        cb_titleColor = new JComboBox<>(colors);
-        cb_infoColor = new JComboBox<>(colors);
+        cb_bgColor = new JComboBox<>(COLORS);
+        cb_titleColor = new JComboBox<>(COLORS);
+        cb_infoColor = new JComboBox<>(COLORS);
 
         // Set default values
         cb_bgColor.setSelectedItem("white");
@@ -114,8 +105,8 @@ public class CreatePanel extends ControlPanelInterface {
         addCombobox(createPanel, cb_infoColor, 190, 350, 300, 50);
 
         // Add radio buttons
-        rb_url = new JRadioButton("File:", true);
-        rb_file = new JRadioButton("URL:");
+        rb_file = new JRadioButton("File:", true);
+        rb_url = new JRadioButton("URL:");
 
         addRadioButton(createPanel, rb_file, 190, 400, 150, 50);
         addRadioButton(createPanel, rb_url, 340, 400, 150, 50);
@@ -229,6 +220,26 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void previewBb() {
-        billboard = new Billboard();
+        try {
+            String picURL = null;
+            byte[] picDATA = null;
+            if (rb_file.isSelected() && !tf_path.getText().equals("")) {
+                picDATA = billboard.ConvertImageToData(tf_path.getText());
+            } else if (rb_url.isSelected() && !tf_path.getText().equals("")) {
+                picURL = tf_path.getText();
+                picDATA = billboard.UrlToData(tf_path.getText());
+            }
+            billboard = new Billboard(
+                    tf_name.getText(),
+                    tf_title.getText(),
+                    tf_info.getText(),
+                    picURL, picDATA,
+                    color.get(cb_titleColor.getSelectedItem()),
+                    color.get(cb_bgColor.getSelectedItem()),
+                    color.get(cb_infoColor.getSelectedItem()));
+            billboard.showBillboard();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
