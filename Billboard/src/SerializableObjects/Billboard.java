@@ -8,8 +8,9 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.util.Base64;
 
-import static java.awt.Font.*;
+import static java.awt.Font.BOLD;
 
 public class Billboard implements Serializable {
     // Get the size of the screen.
@@ -18,7 +19,6 @@ public class Billboard implements Serializable {
     static int screenHeight = screenSize.height;
 
     // Globals
-
     private String msg;
     private String name;
     private String info;
@@ -27,6 +27,7 @@ public class Billboard implements Serializable {
     private Color msgColour;
     private Color backColour;
     private Color infoColour;
+    private String createdBy;
     private JFrame BillboardScreen;
     private JPanel BillboardScreenPannel;
 
@@ -40,11 +41,9 @@ public class Billboard implements Serializable {
         this.msgColour = null;
         this.backColour = null;
         this.infoColour = null;
+        this.createdBy = null;
         this.BillboardScreenPannel = null;
         this.BillboardScreen = null;
-        //this.BillboardScreen = createFrame();
-        //this.BillboardScreenPannel = CreatePanel();
-
     }
     /**
      *
@@ -58,6 +57,7 @@ public class Billboard implements Serializable {
      * @param InfoColour colour of info writing
      */
     public Billboard(String msg,String name, String info, String picURL, byte[] picDATA, Color MsgColour, Color BackColour, Color InfoColour) {
+
         this.msg = msg;
         this.name = name;
         this.info = info;
@@ -70,9 +70,6 @@ public class Billboard implements Serializable {
         BillboardScreen = null;
 
     }
-    public static void main(String[] args) { new Billboard();}
-
-
     // - - - - - - -     Workers    - - - - - - - - - //
 
     /**
@@ -497,6 +494,8 @@ public class Billboard implements Serializable {
         return Out = "" + R + G + B;
     }
 
+
+
     /**
      * Converts a RGB 9 number string into a Hex String.
      *
@@ -563,6 +562,16 @@ public class Billboard implements Serializable {
             ImageIO.write(image, type, out);
             return out.toByteArray();
         }
+    }
+
+    public String BytesToSixFour(byte[] testS) {
+        String Output = Base64.getEncoder().encodeToString(testS);
+        return Output;
+    }
+
+    public byte[] SixFourToByte(String stringInSixFour) {
+        byte[] Output = Base64.getDecoder().decode(stringInSixFour);
+        return Output;
     }
 }
 

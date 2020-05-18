@@ -23,6 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
  *       32 - 33 Tests making labels for the Mesage and Info
  *       37 - 42 Tests displaying the Billboard and clearing the Billboard
  *       43 tests Conversion of URL to byte[] and shows
+ *       44 and 46 Tests the rearange of the info msg and image in different configs.
+ *       47 Tests converting a byte[] to base 64
+ *
  *
  *************************************************************************************************************************************************************/
 
@@ -374,6 +377,27 @@ public class BillboardTest {
         // Test passes. Original == reconfigured.
         assertTrue(true);
     }
+    /**
+     * Test 47,
+     *      converting byte[] to a base 64 string and then back to check that it changes and comes back.
+     *
+     */
+    @Test
+    public void ConvertByteArrayToBase64AndBack(){
+        //create string for HW
+        String testerString ="hello world";
+        //converts hello world to bytes
+        byte[] testS = testerString.getBytes();
+        //changes hello world into 64 from bytes
+        String bytesInSixFour =  underTestEmpty.BytesToSixFour(testS);
+        //convert it back
+        byte[] testB = underTestEmpty.SixFourToByte(bytesInSixFour);
+        String End = new String(testB);
+        assertEquals(testerString,End);
+    }
+
+
+
 //--------------------------------------------------------------------------------------------//
 //                                    Creaters                                                //
 //--------------------------------------------------------------------------------------------//
@@ -466,7 +490,7 @@ public class BillboardTest {
     }
     /**
      * Test 46,
-     *      Tests making a JTextArea with msg and info in it
+     *      Tests image alone in show billboard
      */
     @Test
     public void ImageLabels() throws Exception {
@@ -479,7 +503,7 @@ public class BillboardTest {
     }
     /**
      * Test 45,
-     *      Tests making a JTextArea with msg and info in it
+     *      information and image tests in show billboard
      */
     @Test
     public void InfoAndImageLabels() throws Exception {
