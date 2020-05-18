@@ -18,7 +18,6 @@ public class Billboard implements Serializable {
     static int screenHeight = screenSize.height;
 
     // Globals
-
     private String msg;
     private String name;
     private String info;
@@ -27,6 +26,7 @@ public class Billboard implements Serializable {
     private Color msgColour;
     private Color backColour;
     private Color infoColour;
+    private String createdBy;
     private JFrame BillboardScreen;
     private JPanel BillboardScreenPannel;
 
@@ -40,6 +40,7 @@ public class Billboard implements Serializable {
         this.msgColour = null;
         this.backColour = null;
         this.infoColour = null;
+        this.createdBy = null;
         this.BillboardScreenPannel = null;
         this.BillboardScreen = null;
         //this.BillboardScreen = createFrame();
@@ -58,6 +59,7 @@ public class Billboard implements Serializable {
      * @param InfoColour colour of info writing
      */
     public Billboard(String msg,String name, String info, String picURL, byte[] picDATA, Color MsgColour, Color BackColour, Color InfoColour) {
+
         this.msg = msg;
         this.name = name;
         this.info = info;
@@ -496,6 +498,8 @@ public class Billboard implements Serializable {
         int B =(Integer.parseInt(string.substring(5,7),16));
         return Out = "" + R + G + B;
     }
+
+
 
     /**
      * Converts a RGB 9 number string into a Hex String.
