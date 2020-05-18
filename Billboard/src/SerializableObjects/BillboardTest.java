@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *       43 tests Conversion of URL to byte[] and shows
  *       44 and 46 Tests the rearange of the info msg and image in different configs.
  *       47 Tests converting a byte[] to base 64
- *       48 Tests 47 back
+ *
  *
  *************************************************************************************************************************************************************/
 

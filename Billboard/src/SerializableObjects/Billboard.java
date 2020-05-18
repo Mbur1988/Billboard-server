@@ -44,9 +44,6 @@ public class Billboard implements Serializable {
         this.createdBy = null;
         this.BillboardScreenPannel = null;
         this.BillboardScreen = null;
-        //this.BillboardScreen = createFrame();
-        //this.BillboardScreenPannel = CreatePanel();
-
     }
     /**
      *
@@ -73,9 +70,6 @@ public class Billboard implements Serializable {
         BillboardScreen = null;
 
     }
-    public static void main(String[] args) { new Billboard();}
-
-
     // - - - - - - -     Workers    - - - - - - - - - //
 
     /**
