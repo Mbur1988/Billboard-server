@@ -27,8 +27,8 @@ import static org.junit.jupiter.api.Assertions.*;
  *************************************************************************************************************************************************************/
 
 public class BillboardTest {
+
     String testAddress = ProjectPath.RootString() +  "\\\\Resources\\\\Images\\\\Rick_Astley.jpg";
-    //    File testFile = getClass().getResource("/path/to/your/resource.txt");
     Billboard underTestEmpty;
     Billboard underTestFull;
     byte[] testBytes = new byte[]{0, 1, 2};
@@ -407,7 +407,7 @@ public class BillboardTest {
     public void MsgLabel() throws Exception {
         JFrame testframe = underTestEmpty.createFrame();
 
-        JLabel Test = Billboard.CreateTextArea("message","message input");
+        JLabel Test = Billboard.CreateTextArea("message","message input","msg only");
 
         //underTestEmpty.SetVisible(true,underTestEmpty.getJPanel());
         testframe.getContentPane().add(Test);
@@ -416,6 +416,7 @@ public class BillboardTest {
         Thread.sleep(3000);
         assertTrue(true);
     }
+
     /**
      * Test 33,
      *      Tests making a JTextArea with msg in it
@@ -424,9 +425,70 @@ public class BillboardTest {
     public void infoLabel() throws Exception {
         JFrame testframe = underTestEmpty.createFrame();
         //Uses DisplayImage function CreateLabel()
-        JLabel Test = Billboard.CreateTextArea("info","info input");
+        JLabel Test = Billboard.CreateTextArea("info","info input","info only");
         //underTestEmpty.SetVisible(true,underTestEmpty.getJPanel());
         testframe.getContentPane().add(Test);
+        //check visually
+        Thread.sleep(3000);
+        assertTrue(true);
+    }
+    /**
+     * Test 44,
+     *      Tests making a JTextArea with msg and info in it
+     */
+    @Test
+    public void MsgAndInfoLabels() throws Exception {
+
+        underTestEmpty.setInfo("Info");
+        underTestEmpty.setMsg("message");
+        underTestEmpty.showBillboard();
+
+
+        //check visually
+        Thread.sleep(3000);
+        assertTrue(true);
+    }
+    /**
+     * Test 45,
+     *      Tests making a JTextArea with msg and info in it
+     */
+    @Test
+    public void MsgAndImageLabels() throws Exception {
+
+        underTestEmpty.setMsg("message");
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\tavern.png"));
+        underTestEmpty.showBillboard();
+
+
+        //check visually
+        Thread.sleep(3000);
+        assertTrue(true);
+    }
+    /**
+     * Test 46,
+     *      Tests making a JTextArea with msg and info in it
+     */
+    @Test
+    public void ImageLabels() throws Exception {
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\tavern.png"));
+        underTestEmpty.showBillboard();
+
+        //check visually
+        Thread.sleep(3000);
+        assertTrue(true);
+    }
+    /**
+     * Test 45,
+     *      Tests making a JTextArea with msg and info in it
+     */
+    @Test
+    public void InfoAndImageLabels() throws Exception {
+
+        underTestEmpty.setInfo("This is the information");
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\tavern.png"));
+        underTestEmpty.showBillboard();
+
+
         //check visually
         Thread.sleep(3000);
         assertTrue(true);
@@ -534,7 +596,7 @@ public class BillboardTest {
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
         testFrame.setContentPane(testPanel);
-        JLabel LabTest =  underTestEmpty.CreateImageData(underTestEmpty.getPicData());
+        JLabel LabTest =  underTestEmpty.CreateImageData(underTestEmpty.getPicData(),"Image Only");
         testFrame.getContentPane().add(LabTest);
         testFrame.repaint();
 
@@ -554,7 +616,7 @@ public class BillboardTest {
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
         testFrame.setContentPane(testPanel);
-        JLabel LabTest = underTestEmpty.CreateImageData(underTestEmpty.getPicData());
+        JLabel LabTest = underTestEmpty.CreateImageData(underTestEmpty.getPicData(),"Image Only");
         testFrame.getContentPane().add(LabTest);
         testFrame.repaint();
 
@@ -562,6 +624,69 @@ public class BillboardTest {
         //Visual check Passed. Image is on the correct panel.
         assertTrue(true);
     }
+    /*
+        11-5-2020
+        (task 74)
+        implementing conditions for certain situations with msg or info or image only.
+        Also setting max bounds of image.
+        FIXME - msg by its self done
+              - info by its self done
+              - Image By self
+              - Image by self
+     */
+
+    /**
+     * Test 44,
+     *      adjust displaying text if only msg
+     */
+    @Test
+    public void TestMsgOnly() throws Exception {
+        underTestEmpty.setMsg("Message Only");
+        underTestEmpty.showBillboard();
+
+        Thread.sleep((2000));
+        //Visual check
+        assertTrue(false);
+    }
+    /**
+     * Test 44,
+     *      adjust displaying text if only msg
+     */
+    @Test
+    public void TestInfoOnly() throws Exception {
+        underTestEmpty.setInfo("Message Only");
+        underTestEmpty.showBillboard();
+
+        Thread.sleep((2000));
+        //Visual check
+        assertTrue(false);
+    }    /**
+     * Test 44,
+     *      adjust displaying text if only msg
+     */
+    @Test
+    public void TestImageOnly() throws Exception {
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
+        underTestEmpty.showBillboard();
+
+        Thread.sleep((2000));
+        //Visual check
+        assertTrue(false);
+    }
+    /**
+     * Test 44,
+     *      adjust displaying text if only msg
+     */
+    @Test
+    public void TestImageBounds() throws Exception {
+        underTestEmpty.setMsg("Message Only");
+        underTestEmpty.showBillboard();
+
+        Thread.sleep((2000));
+        //Visual check
+        assertTrue(false);
+    }
+
 
     //Test template
 //    /**
