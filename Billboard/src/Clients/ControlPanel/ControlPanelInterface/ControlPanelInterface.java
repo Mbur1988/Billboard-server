@@ -8,6 +8,9 @@ import java.io.IOException;
 import static Clients.ControlPanel.ControlPanel.user;
 
 public class ControlPanelInterface {
+
+    private static final Font font = new Font("Courier", Font.PLAIN, 20);
+
     public static JFrame controlPanelScreen = new JFrame();
     public static JPanel createPanel = new JPanel();
     public static JPanel listPanel = new JPanel();
@@ -52,8 +55,6 @@ public class ControlPanelInterface {
 
         try {
             CreatePanel.createPanelScreen();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,6 +72,47 @@ public class ControlPanelInterface {
         controlPanelScreen.setVisible(true);
         controlPanelScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // May need HIDE_ON_CLOSE instead of exit.
 
+    }
+
+    protected static void addTextfield (JPanel panel, JTextField textField, int x, int y, int width, int height) {
+        textField.setBounds(x, y, width, height);
+        textField.setFont(font);
+        panel.add(textField);
+    }
+
+    protected static void addPasswordField (JPanel panel, JPasswordField passwordField, int x, int y, int width, int height) {
+        passwordField.setBounds(x, y, width, height);
+        passwordField.setFont(font);
+        panel.add(passwordField);
+    }
+
+    protected static void addCheckBox (JPanel panel, JCheckBox checkbox, int x, int y, int width, int height) {
+        checkbox.setBounds(x, y, width, height);
+        checkbox.setFont(font);
+        panel.add(checkbox);
+    }
+
+    protected static void addButton (JPanel panel, JButton button, int x, int y, int width, int height) {
+        button.setBounds(x, y, width, height);
+        panel.add(button);
+    }
+
+    protected static void addLabel (JPanel panel, JLabel label, int x, int y, int width, int height) {
+        label.setBounds(x, y, width, height);
+        label.setFont(font);
+        panel.add(label);
+    }
+
+    protected static void addCombobox (JPanel panel, JComboBox combobox, int x, int y, int width, int height) {
+        combobox.setBounds(x, y, width, height);
+        combobox.setFont(font);
+        panel.add(combobox);
+    }
+
+    protected static void addRadioButton (JPanel panel, JRadioButton radiobutton, int x, int y, int width, int height) {
+        radiobutton.setBounds(x, y, width, height);
+        radiobutton.setFont(font);
+        panel.add(radiobutton);
     }
 
 }

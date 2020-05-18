@@ -8,16 +8,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Collections;
-
 import static Clients.ControlPanel.ControlPanel.*;
 
 public class EditUsersPanel extends ControlPanelInterface {
 
-    private static JLabel lbl_username;
     private static JLabel lbl_password;
     private static JLabel lbl_message;
-    private static JLabel lbl_confirm;
-    private static JLabel lbl_privileges;
     private static JTextField tf_username;
     private static JPasswordField tf_password;
     private static JPasswordField tf_confirm;
@@ -27,13 +23,8 @@ public class EditUsersPanel extends ControlPanelInterface {
     private static JCheckBox cb_editUsers;
     private static DefaultListModel model;
     private static JList list;
-    private static JScrollPane scrollPane;
     private static JButton b_add;
     private static JButton b_save;
-    private static JButton b_clear;
-    private static JButton b_load;
-    private static JButton b_delete;
-    private static final Font font = new Font("Courier", Font.PLAIN, 20);
 
     public static void editUserScreen() {
 
@@ -51,28 +42,28 @@ public class EditUsersPanel extends ControlPanelInterface {
         editUserPanel.add(lbl_users);
 
         // Add labels
-        lbl_username = new JLabel("Username");
+        JLabel lbl_username = new JLabel("Username");
         lbl_password = new JLabel("Password");
-        lbl_confirm = new JLabel("Confirm Password");
-        lbl_privileges = new JLabel("Privileges");
+        JLabel lbl_confirm = new JLabel("Confirm Password");
+        JLabel lbl_privileges = new JLabel("Privileges");
         lbl_message = new JLabel("");
 
-        addLabel(lbl_username, 10, 100, 300, 50);
-        addLabel(lbl_password, 10, 150, 300, 50);
-        addLabel(lbl_confirm, 10, 200, 300, 50);
-        addLabel(lbl_privileges, 10, 250, 300, 50);
-        addLabel(lbl_message, 190, 500, 340, 50);
+        addLabel(editUserPanel, lbl_username, 10, 100, 300, 50);
+        addLabel(editUserPanel, lbl_password, 10, 150, 300, 50);
+        addLabel(editUserPanel, lbl_confirm, 10, 200, 300, 50);
+        addLabel(editUserPanel, lbl_privileges, 10, 250, 300, 50);
+        addLabel(editUserPanel, lbl_message, 190, 500, 340, 50);
 
         // Add text fields
         tf_username = new JTextField();
-        addTextfield(tf_username, 190, 100, 300, 50);
+        addTextfield(editUserPanel, tf_username, 190, 100, 300, 50);
 
         // Add password fields
         tf_password = new JPasswordField();
         tf_confirm = new JPasswordField();
 
-        addPasswordField(tf_password, 190, 150, 300, 50);
-        addPasswordField(tf_confirm, 190, 200, 300, 50);
+        addPasswordField(editUserPanel, tf_password, 190, 150, 300, 50);
+        addPasswordField(editUserPanel, tf_confirm, 190, 200, 300, 50);
 
         // Add checkboxes
         cb_createNew = new JCheckBox("Create New Billboard");
@@ -80,10 +71,10 @@ public class EditUsersPanel extends ControlPanelInterface {
         cb_schedule = new JCheckBox("Schedule Billboards");
         cb_editUsers = new JCheckBox("Edit Users");
 
-        addCheckBox(cb_createNew, 190, 250, 300, 50);
-        addCheckBox(cb_editBoard, 190, 300, 300, 50);
-        addCheckBox(cb_schedule, 190, 350, 300, 50);
-        addCheckBox(cb_editUsers, 190, 400, 300, 50);
+        addCheckBox(editUserPanel, cb_createNew, 190, 250, 300, 50);
+        addCheckBox(editUserPanel, cb_editBoard, 190, 300, 300, 50);
+        addCheckBox(editUserPanel, cb_schedule, 190, 350, 300, 50);
+        addCheckBox(editUserPanel, cb_editUsers, 190, 400, 300, 50);
 
         // Add default list model
         model = new DefaultListModel();
@@ -93,43 +84,33 @@ public class EditUsersPanel extends ControlPanelInterface {
         list = new JList(model);
 
         // Add JScrollPane
-        scrollPane = new JScrollPane(list);
+        JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setBounds(screenWidth/2 - 100, 100, 300, 350);
         editUserPanel.add(scrollPane);
 
         // Add buttons
-        b_add = new JButton("Add User");
-        b_save = new JButton("Save User");
-        b_clear = new JButton("Clear");
-        b_load = new JButton("Edit User");
-        b_delete = new JButton("Delete User");
+        b_add = new JButton("Add");
+        b_save = new JButton("Save");
+        JButton b_clear = new JButton("Clear");
+        JButton b_load = new JButton("Edit");
+        JButton b_delete = new JButton("Delete");
 
-        addButton(b_add, 190, 450, 150, 30);
+        addButton(editUserPanel, b_add, 190, 450, 150, 30);
         b_save.setBounds(190, 450, 150, 30);
-        addButton(b_clear, 340, 450, 150, 30);
-        addButton(b_load, screenWidth/2 - 100, 450, 150, 30);
-        addButton(b_delete, screenWidth/2 + 50, 450, 150, 30);
+        addButton(editUserPanel, b_clear, 340, 450, 150, 30);
+        addButton(editUserPanel, b_load, screenWidth/2 - 100, 450, 150, 30);
+        addButton(editUserPanel, b_delete, screenWidth/2 + 50, 450, 150, 30);
 
         // Handle button events
-        b_add.addActionListener(event -> {
-            addUser();
-        });
+        b_add.addActionListener(event -> addUser());
 
-        b_save.addActionListener(event -> {
-            saveUser();
-        });
+        b_save.addActionListener(event -> saveUser());
 
-        b_clear.addActionListener(event -> {
-            clearFields();
-        });
+        b_clear.addActionListener(event -> clearFields());
 
-        b_load.addActionListener(event -> {
-            loadUser();
-        });
+        b_load.addActionListener(event -> loadUser());
 
-        b_delete.addActionListener(event -> {
-            deleteUser();
-        });
+        b_delete.addActionListener(event -> deleteUser());
     }
 
     private static void addUser() {
@@ -280,12 +261,7 @@ public class EditUsersPanel extends ControlPanelInterface {
                 editUserPanel.revalidate();
                 controlPanelScreen.repaint();
                 lbl_password.setText("New Password");
-                if (username.equals(user.getUsername())) {
-                    cb_editUsers.setEnabled(false);
-                }
-                else {
-                    cb_editUsers.setEnabled(true);
-                }
+                cb_editUsers.setEnabled(!username.equals(user.getUsername()));
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -352,32 +328,5 @@ public class EditUsersPanel extends ControlPanelInterface {
         lbl_password.setText("Password");
     }
 
-    private static void addTextfield (JTextField textField, int x, int y, int width, int height) {
-        textField.setBounds(x, y, width, height);
-        textField.setFont(font);
-        editUserPanel.add(textField);
-    }
 
-    private static void addPasswordField (JPasswordField passwordField, int x, int y, int width, int height) {
-        passwordField.setBounds(x, y, width, height);
-        passwordField.setFont(font);
-        editUserPanel.add(passwordField);
-    }
-
-    private static void addCheckBox (JCheckBox checkbox, int x, int y, int width, int height) {
-        checkbox.setBounds(x, y, width, height);
-        checkbox.setFont(font);
-        editUserPanel.add(checkbox);
-    }
-
-    private static void addButton (JButton button, int x, int y, int width, int height) {
-        button.setBounds(x, y, width, height);
-        editUserPanel.add(button);
-    }
-
-    private static void addLabel (JLabel label, int x, int y, int width, int height) {
-        label.setBounds(x, y, width, height);
-        label.setFont(font);
-        editUserPanel.add(label);
-    }
 }
