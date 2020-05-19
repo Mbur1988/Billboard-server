@@ -168,7 +168,8 @@ public class CreatePanel extends ControlPanelInterface {
         b_preview = new JButton("Preview");
 
         addButton(createPanel, b_add, 190, 500, 150, 30);
-        b_save.setBounds(190, 500, 150, 30);
+        addButton(createPanel, b_save, 190, 500, 150, 30);
+        b_save.setVisible(false);
         addButton(createPanel, b_clear, 340, 500, 150, 30);
         addButton(createPanel, b_import, screenWidth/2 - 100, 530, 150, 30);
         addButton(createPanel, b_export, screenWidth/2 + 50, 530, 150, 30);
@@ -236,6 +237,8 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void clearFields() {
+        b_save.setVisible(false);
+        b_add.setVisible(true);
         resetFields();
     }
 
