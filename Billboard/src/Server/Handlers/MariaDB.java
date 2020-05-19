@@ -576,7 +576,7 @@ public class MariaDB {
         
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard name currently in the billboard database.
+         * Method to retrieve the specified billboard name currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -593,7 +593,7 @@ public class MariaDB {
         
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard info currently in the billboard database.
+         * Method to retrieve the specified billboard info currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -609,7 +609,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard msg currently in the billboard database.
+         * Method to retrieve the specified billboard msg currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -626,7 +626,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard picURL currently in the billboard database.
+         * Method to retrieve the specified billboard picURL currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -644,7 +644,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard picData currently in the billboard database.
+         * Method to retrieve the specified billboard picData currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -660,7 +660,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard msgColour currently in the billboard database.
+         * Method to retrieve the specified billboard msgColour currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -676,7 +676,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard backColour currently in the billboard database.
+         * Method to retrieve the specified billboard backColour currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -692,7 +692,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard infoColour currently in the billboard database.
+         * Method to retrieve the specified billboard infoColour currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -708,7 +708,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard infoColour currently in the billboard database.
+         * Method to retrieve the specified billboard username currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -721,6 +721,13 @@ public class MariaDB {
                 return null;
             }
         }
+
+        /**
+         * @param name the name of the billboard
+         * Method to retrieve the billboard scheduling status currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
 
         public boolean getBillboardSchedule(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");

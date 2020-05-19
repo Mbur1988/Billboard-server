@@ -138,7 +138,7 @@ public class MariaDBTest {
     @Test
     public void EditTest() throws SQLException{
         undertest.billboards.editBillboard("test board", "msgedit", "infoedit", "picurl1", test, "msgcolour1", "backcolour1", "infocolour1", "admin2", true);
-        assertTrue(true);
+
     }
 //
 //    //**
