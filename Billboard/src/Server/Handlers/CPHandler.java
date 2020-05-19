@@ -65,8 +65,8 @@ public class CPHandler extends ConnectionHandler {
                     case ("getAccess"):
                         GetAccess();
                         break;
-                    case ("addNewBillboard"):
-                        AddNewBillboard();
+                    case ("addBillboard"):
+                        AddBillboard();
                         break;
                     case ("editBillboard"):
                         EditBillboard();
@@ -74,8 +74,8 @@ public class CPHandler extends ConnectionHandler {
                     case ("deleteBillboard"):
                         DeleteBillboard();
                         break;
-                    case ("addNewSchedule"):
-                        AddNewSchedule();
+                    case ("addSchedule"):
+                        AddSchedule();
                         break;
                     case ("editSchedule"):
                         EditSchedule();
@@ -232,7 +232,7 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
-    private void AddNewBillboard() {
+    private void AddBillboard() {
 
     }
 
@@ -244,7 +244,7 @@ public class CPHandler extends ConnectionHandler {
 
     }
 
-    private void AddNewSchedule() {
+    private void AddSchedule() {
 
     }
 
