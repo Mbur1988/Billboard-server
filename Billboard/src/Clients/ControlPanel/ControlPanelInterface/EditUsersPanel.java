@@ -98,7 +98,6 @@ public class EditUsersPanel extends ControlPanelInterface {
         addButton(editUserPanel, b_add, 190, 450, 150, 30);
         addButton(editUserPanel, b_save, 190, 450, 150, 30);
         b_save.setVisible(false);
-        //b_save.setBounds(190, 450, 150, 30);
         addButton(editUserPanel, b_clear, 340, 450, 150, 30);
         addButton(editUserPanel, b_load, screenWidth/2 - 100, 450, 150, 30);
         addButton(editUserPanel, b_delete, screenWidth/2 + 50, 450, 150, 30);
@@ -223,22 +222,9 @@ public class EditUsersPanel extends ControlPanelInterface {
         b_save.setVisible(false);
         b_add.setVisible(true);
         resetFields();
-//        editUserPanel.remove(b_save);
-//        editUserPanel.revalidate();
-//        controlPanelScreen.repaint();
-//        editUserPanel.add(b_add);
-//        editUserPanel.revalidate();
-//        controlPanelScreen.repaint();
-
     }
 
     private static void clearFields() {
-//        editUserPanel.remove(b_save);
-//        editUserPanel.revalidate();
-//        controlPanelScreen.repaint();
-//        editUserPanel.add(b_add);
-//        editUserPanel.revalidate();
-//        controlPanelScreen.repaint();
         b_save.setVisible(false);
         b_add.setVisible(true);
         resetFields();
@@ -262,12 +248,6 @@ public class EditUsersPanel extends ControlPanelInterface {
                 cb_editBoard.setSelected(key[1]);
                 cb_schedule.setSelected(key[2]);
                 cb_editUsers.setSelected(key[3]);
-//                editUserPanel.remove(b_add);
-//                editUserPanel.revalidate();
-//                controlPanelScreen.repaint();
-//                editUserPanel.add(b_save);
-//                editUserPanel.revalidate();
-//                controlPanelScreen.repaint();
                 b_add.setVisible(false);
                 b_save.setVisible(true);
                 lbl_password.setText("New Password");
@@ -338,6 +318,4 @@ public class EditUsersPanel extends ControlPanelInterface {
         cb_editUsers.setEnabled(true);
         lbl_password.setText("Password");
     }
-
-
 }
