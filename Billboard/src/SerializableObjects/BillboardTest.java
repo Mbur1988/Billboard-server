@@ -1,11 +1,11 @@
 package SerializableObjects;
 
 import Tools.DisplayImage;
+import Tools.ProjectPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
-
 import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,11 +23,15 @@ import static org.junit.jupiter.api.Assertions.*;
  *       32 - 33 Tests making labels for the Mesage and Info
  *       37 - 42 Tests displaying the Billboard and clearing the Billboard
  *       43 tests Conversion of URL to byte[] and shows
+ *       44 and 46 Tests the rearange of the info msg and image in different configs.
+ *       47 Tests converting a byte[] to base 64
+ *
  *
  *************************************************************************************************************************************************************/
 
 public class BillboardTest {
-   // String TestImageLocation = getClass().getResource("/Resources/Images/cat.jpg"); //TODO
+
+    String testAddress = ProjectPath.RootString() +  "\\\\Resources\\\\Images\\\\Rick_Astley.jpg";
     Billboard underTestEmpty;
     Billboard underTestFull;
     byte[] testBytes = new byte[]{0, 1, 2};
@@ -346,8 +350,8 @@ public class BillboardTest {
     @Test
     public void ConvertImageToData() throws Exception {
         //uses ConvertImageToData funct
-       // File file = new File("C:\\sally.jpg");
-        byte[] S = underTestEmpty.ConvertImageToData("C:\\sally.jpg");
+        // File file = new File("C:\\sally.jpg");
+        byte[] S = underTestEmpty.ConvertImageToData(testAddress);
         underTestEmpty.setPicData(S);
         //In this test we will need to convert to data and see what it says then change im and then see differences and try to make one back using next test
         assertEquals(S, underTestEmpty.getPicData());
@@ -366,13 +370,34 @@ public class BillboardTest {
     public void ConvertDataToImage() throws Exception {
         //This will have to be a visual confirmation
 //        File file = new File("C:\\sally.jpg");
-        byte[] S = underTestEmpty.ConvertImageToData("C:\\sally.jpg");
+        byte[] S = underTestEmpty.ConvertImageToData(testAddress);
         underTestEmpty.setPicData(S);
         new DisplayImage(underTestEmpty.getPicData());
         Thread.sleep(10000);
         // Test passes. Original == reconfigured.
         assertTrue(true);
     }
+    /**
+     * Test 47,
+     *      converting byte[] to a base 64 string and then back to check that it changes and comes back.
+     *
+     */
+    @Test
+    public void ConvertByteArrayToBase64AndBack(){
+        //create string for HW
+        String testerString ="hello world";
+        //converts hello world to bytes
+        byte[] testS = testerString.getBytes();
+        //changes hello world into 64 from bytes
+        String bytesInSixFour =  underTestEmpty.BytesToSixFour(testS);
+        //convert it back
+        byte[] testB = underTestEmpty.SixFourToByte(bytesInSixFour);
+        String End = new String(testB);
+        assertEquals(testerString,End);
+    }
+
+
+
 //--------------------------------------------------------------------------------------------//
 //                                    Creaters                                                //
 //--------------------------------------------------------------------------------------------//
@@ -455,7 +480,7 @@ public class BillboardTest {
     public void MsgAndImageLabels() throws Exception {
 
         underTestEmpty.setMsg("message");
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\tavern.png"));
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
         underTestEmpty.showBillboard();
 
 
@@ -465,11 +490,11 @@ public class BillboardTest {
     }
     /**
      * Test 46,
-     *      Tests making a JTextArea with msg and info in it
+     *      Tests image alone in show billboard
      */
     @Test
     public void ImageLabels() throws Exception {
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\tavern.png"));
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
         underTestEmpty.showBillboard();
 
         //check visually
@@ -478,13 +503,13 @@ public class BillboardTest {
     }
     /**
      * Test 45,
-     *      Tests making a JTextArea with msg and info in it
+     *      information and image tests in show billboard
      */
     @Test
     public void InfoAndImageLabels() throws Exception {
 
         underTestEmpty.setInfo("This is the information");
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\tavern.png"));
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
         underTestEmpty.showBillboard();
 
 
@@ -502,7 +527,7 @@ public class BillboardTest {
      */
     @Test
     public void ShowBillboardTest() throws Exception {
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
         underTestEmpty.setMsg("Message");
         underTestEmpty.setInfo("info");
         underTestEmpty.showBillboard();
@@ -510,7 +535,7 @@ public class BillboardTest {
 
         Thread.sleep(3000);
         //visual check PASSED
-         assertTrue(true);
+        assertTrue(true);
     }
     /**
      * Test 38,
@@ -536,8 +561,7 @@ public class BillboardTest {
     @Test
     public void ShowBillboardColourTest() throws Exception {
 
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\tavern.png"));
-//        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
         underTestEmpty.setMsg("Message");
         underTestEmpty.setInfo("info");
         underTestEmpty.setBackColour(new Color(39, 255, 231, 202));
@@ -556,7 +580,7 @@ public class BillboardTest {
 //    @Test
 //    public void DisplayImageTester() throws Exception {
 //        JFrame TestFrame = underTestEmpty.createFrame();
-//        byte[] Data = underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg");
+//        byte[] Data = underTestEmpty.ConvertImageToData("testAddress");
 //        JLabel testLab =  DisplayImage.DisplayImageLabel(Data);
 //        //new DisplayImage("E:\\DND\\TEST.jpg");
 //
@@ -577,7 +601,7 @@ public class BillboardTest {
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
         testFrame.setContentPane(testPanel);
-        JLabel LabTest =  underTestEmpty.CreateImageFilepath("E:\\DND\\TEST.jpg");
+        JLabel LabTest =  underTestEmpty.CreateImageFilepath(testAddress);
         testFrame.getContentPane().add(LabTest);
         testFrame.repaint();
 
@@ -592,7 +616,7 @@ public class BillboardTest {
      */
     @Test
     public void DisplayImageTester3() throws Exception {
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
         testFrame.setContentPane(testPanel);
@@ -611,7 +635,7 @@ public class BillboardTest {
     @Test
     public void GettingAndSavingUrl() throws Exception {
         byte[] testFromUrl = underTestEmpty.UrlToData("https://images2.minutemediacdn.com/image/upload/c_crop,h_1193,w_2121,x_0,y_64/f_auto,q_auto,w_1100/v1565279671/shape/mentalfloss/578211-gettyimages-542930526.jpg");
-        byte[] testFromSave = underTestEmpty.ConvertImageToData("E:\\DND\\TEST2Copy.jpg");
+        byte[] testFromSave = underTestEmpty.ConvertImageToData(testAddress);
         underTestEmpty.setPicData(testFromUrl);
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
@@ -646,7 +670,7 @@ public class BillboardTest {
 
         Thread.sleep((2000));
         //Visual check
-        assertTrue(false);
+        assertTrue(true);
     }
     /**
      * Test 44,
@@ -659,19 +683,19 @@ public class BillboardTest {
 
         Thread.sleep((2000));
         //Visual check
-        assertTrue(false);
+        assertTrue(true);
     }    /**
      * Test 44,
      *      adjust displaying text if only msg
      */
     @Test
     public void TestImageOnly() throws Exception {
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData("E:\\DND\\TEST.jpg"));
+        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
         underTestEmpty.showBillboard();
 
         Thread.sleep((2000));
         //Visual check
-        assertTrue(false);
+        assertTrue(true);
     }
     /**
      * Test 44,
@@ -684,7 +708,7 @@ public class BillboardTest {
 
         Thread.sleep((2000));
         //Visual check
-        assertTrue(false);
+        assertTrue(true);
     }
 
 

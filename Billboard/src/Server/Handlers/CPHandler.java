@@ -62,6 +62,9 @@ public class CPHandler extends ConnectionHandler {
                     case ("changePassword"):
                         ChangePassword();
                         break;
+                    case ("getAccess"):
+                        GetAccess();
+                        break;
                     case ("addNewBillboard"):
                         AddNewBillboard();
                         break;
@@ -170,11 +173,30 @@ public class CPHandler extends ConnectionHandler {
     }
 
     private void EditUser() {
-
+        try {
+            String username = dis.readUTF();
+            String password = dis.readUTF();
+            int access = dis.read();
+            boolean confirm = true;
+            if (!password.equals("")) {
+                byte[] salt = HashCredentials.CreateSalt();
+                password = HashCredentials.Hash(password, salt);
+                confirm = mariaDB.users.edit(username, password, salt);
+            }
+            dos.writeBoolean(mariaDB.users.edit(username, access) && confirm);
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void DeleteUser() {
-
+        try {
+            Log.Message("String data received from control panel");
+            dos.writeBoolean(mariaDB.users.delete(dis.readUTF()));
+        }
+        catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void ChangePassword() {
@@ -184,7 +206,8 @@ public class CPHandler extends ConnectionHandler {
             Log.Confirmation("message received from control panel");
             byte[] salt = mariaDB.users.getSalt(username);
             String toCheck = HashCredentials.Hash(password, salt);
-            if (toCheck.equals(mariaDB.users.getPassword(username))) {                Log.Confirmation("password correct");
+            if (toCheck.equals(mariaDB.users.getPassword(username))) {
+                Log.Confirmation("password correct");
                 dos.writeBoolean(true);
                 salt = HashCredentials.CreateSalt();
                 password = dis.readUTF();
@@ -196,6 +219,14 @@ public class CPHandler extends ConnectionHandler {
                 Log.Confirmation("password incorrect");
                 dos.writeBoolean(false);
             }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void GetAccess() {
+        try {
+            dos.write(mariaDB.users.getAccess(dis.readUTF()));
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
