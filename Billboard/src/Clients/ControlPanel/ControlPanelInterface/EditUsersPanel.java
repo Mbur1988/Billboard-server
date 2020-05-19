@@ -96,7 +96,9 @@ public class EditUsersPanel extends ControlPanelInterface {
         JButton b_delete = new JButton("Delete");
 
         addButton(editUserPanel, b_add, 190, 450, 150, 30);
-        b_save.setBounds(190, 450, 150, 30);
+        addButton(editUserPanel, b_save, 190, 450, 150, 30);
+        b_save.setVisible(false);
+        //b_save.setBounds(190, 450, 150, 30);
         addButton(editUserPanel, b_clear, 340, 450, 150, 30);
         addButton(editUserPanel, b_load, screenWidth/2 - 100, 450, 150, 30);
         addButton(editUserPanel, b_delete, screenWidth/2 + 50, 450, 150, 30);
@@ -177,14 +179,15 @@ public class EditUsersPanel extends ControlPanelInterface {
             lbl_message.setText("Password fields must match");
             return;
         }
-        if (!password.equals("")) {
-            password = HashCredentials.Hash(password);
-        }
         int access = UserAccess.bool2dec(
                 cb_createNew.isSelected(),
                 cb_editBoard.isSelected(),
                 cb_schedule.isSelected(),
                 cb_editUsers.isSelected());
+        if (access == user.getAccess() && password.equals("")) { return; }
+        if (!password.equals("")) {
+            password = HashCredentials.Hash(password);
+        }
         user.setAction("editUser");
         // Attempt connection to server
         if (AttemptConnect()) {
@@ -199,6 +202,7 @@ public class EditUsersPanel extends ControlPanelInterface {
                 if (dis.readBoolean()) {
                     lbl_message.setText("User edited");
                     Log.Confirmation("User edited successfully");
+                    user.setAccess(access);
                 }
                 else {
                     lbl_message.setText("User not edited");
@@ -216,23 +220,27 @@ public class EditUsersPanel extends ControlPanelInterface {
         else {
             Log.Error("Unable to connect to server");
         }
+        b_save.setVisible(false);
+        b_add.setVisible(true);
         resetFields();
-        editUserPanel.remove(b_save);
-        editUserPanel.revalidate();
-        controlPanelScreen.repaint();
-        editUserPanel.add(b_add);
-        editUserPanel.revalidate();
-        controlPanelScreen.repaint();
+//        editUserPanel.remove(b_save);
+//        editUserPanel.revalidate();
+//        controlPanelScreen.repaint();
+//        editUserPanel.add(b_add);
+//        editUserPanel.revalidate();
+//        controlPanelScreen.repaint();
+
     }
 
     private static void clearFields() {
-        editUserPanel.remove(b_save);
-        editUserPanel.revalidate();
-        controlPanelScreen.repaint();
-        editUserPanel.add(b_add);
-        editUserPanel.revalidate();
-        controlPanelScreen.repaint();
-
+//        editUserPanel.remove(b_save);
+//        editUserPanel.revalidate();
+//        controlPanelScreen.repaint();
+//        editUserPanel.add(b_add);
+//        editUserPanel.revalidate();
+//        controlPanelScreen.repaint();
+        b_save.setVisible(false);
+        b_add.setVisible(true);
         resetFields();
         lbl_message.setText("");
     }
@@ -254,12 +262,14 @@ public class EditUsersPanel extends ControlPanelInterface {
                 cb_editBoard.setSelected(key[1]);
                 cb_schedule.setSelected(key[2]);
                 cb_editUsers.setSelected(key[3]);
-                editUserPanel.remove(b_add);
-                editUserPanel.revalidate();
-                controlPanelScreen.repaint();
-                editUserPanel.add(b_save);
-                editUserPanel.revalidate();
-                controlPanelScreen.repaint();
+//                editUserPanel.remove(b_add);
+//                editUserPanel.revalidate();
+//                controlPanelScreen.repaint();
+//                editUserPanel.add(b_save);
+//                editUserPanel.revalidate();
+//                controlPanelScreen.repaint();
+                b_add.setVisible(false);
+                b_save.setVisible(true);
                 lbl_password.setText("New Password");
                 cb_editUsers.setEnabled(!username.equals(user.getUsername()));
             }
@@ -269,6 +279,7 @@ public class EditUsersPanel extends ControlPanelInterface {
             }
             // Disconnect from server
             AttemptDisconnect();
+            lbl_message.setText("");
         }
         // Post message to user if unable to connect to server
         else {
