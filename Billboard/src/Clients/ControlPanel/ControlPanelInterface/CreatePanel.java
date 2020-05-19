@@ -94,9 +94,9 @@ public class CreatePanel extends ControlPanelInterface {
         addTextfield(createPanel, tf_path, 190, 450, 300, 50);
 
         // Add combo boxes
-        cb_bgColor = new JComboBox<>(COLORS);
-        cb_titleColor = new JComboBox<>(COLORS);
-        cb_infoColor = new JComboBox<>(COLORS);
+        cb_bgColor = new JComboBox<>(COLOR_STRINGS);
+        cb_titleColor = new JComboBox<>(COLOR_STRINGS);
+        cb_infoColor = new JComboBox<>(COLOR_STRINGS);
 
         // Set default values
         cb_bgColor.setSelectedItem("white");
@@ -277,9 +277,9 @@ public class CreatePanel extends ControlPanelInterface {
                     tf_title.getText(),
                     tf_info.getText(),
                     picURL, picDATA,
-                    color.get(cb_titleColor.getSelectedItem()),
-                    color.get(cb_bgColor.getSelectedItem()),
-                    color.get(cb_infoColor.getSelectedItem()));
+                    colorFromString((String) cb_titleColor.getSelectedItem()),
+                    colorFromString((String) cb_bgColor.getSelectedItem()),
+                    colorFromString((String) cb_infoColor.getSelectedItem()));
             billboard.showBillboard();
         } catch (Exception e) {
             e.printStackTrace();
