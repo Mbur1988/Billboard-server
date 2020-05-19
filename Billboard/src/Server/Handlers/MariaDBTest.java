@@ -1,9 +1,7 @@
 package Server.Handlers;
 import SerializableObjects.User;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
 import java.sql.SQLException;
 import Tools.HashCredentials;
 import Tools.Log;
@@ -42,8 +40,8 @@ public class MariaDBTest {
     static byte[] salt;
     static boolean existing = false;
 
-    @BeforeAll
-    static void NewMariaDB() throws SQLException {
+    @BeforeEach
+     void NewMariaDB() throws SQLException {
         undertest = new MariaDB();
         undertest.Connect();
         if (undertest.users.checkForUser("user1")) {
@@ -55,8 +53,8 @@ public class MariaDBTest {
 
 
     }
-    @AfterAll
-    static void cleanup() throws SQLException {
+    @AfterEach
+     void cleanup() throws SQLException {
         if (undertest.users.checkForUser("user1")) {
             undertest.users.delete("user1");
         }
@@ -64,6 +62,9 @@ public class MariaDBTest {
             undertest.users.add("user1", password, access, salt);
         }
     }
+
+
+    
 
 //    //**
 //    //Test1 to check if test1 billboard is added to the database correctly. Get billboard method is called to confirm addition.

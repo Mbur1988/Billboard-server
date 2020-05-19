@@ -1,5 +1,6 @@
 package Server.Handlers;
 
+import SerializableObjects.Billboard;
 import Tools.HashCredentials;
 import Tools.Log;
 import Tools.PropertyReader;
@@ -443,45 +444,6 @@ public class MariaDB {
         }
 
         /**
-         * Adds a new billboard to the billboard table
-         *
-         * @param name       the name of the billboard being added
-         * @param msg        msg of the displaying billboard being added
-         * @param info       information about the billboard being added
-         * @param picURL     Picture url included in the billboard
-         * @param picData    data of the picture included in the billboard to be added
-         * @param msgColour  The colour of msg in the billboard
-         * @param backColour The back colour of the billboard
-         * @param infoColour The colour of the information of the billboard
-         *                   Logs confimation that the billboard was added
-         * @throws SQLException
-         */
-
-        public void addBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
-            checkForBillboard(name);
-            String addBoard = ("INSERT INTO billboards (name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-
-            PreparedStatement executeAdd = connection.prepareStatement(addBoard);
-
-            executeAdd.setString(1, name);
-            executeAdd.setString(2, msg);
-            executeAdd.setString(3, info);
-            executeAdd.setString(4, picURL);
-            executeAdd.setBytes(5, picData);
-            executeAdd.setString(6, msgColour);
-            executeAdd.setString(7, backColour);
-            executeAdd.setString(8, infoColour);
-
-            int rowsAdded = executeAdd.executeUpdate();
-            if (rowsAdded > 0) {
-                String addConfirmation = "%s Billboard was added to the Database";
-                Log.Confirmation(String.format(addConfirmation, name));
-            }
-
-
-        }
-
-        /**
          * Adds a new billboard to the billboard table as long as the username does not already exist
          *
          * @param name       the name of the billboard being added
@@ -536,28 +498,6 @@ public class MariaDB {
         }
 
         /**
-         * Method to delete a specified billboard from the billboards database.
-         *
-         * @param name the name of the billboard being deleted
-         *             Confirms deletion of requested billboard in the log.
-         * @throws SQLException
-         */
-
-        public void deleteBillboard(String name) throws SQLException {
-            String deleteBoard = "DELETE FROM billboards WHERE name = ?";
-
-            PreparedStatement executeDelete = connection.prepareStatement(deleteBoard);
-            executeDelete.setString(1, name);
-
-            int rowsDeleted = executeDelete.executeUpdate();
-            if (rowsDeleted > 0) {
-                String deleteConfirmation = "%s Billboard was Deleted";
-                Log.Confirmation(String.format(deleteConfirmation, name));
-            }
-
-        }
-
-        /**
          * Method to delete a specified billboard from the billboards database.Uses boolean method.
          * @param name the name of the billboard being deleted
          * Confirms deletion of requested billboard in the log.
@@ -605,6 +545,7 @@ public class MariaDB {
         }
         
         /**
+         * @param name the name of the billboard
          * Method to retrieve all specified billboard name currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
@@ -621,6 +562,7 @@ public class MariaDB {
         }
         
         /**
+         * @param name the name of the billboard
          * Method to retrieve all specified billboard info currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
@@ -630,6 +572,105 @@ public class MariaDB {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
                 return result.getString("info");
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * @param name the name of the billboard
+         * Method to retrieve all specified billboard msg currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
+
+
+        public String getBillboardMsg(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("msg");
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * @param name the name of the billboard
+         * Method to retrieve all specified billboard picURL currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
+
+
+
+        public String getBillboardPicURL(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("picURL");
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * @param name the name of the billboard
+         * Method to retrieve all specified billboard picData currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
+
+        public byte[] getBillboardPicData(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getBytes("picData");
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * @param name the name of the billboard
+         * Method to retrieve all specified billboard msgColour currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
+
+        public String getBillboardMsgColour(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("msgColour");
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * @param name the name of the billboard
+         * Method to retrieve all specified billboard backColour currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
+
+        public String getBillboardBackColour(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("backColour");
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * @param name the name of the billboard
+         * Method to retrieve all specified billboard infoColour currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
+
+        public String getBillboardInfoColour(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("infoColour");
             } else {
                 return null;
             }
@@ -652,6 +693,42 @@ public class MariaDB {
             }
             return allBillboards;
         }
+
+        public boolean editBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                if (msg== null) {
+                    msg = billboards.getBillboardMsg(name);
+                }
+                if (info == null) {
+                    info = billboards.getBillboardInfo(name);
+                }
+                if (picURL == null) {
+                    picURL = billboards.getBillboardPicURL(name);
+                }
+                if (picData == null) {
+                    picData = billboards.getBillboardPicData(name);
+                }
+                if (msgColour == null) {
+                    msgColour = billboards.getBillboardMsgColour(name);
+                }
+                if (backColour == null) {
+                    backColour = billboards.getBillboardBackColour(name);
+                }
+                if (infoColour == null) {
+                    infoColour = billboards.getBillboardInfoColour(name);
+                }
+                billboards.DeleteBillboard(name);
+                billboards.AddBillboard(name, msg, info, picURL, picData, msgColour, backColour, infoColour);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+//        public boolean editBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
+//            return editBillboard(null, null,  null, null, null, null, null, null);
+//        }
 
 
 
