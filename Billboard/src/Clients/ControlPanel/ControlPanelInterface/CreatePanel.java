@@ -2,11 +2,15 @@ package Clients.ControlPanel.ControlPanelInterface;
 
 import SerializableObjects.Billboard;
 import Tools.ColorIndex;
+import Tools.Log;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+
 import static Clients.ControlPanel.ControlPanel.*;
 import static Tools.ColorIndex.*;
 
@@ -47,7 +51,6 @@ public class CreatePanel extends ControlPanelInterface {
     public static void createPanelScreen() {
 
         createPanel.setLayout(null);
-        //billboard = new Billboard();
 
         // Add title labels
         JLabel label_editUser = new JLabel("Billboard details");
@@ -165,7 +168,8 @@ public class CreatePanel extends ControlPanelInterface {
         b_preview = new JButton("Preview");
 
         addButton(createPanel, b_add, 190, 500, 150, 30);
-        b_save.setBounds(190, 500, 150, 30);
+        addButton(createPanel, b_save, 190, 500, 150, 30);
+        b_save.setVisible(false);
         addButton(createPanel, b_clear, 340, 500, 150, 30);
         addButton(createPanel, b_import, screenWidth/2 - 100, 530, 150, 30);
         addButton(createPanel, b_export, screenWidth/2 + 50, 530, 150, 30);
@@ -192,7 +196,40 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void addBb() {
-
+        populateBilboard();
+        user.setAction("addBillboard");
+        if (AttemptConnect()) {
+            // Try a login attempt
+            try {
+                // Send user object to server
+                objectStreamer.Send(user);
+                objectStreamer.Send(billboard);
+                // Await returned object from server
+                if (dis.readBoolean()) {
+                    lists.users.add(billboard.getName());
+                    Collections.sort(lists.billboards);
+                    model.clear();
+                    model.addAll(lists.billboards);
+                    lbl_message.setText("Billboard added");
+                    Log.Confirmation("New billboard added successfully");
+                }
+                else {
+                    lbl_message.setText("Billboard already exists");
+                    Log.Error("Error when attempting to add new billboard");
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+                Log.Error("Add billboard attempt request failed");
+            }
+            // Disconnect from server
+            AttemptDisconnect();
+        }
+        // Post message to user if unable to connect to server
+        else {
+            Log.Error("Unable to connect to server");
+        }
+        resetFields();
     }
 
     private static void saveBb() {
@@ -200,7 +237,9 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void clearFields() {
-
+        b_save.setVisible(false);
+        b_add.setVisible(true);
+        resetFields();
     }
 
     private static void importBb() {
@@ -220,6 +259,10 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void previewBb() {
+        populateBilboard();
+    }
+
+    private static void populateBilboard() {
         try {
             String picURL = null;
             byte[] picDATA = null;
@@ -241,5 +284,19 @@ public class CreatePanel extends ControlPanelInterface {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void resetFields() {
+        tf_name.setEnabled(true);
+        tf_name.setText("");
+        tf_title.setText("");
+        tf_info.setText("");
+        tf_path.setText("");
+        cb_bgColor.setSelectedItem("white");
+        cb_titleColor.setSelectedItem("black");
+        cb_infoColor.setSelectedItem("gray");
+        rb_url.setSelected(false);
+        rb_file.setSelected(true);
+        b_fileSelect.setVisible(true);
     }
 }
