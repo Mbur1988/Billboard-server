@@ -9,8 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import static Clients.ControlPanel.ControlPanel.lists;
+import static Tools.ColorIndex.*;
 import static java.lang.System.exit;
 
 public class MariaDB {
@@ -401,8 +400,8 @@ public class MariaDB {
         private void CreateBillboardsTable() throws SQLException {
             statement.executeUpdate("CREATE TABLE billboards (name VARCHAR(64) UNIQUE KEY, msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB, msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64));");
             Log.Confirmation("Table created: billboards");
-            CreateDefaultBillboard();
-            getBillboard();
+            //CreateDefaultBillboard();
+            //getBillboard();
         }
 
         /**
@@ -420,7 +419,6 @@ public class MariaDB {
          *
          * @throws SQLException
          */
-
         public void CreateDefaultBillboard() throws SQLException {
             String name = "testBoard";
             String msg = "database test";
@@ -457,7 +455,6 @@ public class MariaDB {
          *                   Checks to see if billboard already exists, otherwise adds the billboard and returns true.
          * @throws SQLException
          */
-
         public boolean AddBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
             if (checkForBillboard(name)) {
                 return false;
@@ -475,6 +472,24 @@ public class MariaDB {
                 return true;
             }
 
+        }
+
+        public boolean AddBillboard(Billboard billboard) throws SQLException {
+            if (checkForBillboard(billboard.getName())) {
+                return false;
+            } else {
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                prepareAdd.setString(1, billboard.getName());
+                prepareAdd.setString(2, billboard.getMsg());
+                prepareAdd.setString(3, billboard.getInfo());
+                prepareAdd.setString(4, billboard.getPicUrl());
+                prepareAdd.setBytes(5, billboard.getPicData());
+                prepareAdd.setString(6, stringFromColor(billboard.getMsgColour()));
+                prepareAdd.setString(7, stringFromColor(billboard.getBackColour()));
+                prepareAdd.setString(8, stringFromColor(billboard.getInfoColour()));
+                prepareAdd.executeUpdate();
+                return true;
+            }
         }
 
         /**
@@ -522,7 +537,6 @@ public class MariaDB {
          * Confirms all billboards in the database via a log confirmation.
          * @throws SQLException
          */
-
         public void getBillboard() throws SQLException {
             String retrieve = "SELECT * FROM billboards";
             Statement query = connection.createStatement();
@@ -550,8 +564,6 @@ public class MariaDB {
          * Returns false if not found
          * @throws SQLException
          */
-        
-
         public String getBillboardName(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
@@ -567,7 +579,6 @@ public class MariaDB {
          * Returns false if not found
          * @throws SQLException
          */
-
         public String getBillboardInfo(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
@@ -583,8 +594,6 @@ public class MariaDB {
          * Returns false if not found
          * @throws SQLException
          */
-
-
         public String getBillboardMsg(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
@@ -600,9 +609,6 @@ public class MariaDB {
          * Returns false if not found
          * @throws SQLException
          */
-
-
-
         public String getBillboardPicURL(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
@@ -618,7 +624,6 @@ public class MariaDB {
          * Returns false if not found
          * @throws SQLException
          */
-
         public byte[] getBillboardPicData(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
@@ -634,7 +639,6 @@ public class MariaDB {
          * Returns false if not found
          * @throws SQLException
          */
-
         public String getBillboardMsgColour(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
@@ -650,7 +654,6 @@ public class MariaDB {
          * Returns false if not found
          * @throws SQLException
          */
-
         public String getBillboardBackColour(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
@@ -666,7 +669,6 @@ public class MariaDB {
          * Returns false if not found
          * @throws SQLException
          */
-
         public String getBillboardInfoColour(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
@@ -681,8 +683,6 @@ public class MariaDB {
          * Returns the list as a String list.
          * @throws SQLException
          */
-
-
         public ArrayList<String> getAllBillboards() throws SQLException {
             String retrieve = "SELECT * FROM billboards";
             ResultSet result = statement.executeQuery(retrieve);

@@ -26,7 +26,7 @@ public class LoginInterface {
 
         user = new User();
 
-        Tools.addExitButton(screenWidth - 105, screenHeight - 35, 100, 30);
+        Tools.addExitButton(screenWidth - 105, screenHeight - 60, 100, 30);
 
 //        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 //        int screenWidth = screenSize.width;

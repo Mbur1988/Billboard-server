@@ -1,16 +1,13 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
 import SerializableObjects.Billboard;
-import Tools.ColorIndex;
 import Tools.Log;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
-
 import static Clients.ControlPanel.ControlPanel.*;
 import static Tools.ColorIndex.*;
 
@@ -94,9 +91,9 @@ public class CreatePanel extends ControlPanelInterface {
         addTextfield(createPanel, tf_path, 190, 450, 300, 50);
 
         // Add combo boxes
-        cb_bgColor = new JComboBox<>(COLORS);
-        cb_titleColor = new JComboBox<>(COLORS);
-        cb_infoColor = new JComboBox<>(COLORS);
+        cb_bgColor = new JComboBox<>(COLOR_STRINGS);
+        cb_titleColor = new JComboBox<>(COLOR_STRINGS);
+        cb_infoColor = new JComboBox<>(COLOR_STRINGS);
 
         // Set default values
         cb_bgColor.setSelectedItem("white");
@@ -196,11 +193,12 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void addBb() {
-        populateBilboard();
-        user.setAction("addBillboard");
-        if (AttemptConnect()) {
-            // Try a login attempt
-            try {
+        try {
+            populateBillboard();
+            user.setAction("addBillboard");
+            if (AttemptConnect()) {
+                // Try a login attempt
+
                 // Send user object to server
                 objectStreamer.Send(user);
                 objectStreamer.Send(billboard);
@@ -212,24 +210,23 @@ public class CreatePanel extends ControlPanelInterface {
                     model.addAll(lists.billboards);
                     lbl_message.setText("Billboard added");
                     Log.Confirmation("New billboard added successfully");
-                }
-                else {
+                } else {
                     lbl_message.setText("Billboard already exists");
                     Log.Error("Error when attempting to add new billboard");
                 }
+
+                // Disconnect from server
+                AttemptDisconnect();
             }
-            catch (IOException e) {
-                e.printStackTrace();
-                Log.Error("Add billboard attempt request failed");
+            // Post message to user if unable to connect to server
+            else {
+                Log.Error("Unable to connect to server");
             }
-            // Disconnect from server
-            AttemptDisconnect();
+            resetFields();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.Error("Add billboard attempt request failed");
         }
-        // Post message to user if unable to connect to server
-        else {
-            Log.Error("Unable to connect to server");
-        }
-        resetFields();
     }
 
     private static void saveBb() {
@@ -259,31 +256,31 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void previewBb() {
-        populateBilboard();
-    }
-
-    private static void populateBilboard() {
         try {
-            String picURL = null;
-            byte[] picDATA = null;
-            if (rb_file.isSelected() && !tf_path.getText().equals("")) {
-                picDATA = billboard.ConvertImageToData(tf_path.getText());
-            } else if (rb_url.isSelected() && !tf_path.getText().equals("")) {
-                picURL = tf_path.getText();
-                picDATA = billboard.UrlToData(tf_path.getText());
-            }
-            billboard = new Billboard(
-                    tf_name.getText(),
-                    tf_title.getText(),
-                    tf_info.getText(),
-                    picURL, picDATA,
-                    color.get(cb_titleColor.getSelectedItem()),
-                    color.get(cb_bgColor.getSelectedItem()),
-                    color.get(cb_infoColor.getSelectedItem()));
+            populateBillboard();
             billboard.showBillboard();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void populateBillboard() throws Exception {
+        String picURL = null;
+        byte[] picDATA = null;
+        if (rb_file.isSelected() && !tf_path.getText().equals("")) {
+            picDATA = billboard.ConvertImageToData(tf_path.getText());
+        } else if (rb_url.isSelected() && !tf_path.getText().equals("")) {
+            picURL = tf_path.getText();
+            picDATA = billboard.UrlToData(tf_path.getText());
+        }
+        billboard = new Billboard(
+                tf_name.getText(),
+                tf_title.getText(),
+                tf_info.getText(),
+                picURL, picDATA,
+                colorFromString((String) cb_titleColor.getSelectedItem()),
+                colorFromString((String) cb_bgColor.getSelectedItem()),
+                colorFromString((String) cb_infoColor.getSelectedItem()));
     }
 
     private static void resetFields() {
