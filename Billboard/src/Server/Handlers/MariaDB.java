@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static Clients.ControlPanel.ControlPanel.lists;
+import static Tools.ColorIndex.stringFromColor;
 import static java.lang.System.exit;
 
 public class MariaDB {
@@ -394,12 +395,22 @@ public class MariaDB {
     public class Billboards {
 
         /**
-         * Creates a new billboards table "billboards"
-         *
+         * Creates a billboards table to store billboards
+         * name the name of the billboard being added
+         * msg  msg of the displaying billboard being added
+         * info information about the billboard being added
+         * picURL Picture url included in the billboard
+         * picData data of the picture included in the billboard to be added
+         * msgColour The colour of msg in the billboard
+         * backColour The back colour of the billboard
+         * infoColour The colour of the information of the billboard
+         * username Current user adding the billboard
+         * scheduled Boolean to determine if a billboard is scheduled
+         * Logs confirmation that the billboard was added
          * @throws SQLException
          */
         private void CreateBillboardsTable() throws SQLException {
-            statement.executeUpdate("CREATE TABLE billboards (name VARCHAR(64) UNIQUE KEY, msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB, msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64));");
+            statement.executeUpdate("CREATE TABLE billboards (name VARCHAR(64) UNIQUE KEY, msg VARCHAR(64), info VARCHAR(64), picURL VARCHAR(64), picDATA BLOB, msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64), username VARCHAR(64), scheduled BOOLEAN);");
             Log.Confirmation("Table created: billboards");
             CreateDefaultBillboard();
             getBillboard();
@@ -416,8 +427,9 @@ public class MariaDB {
          * msgColour The colour of msg in the billboard
          * backColour The back colour of the billboard
          * infoColour The colour of the information of the billboard
+         * username Current user adding the billboard
+         * scheduled Boolean to determine if a billboard is scheduled
          * Logs confirmation that the billboard was added
-         *
          * @throws SQLException
          */
 
@@ -430,7 +442,9 @@ public class MariaDB {
             String msgColour = "Red";
             String backColour = "Green";
             String infoColour = "Blue";
-            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            String username = "admin";
+            boolean scheduled = true;
+            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour, username, scheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             pstmt.setString(1, name);
             pstmt.setString(2, msg);
             pstmt.setString(3, info);
@@ -439,6 +453,8 @@ public class MariaDB {
             pstmt.setString(6, msgColour);
             pstmt.setString(7, backColour);
             pstmt.setString(8, infoColour);
+            pstmt.setString(9, username);
+            pstmt.setBoolean(10, scheduled);
             pstmt.executeUpdate();
             Log.Confirmation("Billboard Created: Test Board");
         }
@@ -454,15 +470,17 @@ public class MariaDB {
          * @param msgColour  The colour of msg in the billboard
          * @param backColour The back colour of the billboard
          * @param infoColour The colour of the information of the billboard
-         *                   Checks to see if billboard already exists, otherwise adds the billboard and returns true.
+         * @param username   Current user adding the billboard
+         * @param scheduled  boolean to determine if the billboard has been scheduled
+         * Checks to see if billboard already exists, otherwise adds the billboard and returns true.
          * @throws SQLException
          */
 
-        public boolean AddBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
+        public boolean AddBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour, String username, boolean scheduled) throws SQLException {
             if (checkForBillboard(name)) {
                 return false;
             } else {
-                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour, username, scheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 prepareAdd.setString(1, name);
                 prepareAdd.setString(2, msg);
                 prepareAdd.setString(3, info);
@@ -471,6 +489,8 @@ public class MariaDB {
                 prepareAdd.setString(6, msgColour);
                 prepareAdd.setString(7, backColour);
                 prepareAdd.setString(8, infoColour);
+                prepareAdd.setString(9, username);
+                prepareAdd.setBoolean(10, scheduled);
                 prepareAdd.executeUpdate();
                 return true;
             }
@@ -518,7 +538,15 @@ public class MariaDB {
 
         /**
          * Method to retrieve all entries currently in the billboard database.
-         * <p>
+         * name the name of the billboard being added
+         * msg  msg of the displaying billboard being added
+         * info information about the billboard being added
+         * picURL Picture url included in the billboard
+         * picData data of the picture included in the billboard to be added
+         * msgColour The colour of msg in the billboard
+         * backColour The back colour of the billboard
+         * infoColour The colour of the information of the billboard
+         * username Current user adding the billboard
          * Confirms all billboards in the database via a log confirmation.
          * @throws SQLException
          */
@@ -538,15 +566,17 @@ public class MariaDB {
                 String msgColour = result.getString("msgColour");
                 String backColour = result.getString("backColour");
                 String infoColour = result.getString("infoColour");
+                String username = result.getString("username");
+                boolean scheduled = result.getBoolean("scheduled");
 
-                String output = "Billboard #%d: %s - %s - %s - %s - %s - %s - %s";
-                Log.Confirmation(String.format(output, ++count, name, msg, info, picURL, msgColour, backColour, infoColour));
+                String output = "Billboard #%d: %s - %s - %s - %s - %s - %s - %s - %s - %s";
+                Log.Confirmation(String.format(output, ++count, name, msg, info, picURL, msgColour, backColour, infoColour, username, scheduled));
             }
         }
         
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard name currently in the billboard database.
+         * Method to retrieve the specified billboard name currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -563,7 +593,7 @@ public class MariaDB {
         
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard info currently in the billboard database.
+         * Method to retrieve the specified billboard info currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -579,7 +609,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard msg currently in the billboard database.
+         * Method to retrieve the specified billboard msg currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -596,7 +626,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard picURL currently in the billboard database.
+         * Method to retrieve the specified billboard picURL currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -614,7 +644,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard picData currently in the billboard database.
+         * Method to retrieve the specified billboard picData currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -630,7 +660,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard msgColour currently in the billboard database.
+         * Method to retrieve the specified billboard msgColour currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -646,7 +676,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard backColour currently in the billboard database.
+         * Method to retrieve the specified billboard backColour currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -662,7 +692,7 @@ public class MariaDB {
 
         /**
          * @param name the name of the billboard
-         * Method to retrieve all specified billboard infoColour currently in the billboard database.
+         * Method to retrieve the specified billboard infoColour currently in the billboard database.
          * Returns false if not found
          * @throws SQLException
          */
@@ -673,6 +703,38 @@ public class MariaDB {
                 return result.getString("infoColour");
             } else {
                 return null;
+            }
+        }
+
+        /**
+         * @param name the name of the billboard
+         * Method to retrieve the specified billboard username currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
+
+        public String getBillboardUser(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("username");
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * @param name the name of the billboard
+         * Method to retrieve the billboard scheduling status currently in the billboard database.
+         * Returns false if not found
+         * @throws SQLException
+         */
+
+        public boolean getBillboardSchedule(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getBoolean("scheduled");
+            } else {
+                return false;
             }
         }
 
@@ -694,10 +756,10 @@ public class MariaDB {
             return allBillboards;
         }
 
-        public boolean editBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
+        public boolean editBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour, String username, boolean scheduled) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
-                if (msg== null) {
+                if (msg == null) {
                     msg = billboards.getBillboardMsg(name);
                 }
                 if (info == null) {
@@ -718,16 +780,41 @@ public class MariaDB {
                 if (infoColour == null) {
                     infoColour = billboards.getBillboardInfoColour(name);
                 }
+                if (username == null) {
+                    username = billboards.getBillboardUser(name);
+                }
+                if (scheduled || !scheduled) {
+                    scheduled = billboards.getBillboardSchedule(name);
+                }
                 billboards.DeleteBillboard(name);
-                billboards.AddBillboard(name, msg, info, picURL, picData, msgColour, backColour, infoColour);
+                billboards.AddBillboard(name, msg, info, picURL, picData, msgColour, backColour, infoColour, username, scheduled);
                 return true;
             } else {
                 return false;
             }
         }
 
+        public boolean AddBillboardColour(Billboard billboard) throws SQLException {
+            if (checkForBillboard(billboard.getName())) {
+                return false;
+            } else {
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                prepareAdd.setString(1, billboard.getName());
+                prepareAdd.setString(2, billboard.getMsg());
+                prepareAdd.setString(3, billboard.getInfo());
+                prepareAdd.setString(4, billboard.getPicUrl());
+                prepareAdd.setBytes(5, billboard.getPicData());
+                prepareAdd.setString(6, stringFromColor(billboard.getMsgColour()));
+                prepareAdd.setString(7, stringFromColor(billboard.getBackColour()));
+                prepareAdd.setString(8, stringFromColor(billboard.getInfoColour()));
+                prepareAdd.executeUpdate();
+                return true;
+            }
+        }
+
 //        public boolean editBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
 //            return editBillboard(null, null,  null, null, null, null, null, null);
+
 //        }
 
 

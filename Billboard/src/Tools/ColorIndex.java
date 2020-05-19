@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class ColorIndex {
 
-    public static final String[] COLORS = {
+    public static final String[] COLOR_STRINGS = {
             "black",
             "white",
             "gray",
@@ -17,7 +17,7 @@ public class ColorIndex {
             "green",
             "purple"};
 
-    private static final Color[] COLOR = {
+    private static final Color[] COLORS = {
             Color.black,
             Color.white,
             Color.gray,
@@ -29,7 +29,7 @@ public class ColorIndex {
             Color.magenta
     };
 
-    public static final Map<String, Color> color = new HashMap<>() {
+    private static final Map<String, Color> CFS = new HashMap<>() {
         {
             put("black", Color.black);
             put("white", Color.white);
@@ -43,4 +43,25 @@ public class ColorIndex {
         }
     };
 
+    private static final Map<Color, String> SFC = new HashMap<>() {
+        {
+            put(Color.black, "black");
+            put(Color.white, "white");
+            put(Color.gray, "gray");
+            put(Color.red, "red");
+            put(Color.blue, "blue");
+            put(Color.yellow, "yellow");
+            put(Color.orange, "orange");
+            put(Color.green, "green");
+            put(Color.magenta, "purple");
+        }
+    };
+
+    public static Color colorFromString(String string) {
+        return CFS.get(string);
+    }
+
+    public static String stringFromColor(Color color) {
+        return SFC.get(color);
+    }
 }

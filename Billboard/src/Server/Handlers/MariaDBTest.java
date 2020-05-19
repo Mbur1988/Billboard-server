@@ -39,6 +39,7 @@ public class MariaDBTest {
     static int access;
     static byte[] salt;
     static boolean existing = false;
+    static byte[] test = new byte[1];
 
     @BeforeEach
      void NewMariaDB() throws SQLException {
@@ -128,11 +129,17 @@ public class MariaDBTest {
 //    //Test9 adds a billboard to the database using boolean add method, assert true is used to determine success of test.
 //    //**
 //
-//    @Test
-//    public void AddTest1() throws SQLException{
-//        undertest.billboards.AddBillboard("boolean test1", "msg1", "info1", "picURL", new byte[]{0, 1, 2}, "msgColour", "backColour", "infoColour" );
-//        assertTrue(true);
-//    }
+    @Test
+    public void AddTest1() throws SQLException{
+        undertest.billboards.AddBillboard("test board1", "msg1", "info1", "picurl1", test, "msgcolour1", "backcolour1", "infocolour1", "admin2", false);
+        assertTrue(true);
+    }
+
+    @Test
+    public void EditTest() throws SQLException{
+        undertest.billboards.editBillboard("test board", "msgedit", "infoedit", "picurl1", test, "msgcolour1", "backcolour1", "infocolour1", "admin2", true);
+
+    }
 //
 //    //**
 //    //Test10 adds a billboard to the database using boolean add method, assert true is used to determine success of test.
