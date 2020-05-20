@@ -119,6 +119,7 @@ public class Billboard implements Serializable {
             JLabel upperText = new JLabel(message_input,SwingConstants.CENTER);
             upperText.setOpaque(false);
 
+
             if(placement == "msg only") {
 
                 upperText.setFont(new Font("Courier", BOLD, 150));
@@ -263,11 +264,13 @@ public class Billboard implements Serializable {
         //msg only
         if(getMsg() != null && getInfo() == null && (getPicUrl() == null && getPicData() == null)){
             JLabel MessageText = CreateTextArea("message", msg,"msg only");
+            MessageText.setForeground(msgColour);
             BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
         }
         //info only
         else if(getMsg() == null && getInfo() != null && (getPicUrl() == null && getPicData() == null)){
             JLabel InfoText = CreateTextArea("info", info,"info only");
+            InfoText.setForeground(infoColour);
             BillboardScreen.add(InfoText, BorderLayout.PAGE_START);
         }
         //image only
@@ -278,8 +281,10 @@ public class Billboard implements Serializable {
         //msg and image
         else if(msg != null && info == null && (picDATA != null) || (picURL != null)){
             JLabel MessageText = CreateTextArea("message", msg, "msg and pic");
+            MessageText.setForeground(msgColour);
             BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
             JLabel imageDisplay = CreateImageData(getPicData(), "msg and pic");
+
             BillboardScreen.getContentPane().add(imageDisplay);
         }
         //info and image
@@ -287,12 +292,15 @@ public class Billboard implements Serializable {
             JLabel imageDisplay = CreateImageData(getPicData(), "info and pic");
             BillboardScreen.getContentPane().add(imageDisplay);
             JLabel InfoText = CreateTextArea("info", info, "info and pic");
+            InfoText.setForeground(infoColour);
             BillboardScreen.add(InfoText, BorderLayout.PAGE_END);
         }
         //info and msg
         else if(msg != null && info != null && (picDATA == null && picURL == null)){
             JLabel MessageText = CreateTextArea("message", msg, "msg and info");
+            MessageText.setForeground(msgColour);
             JLabel InfoText = CreateTextArea("info", info, "msg and info");
+            InfoText.setForeground(infoColour);
             BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
             BillboardScreen.add(InfoText, BorderLayout.PAGE_END);
         }
@@ -301,6 +309,8 @@ public class Billboard implements Serializable {
             JLabel MessageText = CreateTextArea("message", msg, "all");
             JLabel InfoText = CreateTextArea("info", info, "all");
             JLabel imageDisplay = CreateImageData(getPicData(), "all");
+            MessageText.setForeground(msgColour);
+            InfoText.setForeground(infoColour);
             BillboardScreen.getContentPane().add(imageDisplay);
             BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
             BillboardScreen.add(InfoText, BorderLayout.PAGE_END);
@@ -308,6 +318,8 @@ public class Billboard implements Serializable {
 
         BillboardScreen.setVisible(true);
         BillboardScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
 
         BillboardScreenPannel.repaint();
         BillboardScreenPannel.revalidate();

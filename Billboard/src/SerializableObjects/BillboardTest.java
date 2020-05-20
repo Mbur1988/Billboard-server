@@ -701,6 +701,34 @@ public class BillboardTest {
         //Visual check
         assertTrue(true);
     }
+    /**
+     * Test 48,
+     *      test the message colour
+     */
+    @Test
+    public void MsgColourTest() throws Exception {
+        underTestEmpty.setMsgColour(Color.red);
+        underTestEmpty.setMsg("message in red");
+        underTestEmpty.showBillboard();
+
+        Thread.sleep((2000));
+        //Visual check
+        assertTrue(true);
+      }
+    /**
+     * Test 49,
+     *      test the info colour
+     */
+    @Test
+    public void InfoColourTest() throws Exception {
+        underTestEmpty.setInfoColour(Color.red);
+        underTestEmpty.setInfo("Infor in red");
+        underTestEmpty.showBillboard();
+
+        Thread.sleep((2000));
+        //Visual check
+        assertTrue(true);
+    }
 
 
     //Test template
