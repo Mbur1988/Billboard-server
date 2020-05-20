@@ -756,7 +756,21 @@ public class MariaDB {
             return allBillboards;
         }
 
-        public boolean editBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour, String username, boolean scheduled) throws SQLException {
+        public ArrayList<String> getAllBillboardsCurrent(String currentUser) throws SQLException{
+            String retrieve = "SELECT * FROM billboards";
+            ResultSet result = statement.executeQuery(retrieve);
+            ArrayList<String> userBillboards = new ArrayList<>();
+            while (result.next()){
+                String username = result.getString("username");
+                if (username.equals(currentUser)){
+                    userBillboards.add(result.getString("name"));
+                }
+
+            }
+            return userBillboards;
+        }
+
+        public boolean edit(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour, String username, Boolean scheduled) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
                 if (msg == null) {
@@ -783,7 +797,7 @@ public class MariaDB {
                 if (username == null) {
                     username = billboards.getBillboardUser(name);
                 }
-                if (scheduled || !scheduled) {
+                if (scheduled = null) {
                     scheduled = billboards.getBillboardSchedule(name);
                 }
                 billboards.DeleteBillboard(name);
@@ -798,7 +812,7 @@ public class MariaDB {
             if (checkForBillboard(billboard.getName())) {
                 return false;
             } else {
-                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour, username, scheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 prepareAdd.setString(1, billboard.getName());
                 prepareAdd.setString(2, billboard.getMsg());
                 prepareAdd.setString(3, billboard.getInfo());
@@ -835,6 +849,7 @@ public class MariaDB {
             Log.Confirmation("Table created: scheduling");
         }
     }
+
 }
 
 
