@@ -209,7 +209,7 @@ public class BillboardTest {
     @Test
     public void EmptyDataCheck() {
         //uses getPicData func
-        assertNull(underTestEmpty.getPicUrl());
+        assertNull(underTestEmpty.getPicData());
     }
 
     /**
@@ -230,7 +230,7 @@ public class BillboardTest {
     @Test
     public void EmptyMsgColourCheck() {
         //uses getMsgColour func
-        assertNull(underTestEmpty.getPicUrl());
+        assertNull(underTestEmpty.getMsgColour());
     }
 
     /**
@@ -251,7 +251,7 @@ public class BillboardTest {
     @Test
     public void EmptyBackColourCheck() {
         //uses getBackColour func
-        assertNull(underTestEmpty.getPicUrl());
+        assertNull(underTestEmpty.getBackColour());
     }
 
     /**
@@ -272,7 +272,7 @@ public class BillboardTest {
     @Test
     public void EmptyInfoColourCheck() {
         //uses getInfoColour func
-        assertNull(underTestEmpty.getPicUrl());
+        assertNull(underTestEmpty.getInfoColour());
     }
 
     /**
@@ -527,7 +527,8 @@ public class BillboardTest {
      */
     @Test
     public void ShowBillboardTest() throws Exception {
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
+        underTestEmpty.setPicURL("http://www.pngmart.com/files/10/Boo-PNG-Pic-1.png");
+//        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
         underTestEmpty.setMsg("Message");
         underTestEmpty.setInfo("info");
         underTestEmpty.showBillboard();
@@ -648,16 +649,6 @@ public class BillboardTest {
         //Visual check Passed. Image is on the correct panel.
         assertTrue(true);
     }
-    /*
-        11-5-2020
-        (task 74)
-        implementing conditions for certain situations with msg or info or image only.
-        Also setting max bounds of image.
-        FIXME - msg by its self done
-              - info by its self done
-              - Image By self
-              - Image by self
-     */
 
     /**
      * Test 44,
