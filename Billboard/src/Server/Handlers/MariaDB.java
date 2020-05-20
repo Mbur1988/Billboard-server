@@ -797,7 +797,7 @@ public class MariaDB {
                 if (username == null) {
                     username = billboards.getBillboardUser(name);
                 }
-                if (scheduled = null) {
+                if (scheduled == null) {
                     scheduled = billboards.getBillboardSchedule(name);
                 }
                 billboards.DeleteBillboard(name);
