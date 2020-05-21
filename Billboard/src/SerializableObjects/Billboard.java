@@ -264,7 +264,7 @@ public class Billboard implements Serializable {
         showBillboard(true);
     }
 
-    public void showBillboard(boolean PreviewDisplay) throws Exception {
+    private void showBillboard(boolean PreviewDisplay) throws Exception {
         if(BillboardScreen == null || PreviewDisplay){
             BillboardScreen = createFrame();
             BillboardScreenPanel = CreatePanel();
@@ -365,7 +365,7 @@ public class Billboard implements Serializable {
         setMsg(null);
         setName(null);
         setInfo(null);
-        setPicURL(null);
+        setPicUrl(null);
         setPicData(null);
         setMsgColour(null);
         setBackColour(null);
@@ -383,31 +383,31 @@ public class Billboard implements Serializable {
      * Helper to get the billboard name stored
      * @return String info
      */
-    public  String getMsg(){ return msg; }
+    public String getMsg(){ return msg; }
 
     /**
      * Helper to get the name of the billboard stored
      * @return String name
      */
-    public  String getName(){ return name; }
+    public String getName(){ return name; }
 
     /**
      * Helper to get the info stored
      * @return String info
      */
-    public  String getInfo() {return info; }
+    public String getInfo() {return info; }
 
     /**
      * Helper to get the pic URL stored
      * @return String picURL
      */
-    public  String getPicUrl() {return picURL; }
+    public String getPicUrl() {return picURL; }
 
     /**
      * Helper to get the picture data stored
      * @return String picDATA
      */
-    public  byte[] getPicData() {return picDATA; }
+    public byte[] getPicData() {return picDATA; }
 
     /**
      * Helper to get the message colour stored
@@ -479,7 +479,7 @@ public class Billboard implements Serializable {
      * sets pictures URL
      * @param picURL URL to the pic String
      */
-    public void setPicURL(String picURL) { this.picURL = picURL;}
+    public void setPicUrl(String picURL) { this.picURL = picURL;}
 
     /**
      * Sets Pic Data as string to be converted to base64

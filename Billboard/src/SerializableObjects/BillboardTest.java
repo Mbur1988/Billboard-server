@@ -60,7 +60,7 @@ public class BillboardTest {
     @Test
     public void MessageInserted() {
         //uses getMsg funct
-        assertEquals(underTestFull.getMsg(), "TEST MsG");
+        assertEquals(underTestFull.getMsg(), "name");
     }
 
     /**
@@ -70,7 +70,7 @@ public class BillboardTest {
     @Test
     public void NameInserted() {
         //uses getName funct
-        assertEquals(underTestFull.getName(), "name");
+        assertEquals(underTestFull.getName(), "TEST MsG");
     }
 
 
@@ -198,7 +198,7 @@ public class BillboardTest {
     @Test
     public void EmptyURLInsert() {
         //uses setPicUrl funct
-        underTestEmpty.setPicURL("Test 13");
+        underTestEmpty.setPicUrl("Test 13");
         assertEquals(underTestEmpty.getPicUrl(), "Test 13");
     }
 
@@ -527,7 +527,8 @@ public class BillboardTest {
      */
     @Test
     public void ShowBillboardTest() throws Exception {
-        underTestEmpty.setPicURL("http://www.pngmart.com/files/10/Boo-PNG-Pic-1.png");
+        underTestEmpty.setPicUrl("http://www.pngmart.com/files/10/Boo-PNG-Pic-1.png");
+        underTestEmpty.setPicData(underTestEmpty.UrlToData(underTestEmpty.getPicUrl()));
 //        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
         underTestEmpty.setMsg("Message");
         underTestEmpty.setInfo("info");
