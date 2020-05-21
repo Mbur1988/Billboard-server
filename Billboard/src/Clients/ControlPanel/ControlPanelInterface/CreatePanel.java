@@ -279,7 +279,9 @@ public class CreatePanel extends ControlPanelInterface {
                     picURL, picDATA,
                     colorFromString((String) cb_titleColor.getSelectedItem()),
                     colorFromString((String) cb_bgColor.getSelectedItem()),
-                    colorFromString((String) cb_infoColor.getSelectedItem()));
+                    colorFromString((String) cb_infoColor.getSelectedItem()),
+                    user.getUsername(),
+                    false);
             billboard.showBillboard();
         } catch (Exception e) {
             e.printStackTrace();

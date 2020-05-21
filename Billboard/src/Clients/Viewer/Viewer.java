@@ -45,7 +45,7 @@ public class Viewer extends Client {
                 // closing resources
                 Disconnect();
             } else {
-                billboard = new Billboard("Unable to Connect to Server", "Error Billboard", "Please Check Connection", null, null, Color.red, Color.white, Color.red);
+                billboard = new Billboard("Unable to Connect to Server", "Error Billboard", "Please Check Connection", null, null, Color.red, Color.white, Color.red, null, null);
                 billboard.setPicData(billboard.ConvertImageToData(ProjectPath.RootString() + "\\Resources\\Images\\Oops.jpg"));
             }
             billboard.showBillboard();

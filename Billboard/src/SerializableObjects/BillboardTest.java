@@ -44,7 +44,7 @@ public class BillboardTest {
     void newBillboard() {
 
         underTestFull = new Billboard("TEST MsG", "name", "TEST INFO", "https://dazedimg-dazedgroup.netdna-ssl.com/830/azure/dazed-prod/1150/0/1150228.jpg",
-                testBytes, TestColor, TestColor, TestColor);
+                testBytes, TestColor, TestColor, TestColor, "test", false);
         underTestEmpty = new Billboard();
 
     }

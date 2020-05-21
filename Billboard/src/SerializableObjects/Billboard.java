@@ -30,6 +30,7 @@ public class Billboard implements Serializable {
     private Color backColour;
     private Color infoColour;
     private String createdBy;
+    private Boolean scheduled;
     private static JFrame BillboardScreen;
     private static JPanel BillboardScreenPanel;
 
@@ -44,6 +45,7 @@ public class Billboard implements Serializable {
         this.backColour = null;
         this.infoColour = null;
         this.createdBy = null;
+        this.scheduled = null;
         BillboardScreenPanel = null;
         BillboardScreen = null;
     }
@@ -58,7 +60,7 @@ public class Billboard implements Serializable {
      * @param BackColour colour of the back ground in hex
      * @param InfoColour colour of info writing
      */
-    public Billboard(String name, String msg, String info, String picURL, byte[] picDATA, Color MsgColour, Color BackColour, Color InfoColour) {
+    public Billboard(String name, String msg, String info, String picURL, byte[] picDATA, Color MsgColour, Color BackColour, Color InfoColour, String createdBy, Boolean scheduled) {
 
         this.name = name;
         this.msg = msg;
@@ -68,6 +70,8 @@ public class Billboard implements Serializable {
         this.msgColour = MsgColour;
         this.backColour = BackColour;
         this.infoColour = InfoColour;
+        this.createdBy = createdBy;
+        this.scheduled = scheduled;
         BillboardScreenPanel = null;
         BillboardScreen = null;
 
@@ -367,19 +371,18 @@ public class Billboard implements Serializable {
         setBackColour(null);
         setInfoColour(null);
     }
+
     //  Getters  //
 
     /**
      * Helper to get the message stored
      * @return String msg
      */
-
     public String getBillboardName() {return name;}
     /**
      * Helper to get the billboard name stored
      * @return String info
      */
-
     public  String getMsg(){ return msg; }
 
     /**
@@ -424,11 +427,21 @@ public class Billboard implements Serializable {
      * @return String info colour
      */
     public Color getInfoColour() {return infoColour; }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public Boolean getScheduled() {
+        return scheduled;
+    }
+
     /**
      * Gets the pannel that has been made for this billboard.
      * @return JPanel stored in Billboard.
      */
     public JPanel getJPanel() {return BillboardScreenPanel; }
+
     /**
      * Gets the pannel that has been made for this billboard.
      * @return JPanel stored in Billboard.
@@ -448,7 +461,6 @@ public class Billboard implements Serializable {
      * sets name of Billboard
      * @param name
      */
-
     public void setName(String name) {this.name = name;}
 
     /**
@@ -473,29 +485,33 @@ public class Billboard implements Serializable {
      * Sets Pic Data as string to be converted to base64
      * @param picData byte[] of image
      */
-
     public void setPicData(byte[] picData) {this.picDATA = picData;}
 
     /**
      * sets message colour as string to be converted to HEX
      * @param msgColour colour of string
      */
-
     public void setMsgColour(Color msgColour) {this.msgColour = msgColour ;}
 
     /**
      * Sets back colour as string to be converted to HEX
      * @param backColour colour of string
      */
-
     public void setBackColour(Color backColour) {this.backColour = backColour;}
 
     /**
      * Sets info colour as string to be converted to HEX
      * @param infoColour colour of string
      */
-
     public void setInfoColour(Color infoColour) { this.infoColour = infoColour;}
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public void setScheduled(Boolean scheduled) {
+        this.scheduled = scheduled;
+    }
 
     /**
      * Sets the Panel created elsewhere (see CreatePanel) to bool visibility
