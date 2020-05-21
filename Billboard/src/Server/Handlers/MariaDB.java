@@ -818,6 +818,12 @@ public class MariaDB {
             }
         }
 
+        public boolean edit(Billboard billboard) throws SQLException {
+            boolean delete = billboards.DeleteBillboard(billboard.getName());
+            boolean add = billboards.AddBillboard(billboard);
+            return (delete && add);
+        }
+
         public boolean AddBillboardColour(Billboard billboard) throws SQLException {
             if (checkForBillboard(billboard.getName())) {
                 return false;

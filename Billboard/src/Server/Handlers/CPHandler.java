@@ -72,6 +72,9 @@ public class CPHandler extends ConnectionHandler {
                     case ("editBillboard"):
                         EditBillboard();
                         break;
+                    case ("saveBillboard"):
+                        SaveBillboard();
+                        break;
                     case ("deleteBillboard"):
                         DeleteBillboard();
                         break;
@@ -256,6 +259,17 @@ public class CPHandler extends ConnectionHandler {
                 objectStreamer.Send(billboard);
             }
         } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void SaveBillboard() {
+        try {
+            Billboard newBillboard = (Billboard) objectStreamer.Receive();
+            Log.Message("User object received from control panel");
+            dos.writeBoolean(mariaDB.billboards.edit(newBillboard));
+        }
+        catch (IOException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }

@@ -56,14 +56,14 @@ public class EditUsersPanel extends ControlPanelInterface {
 
         // Add text fields
         tf_username = new JTextField();
-        addTextfield(editUserPanel, tf_username, 190, 100, 300, 50);
+        addTextfield(editUserPanel, tf_username, 190, 105, 300, 40);
 
         // Add password fields
         tf_password = new JPasswordField();
         tf_confirm = new JPasswordField();
 
-        addPasswordField(editUserPanel, tf_password, 190, 150, 300, 50);
-        addPasswordField(editUserPanel, tf_confirm, 190, 200, 300, 50);
+        addPasswordField(editUserPanel, tf_password, 190, 155, 300, 40);
+        addPasswordField(editUserPanel, tf_confirm, 190, 205, 300, 40);
 
         // Add checkboxes
         cb_createNew = new JCheckBox("Create New Billboard");

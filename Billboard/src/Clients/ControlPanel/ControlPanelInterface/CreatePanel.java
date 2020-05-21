@@ -1,12 +1,22 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
-import Clients.ControlPanel.ControlPanelTools.UserAccess;
 import SerializableObjects.Billboard;
-import SerializableObjects.User;
 import Tools.ColorIndex;
 import Tools.Log;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -39,8 +49,10 @@ public class CreatePanel extends ControlPanelInterface {
     private static DefaultListModel model;
     private static JList list;
     private static JScrollPane scrollPane;
-    private static JFileChooser chooser;
     private static JButton b_fileSelect;
+    private static JFileChooser imageChooser;
+    private static JFileChooser xmlChooser;
+    private static JFileChooser dirChooser;
     private static JButton b_add;
     private static JButton b_save;
     private static JButton b_clear;
@@ -49,6 +61,7 @@ public class CreatePanel extends ControlPanelInterface {
     private static JButton b_load;
     private static JButton b_delete;
     private static JButton b_preview;
+
 
     public static void createPanelScreen() {
 
@@ -90,10 +103,10 @@ public class CreatePanel extends ControlPanelInterface {
         tf_info = new JTextField();
         tf_path = new JTextField();
 
-        addTextfield(createPanel, tf_name, 190, 100, 300, 50);
-        addTextfield(createPanel, tf_title, 190, 200, 300, 50);
-        addTextfield(createPanel, tf_info, 190, 300, 300, 50);
-        addTextfield(createPanel, tf_path, 190, 450, 300, 50);
+        addTextfield(createPanel, tf_name, 190, 105, 300, 40);
+        addTextfield(createPanel, tf_title, 190, 205, 300, 40);
+        addTextfield(createPanel, tf_info, 190, 305, 300, 40);
+        addTextfield(createPanel, tf_path, 190, 450, 300, 40);
 
         // Add combo boxes
         cb_bgColor = new JComboBox<>(COLOR_STRINGS);
@@ -105,9 +118,9 @@ public class CreatePanel extends ControlPanelInterface {
         cb_titleColor.setSelectedItem("black");
         cb_infoColor.setSelectedItem("gray");
 
-        addCombobox(createPanel, cb_bgColor, 190, 150, 300, 50);
-        addCombobox(createPanel, cb_titleColor, 190, 250, 300, 50);
-        addCombobox(createPanel, cb_infoColor, 190, 350, 300, 50);
+        addCombobox(createPanel, cb_bgColor, 190, 155, 300, 40);
+        addCombobox(createPanel, cb_titleColor, 190, 255, 300, 40);
+        addCombobox(createPanel, cb_infoColor, 190, 355, 300, 40);
 
         // Add radio buttons
         rb_file = new JRadioButton("File:", true);
@@ -139,44 +152,75 @@ public class CreatePanel extends ControlPanelInterface {
 
         // Add JScrollPane
         scrollPane = new JScrollPane(list);
-        scrollPane.setBounds(screenWidth/2 - 100, 100, 300, 400);
+        scrollPane.setBounds(screenWidth / 2 - 100, 100, 300, 400);
         createPanel.add(scrollPane);
 
-        b_fileSelect = new JButton("Select File");
-        b_fileSelect.setBounds(20, 450, 150, 50);
-        createPanel.add(b_fileSelect);
-
-        chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        b_fileSelect.addActionListener(e -> {
-            chooser.showDialog(b_fileSelect,"Select Image");
-            File picture = chooser.getSelectedFile();
-            String imageFilePath;
-            try {
-                imageFilePath = picture.getAbsolutePath();
-                tf_path.setText(imageFilePath);
-            } catch (NullPointerException ex) { }
-        });
-
         // Add buttons
+        b_fileSelect = new JButton("Select File");
+        b_import = new JButton("Import");
+        b_export = new JButton("Export");
         b_add = new JButton("Add");
         b_save = new JButton("Save");
         b_clear = new JButton("Clear");
-        b_import = new JButton("Import");
-        b_export = new JButton("Export");
         b_load = new JButton("Edit");
         b_delete = new JButton("Delete");
         b_preview = new JButton("Preview");
 
+        addButton(createPanel, b_fileSelect, 10, 450, 180, 40);
+        addButton(createPanel, b_import, screenWidth / 2 - 100, 530, 150, 30);
+        addButton(createPanel, b_export, screenWidth / 2 + 50, 530, 150, 30);
         addButton(createPanel, b_add, 190, 500, 150, 30);
         addButton(createPanel, b_save, 190, 500, 150, 30);
         b_save.setVisible(false);
         addButton(createPanel, b_clear, 340, 500, 150, 30);
-        addButton(createPanel, b_import, screenWidth/2 - 100, 530, 150, 30);
-        addButton(createPanel, b_export, screenWidth/2 + 50, 530, 150, 30);
-        addButton(createPanel, b_load, screenWidth/2 - 100, 500, 150, 30);
-        addButton(createPanel, b_delete, screenWidth/2 + 50, 500, 150, 30);
+        addButton(createPanel, b_load, screenWidth / 2 - 100, 500, 150, 30);
+        addButton(createPanel, b_delete, screenWidth / 2 + 50, 500, 150, 30);
         addButton(createPanel, b_preview, 190, 530, 300, 30);
+
+        imageChooser = new JFileChooser();
+        imageChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "Image (jpg, png, bmp)",
+                "jpg", "png", "bmp");
+        imageChooser.setFileFilter(filter);
+        b_fileSelect.addActionListener(e -> {
+            imageChooser.showDialog(b_fileSelect, "Select Image");
+            File picture = imageChooser.getSelectedFile();
+            String imageFilePath;
+            try {
+                imageFilePath = picture.getAbsolutePath();
+                tf_path.setText(imageFilePath);
+            } catch (NullPointerException ex) {
+            }
+        });
+
+        xmlChooser = new JFileChooser();
+        xmlChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter(
+                "Extensible markup language file (.xml)",
+                "xml");
+        xmlChooser.setFileFilter(xmlFilter);
+        b_import.addActionListener(e -> {
+            xmlChooser.showDialog(b_import, "Select .xml");
+            File picture = xmlChooser.getSelectedFile();
+            try {
+                String xmlFilePath = picture.getAbsolutePath();
+                importBb(xmlFilePath);
+            } catch (NullPointerException ex) {
+            }
+        });
+
+        dirChooser = new JFileChooser();
+        dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        b_export.addActionListener(e -> {
+            dirChooser.showDialog(b_export, "Select Directory");
+            File directory = dirChooser.getSelectedFile();
+            try {
+                String dirFilePath = directory.getAbsolutePath();
+                exportBb(dirFilePath);
+            } catch (NullPointerException ex) {
+            }
+        });
 
         // Handle button events
         b_add.addActionListener(event -> addBb());
@@ -184,10 +228,6 @@ public class CreatePanel extends ControlPanelInterface {
         b_save.addActionListener(event -> saveBb());
 
         b_clear.addActionListener(event -> clearFields());
-
-        b_import.addActionListener(event -> importBb());
-
-        b_export.addActionListener(event -> exportBb());
 
         b_load.addActionListener(event -> loadBb());
 
@@ -231,7 +271,33 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void saveBb() {
-
+        try {
+            populateBillboard();
+            user.setAction("saveBillboard");
+            if (AttemptConnect()) {
+                // Send user object to server
+                objectStreamer.Send(user);
+                objectStreamer.Send(billboard);
+                // Await returned object from server
+                if (dis.readBoolean()) {
+                    lbl_message.setText("Billboard saved");
+                    Log.Confirmation("New billboard saved successfully");
+                } else {
+                    lbl_message.setText("Unable to edit billboard");
+                    Log.Error("Error when attempting to saved billboard");
+                }
+                // Disconnect from server
+                AttemptDisconnect();
+            }
+            // Post message to user if unable to connect to server
+            else {
+                Log.Error("Unable to connect to server");
+            }
+            resetFields();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.Error("Add billboard attempt request failed");
+        }
     }
 
     private static void clearFields() {
@@ -241,12 +307,40 @@ public class CreatePanel extends ControlPanelInterface {
         lbl_message.setText("");
     }
 
-    private static void importBb() {
+    private static void importBb(String xmlFilePath) {
 
     }
 
-    private static void exportBb() {
-
+    private static void exportBb(String dirFilePath) {
+//        try {
+//            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+//            Document doc = docBuilder.newDocument();
+//            Element rootElement = doc.createElement("CONFIGURATION");
+//            doc.appendChild(rootElement);
+//            Element browser = doc.createElement("BROWSER");
+//            browser.appendChild(doc.createTextNode("chrome"));
+//            rootElement.appendChild(browser);
+//            Element base = doc.createElement("BASE");
+//            base.appendChild(doc.createTextNode("http:fut"));
+//            rootElement.appendChild(base);
+//            Element employee = doc.createElement("EMPLOYEE");
+//            rootElement.appendChild(employee);
+//            Element empName = doc.createElement("EMP_NAME");
+//            empName.appendChild(doc.createTextNode("Anhorn, Irene"));
+//            employee.appendChild(empName);
+//            Element actDate = doc.createElement("ACT_DATE");
+//            actDate.appendChild(doc.createTextNode("20131201"));
+//            employee.appendChild(actDate);
+//            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+//            Transformer transformer = transformerFactory.newTransformer();
+//            DOMSource source = new DOMSource(doc);
+//            StreamResult result = new StreamResult(new File("/Users/myXml/ScoreDetail.xml"));
+//            transformer.transform(source, result);
+//            System.out.println("File saved!");
+//        } catch (TransformerException | ParserConfigurationException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private static void loadBb() {
@@ -271,7 +365,9 @@ public class CreatePanel extends ControlPanelInterface {
                         tf_path.setText(billboard.getPicUrl());
                         rb_url.setSelected(true);
                     } else if (billboard.getPicData() != null) {
-                        tf_path.setText("Image data loaded");
+                        tf_path.setText("Loaded image data");
+                        tf_path.selectAll();
+                        tf_path.requestFocus();
                         rb_file.setSelected(true);
                     } else {
                         tf_path.setText("");
@@ -299,6 +395,11 @@ public class CreatePanel extends ControlPanelInterface {
 
     private static void deleteBb() {
         String name = (String) list.getSelectedValue();
+        if (name.equals("")) {
+            lbl_message.setText("No billboard selected deleted");
+            Log.Confirmation("No billboard selected deleted");
+            return;
+        }
         user.setAction("deleteBillboard");
         // Attempt connection to server
         if (AttemptConnect()) {
@@ -347,10 +448,12 @@ public class CreatePanel extends ControlPanelInterface {
         }
     }
 
-    private static void populateBillboard() throws Exception {
+    private static void populateBillboard() throws IOException {
         String picURL = null;
         byte[] picDATA = null;
-        if (rb_file.isSelected() && !tf_path.getText().equals("")) {
+        if (tf_path.getText().equals("Loaded image data")) {
+            picDATA = billboard.getPicData();
+        } else if (rb_file.isSelected() && !tf_path.getText().equals("")) {
             picDATA = billboard.ConvertImageToData(tf_path.getText());
         } else if (rb_url.isSelected() && !tf_path.getText().equals("")) {
             picURL = tf_path.getText();

@@ -26,7 +26,7 @@ public class ChangePWPanel extends ControlPanelInterface {
         passwordPanel.add(lbl_old);
 
         JPasswordField tf_old = new JPasswordField();
-        tf_old.setBounds(190, 100, 300, 50);
+        tf_old.setBounds(190, 105, 300, 40);
         tf_old.setFont(font);
         passwordPanel.add(tf_old);
 
@@ -36,7 +36,7 @@ public class ChangePWPanel extends ControlPanelInterface {
         passwordPanel.add(lbl_new);
 
         JPasswordField tf_new = new JPasswordField();
-        tf_new.setBounds(190, 150, 300, 50);
+        tf_new.setBounds(190, 155, 300, 40);
         tf_new.setFont(font);
         passwordPanel.add(tf_new);
 
@@ -46,7 +46,7 @@ public class ChangePWPanel extends ControlPanelInterface {
         passwordPanel.add(lbl_confirm);
 
         JPasswordField tf_confirm = new JPasswordField();
-        tf_confirm.setBounds(190, 200, 300, 50);
+        tf_confirm.setBounds(190, 205, 300, 40);
         tf_confirm.setFont(font);
         passwordPanel.add(tf_confirm);
 
