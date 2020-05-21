@@ -127,7 +127,7 @@ public class CreatePanel extends ControlPanelInterface {
 
         // Add default list model
         model = new DefaultListModel();
-        model.addAll(lists.billboards);
+        model.addAll(lists.userBillboards);
 
         // Add JList
         list = new JList(model);
@@ -197,24 +197,21 @@ public class CreatePanel extends ControlPanelInterface {
             populateBillboard();
             user.setAction("addBillboard");
             if (AttemptConnect()) {
-                // Try a login attempt
-
                 // Send user object to server
                 objectStreamer.Send(user);
                 objectStreamer.Send(billboard);
                 // Await returned object from server
                 if (dis.readBoolean()) {
                     lists.users.add(billboard.getName());
-                    Collections.sort(lists.billboards);
+                    Collections.sort(lists.userBillboards);
                     model.clear();
-                    model.addAll(lists.billboards);
+                    model.addAll(lists.userBillboards);
                     lbl_message.setText("Billboard added");
                     Log.Confirmation("New billboard added successfully");
                 } else {
                     lbl_message.setText("Billboard already exists");
                     Log.Error("Error when attempting to add new billboard");
                 }
-
                 // Disconnect from server
                 AttemptDisconnect();
             }
@@ -258,7 +255,7 @@ public class CreatePanel extends ControlPanelInterface {
     private static void previewBb() {
         try {
             populateBillboard();
-            billboard.showBillboard();
+            billboard.previewBillboard();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -280,7 +277,9 @@ public class CreatePanel extends ControlPanelInterface {
                 picURL, picDATA,
                 colorFromString((String) cb_titleColor.getSelectedItem()),
                 colorFromString((String) cb_bgColor.getSelectedItem()),
-                colorFromString((String) cb_infoColor.getSelectedItem()));
+                colorFromString((String) cb_infoColor.getSelectedItem()),
+                user.getUsername(),
+                false);
     }
 
     private static void resetFields() {

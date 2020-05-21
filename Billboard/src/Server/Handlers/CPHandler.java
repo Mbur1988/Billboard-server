@@ -95,6 +95,7 @@ public class CPHandler extends ConnectionHandler {
                 if (user.isVerified()) {
                     Lists lists = new Lists(mariaDB.users.getAllUsernames(),
                             mariaDB.billboards.getAllBillboards(),
+                            mariaDB.billboards.getAllBillboardsCurrent(user.getUsername()),
                             null);
                     objectStreamer.Send(lists);
                     Log.Message("Lists object sent to control panel");

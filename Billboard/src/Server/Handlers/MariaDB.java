@@ -764,10 +764,11 @@ public class MariaDB {
             ArrayList<String> userBillboards = new ArrayList<>();
             while (result.next()){
                 String username = result.getString("username");
-                if (username.equals(currentUser)){
-                    userBillboards.add(result.getString("name"));
-                }
-
+                try {
+                    if (username.equals(currentUser)) {
+                        userBillboards.add(result.getString("name"));
+                    }
+                } catch (NullPointerException e) { }
             }
             return userBillboards;
         }
