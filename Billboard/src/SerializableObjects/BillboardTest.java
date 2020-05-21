@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
  *       32 - 33 Tests making labels for the Mesage and Info
  *       37 - 42 Tests displaying the Billboard and clearing the Billboard
  *       43 tests Conversion of URL to byte[] and shows
- *       44 and 46 Tests the rearange of the info msg and image in different configs.
+ *       44 and 46 Tests the rearrange of the info msg and image in different configs.
  *       47 Tests converting a byte[] to base 64
- *
+ *       48 and 49 msg and info colour setting
  *
  *************************************************************************************************************************************************************/
 
@@ -351,7 +351,7 @@ public class BillboardTest {
     public void ConvertImageToData() throws Exception {
         //uses ConvertImageToData funct
         // File file = new File("C:\\sally.jpg");
-        byte[] S = underTestEmpty.ConvertImageToData(testAddress);
+        byte[] S = Billboard.ConvertImageToData(testAddress);
         underTestEmpty.setPicData(S);
         //In this test we will need to convert to data and see what it says then change im and then see differences and try to make one back using next test
         assertEquals(S, underTestEmpty.getPicData());
@@ -370,7 +370,7 @@ public class BillboardTest {
     public void ConvertDataToImage() throws Exception {
         //This will have to be a visual confirmation
 //        File file = new File("C:\\sally.jpg");
-        byte[] S = underTestEmpty.ConvertImageToData(testAddress);
+        byte[] S = Billboard.ConvertImageToData(testAddress);
         underTestEmpty.setPicData(S);
         new DisplayImage(underTestEmpty.getPicData());
         Thread.sleep(10000);
@@ -389,9 +389,9 @@ public class BillboardTest {
         //converts hello world to bytes
         byte[] testS = testerString.getBytes();
         //changes hello world into 64 from bytes
-        String bytesInSixFour =  underTestEmpty.BytesToSixFour(testS);
+        String bytesInSixFour =  Billboard.BytesToSixFour(testS);
         //convert it back
-        byte[] testB = underTestEmpty.SixFourToByte(bytesInSixFour);
+        byte[] testB = Billboard.SixFourToByte(bytesInSixFour);
         String End = new String(testB);
         assertEquals(testerString,End);
     }
@@ -480,7 +480,7 @@ public class BillboardTest {
     public void MsgAndImageLabels() throws Exception {
 
         underTestEmpty.setMsg("message");
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
+        underTestEmpty.setPicData(Billboard.ConvertImageToData(testAddress));
         underTestEmpty.showBillboard();
 
 
@@ -494,7 +494,7 @@ public class BillboardTest {
      */
     @Test
     public void ImageLabels() throws Exception {
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
+        underTestEmpty.setPicData(Billboard.ConvertImageToData(testAddress));
         underTestEmpty.showBillboard();
 
         //check visually
@@ -509,7 +509,7 @@ public class BillboardTest {
     public void InfoAndImageLabels() throws Exception {
 
         underTestEmpty.setInfo("This is the information");
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
+        underTestEmpty.setPicData(Billboard.ConvertImageToData(testAddress));
         underTestEmpty.showBillboard();
 
 
@@ -562,7 +562,7 @@ public class BillboardTest {
     @Test
     public void ShowBillboardColourTest() throws Exception {
 
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
+        underTestEmpty.setPicData(Billboard.ConvertImageToData(testAddress));
         underTestEmpty.setMsg("Message");
         underTestEmpty.setInfo("info");
         underTestEmpty.setBackColour(new Color(39, 255, 231, 202));
@@ -602,7 +602,7 @@ public class BillboardTest {
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
         testFrame.setContentPane(testPanel);
-        JLabel LabTest =  underTestEmpty.CreateImageFilepath(testAddress);
+        JLabel LabTest =  Billboard.CreateImageFilepath(testAddress);
         testFrame.getContentPane().add(LabTest);
         testFrame.repaint();
 
@@ -617,11 +617,11 @@ public class BillboardTest {
      */
     @Test
     public void DisplayImageTester3() throws Exception {
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
+        underTestEmpty.setPicData(Billboard.ConvertImageToData(testAddress));
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
         testFrame.setContentPane(testPanel);
-        JLabel LabTest =  underTestEmpty.CreateImageData(underTestEmpty.getPicData(),"Image Only");
+        JLabel LabTest =  Billboard.CreateImageData(underTestEmpty.getPicData(),"Image Only");
         testFrame.getContentPane().add(LabTest);
         testFrame.repaint();
 
@@ -635,13 +635,13 @@ public class BillboardTest {
      */
     @Test
     public void GettingAndSavingUrl() throws Exception {
-        byte[] testFromUrl = underTestEmpty.UrlToData("https://images2.minutemediacdn.com/image/upload/c_crop,h_1193,w_2121,x_0,y_64/f_auto,q_auto,w_1100/v1565279671/shape/mentalfloss/578211-gettyimages-542930526.jpg");
-        byte[] testFromSave = underTestEmpty.ConvertImageToData(testAddress);
+        byte[] testFromUrl = Billboard.UrlToData("https://images2.minutemediacdn.com/image/upload/c_crop,h_1193,w_2121,x_0,y_64/f_auto,q_auto,w_1100/v1565279671/shape/mentalfloss/578211-gettyimages-542930526.jpg");
+        byte[] testFromSave = Billboard.ConvertImageToData(testAddress);
         underTestEmpty.setPicData(testFromUrl);
         JFrame testFrame = underTestEmpty.createFrame();
         JPanel testPanel = underTestEmpty.CreatePanel();
         testFrame.setContentPane(testPanel);
-        JLabel LabTest = underTestEmpty.CreateImageData(underTestEmpty.getPicData(),"Image Only");
+        JLabel LabTest = Billboard.CreateImageData(underTestEmpty.getPicData(),"Image Only");
         testFrame.getContentPane().add(LabTest);
         testFrame.repaint();
 
@@ -681,7 +681,7 @@ public class BillboardTest {
      */
     @Test
     public void TestImageOnly() throws Exception {
-        underTestEmpty.setPicData(underTestEmpty.ConvertImageToData(testAddress));
+        underTestEmpty.setPicData(Billboard.ConvertImageToData(testAddress));
         underTestEmpty.showBillboard();
 
         Thread.sleep((2000));
@@ -722,7 +722,7 @@ public class BillboardTest {
     @Test
     public void InfoColourTest() throws Exception {
         underTestEmpty.setInfoColour(Color.red);
-        underTestEmpty.setInfo("Infor in red");
+        underTestEmpty.setInfo("Info in red");
         underTestEmpty.showBillboard();
 
         Thread.sleep((2000));

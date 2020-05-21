@@ -1,18 +1,18 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
 import SerializableObjects.Billboard;
-import Tools.ColorIndex;
 import Tools.Log;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
 import static Clients.ControlPanel.ControlPanel.*;
-import static Tools.ColorIndex.*;
+import static Tools.ColorIndex.COLOR_STRINGS;
+import static Tools.ColorIndex.colorFromString;
 
 public class CreatePanel extends ControlPanelInterface {
 
@@ -260,6 +260,7 @@ public class CreatePanel extends ControlPanelInterface {
 
     private static void previewBb() {
         populateBilboard();
+
     }
 
     private static void populateBilboard() {
@@ -280,6 +281,7 @@ public class CreatePanel extends ControlPanelInterface {
                     colorFromString((String) cb_titleColor.getSelectedItem()),
                     colorFromString((String) cb_bgColor.getSelectedItem()),
                     colorFromString((String) cb_infoColor.getSelectedItem()));
+                    billboard.PreviewDisplay = true;
             billboard.showBillboard();
         } catch (Exception e) {
             e.printStackTrace();

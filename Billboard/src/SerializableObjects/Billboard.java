@@ -13,6 +13,8 @@ import java.util.Base64;
 import static java.awt.Font.BOLD;
 
 public class Billboard implements Serializable {
+
+
     // Get the size of the screen.
     static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     static int screenWidth = screenSize.width;
@@ -29,8 +31,11 @@ public class Billboard implements Serializable {
     private Color infoColour;
     private String createdBy;
     private static JFrame BillboardScreen;
-    private static JPanel BillboardScreenPannel;
+    private static JPanel BillboardScreenPanel;
+
     private static boolean ShowingBillBoard = false;
+    public static boolean PreviewDisplay = false;
+
 
     //setting a blank Billboard
     public Billboard(){
@@ -43,8 +48,8 @@ public class Billboard implements Serializable {
         this.backColour = null;
         this.infoColour = null;
         this.createdBy = null;
-        this.BillboardScreenPannel = null;
-        this.BillboardScreen = null;
+        BillboardScreenPanel = null;
+        BillboardScreen = null;
     }
     /**
      *
@@ -67,7 +72,7 @@ public class Billboard implements Serializable {
         this.msgColour = MsgColour;
         this.backColour = BackColour;
         this.infoColour = InfoColour;
-        BillboardScreenPannel = null;
+        BillboardScreenPanel = null;
         BillboardScreen = null;
 
     }
@@ -78,7 +83,7 @@ public class Billboard implements Serializable {
      * @return frame JFrame
      */
     public JFrame createFrame() {
-        BillboardScreenPannel = CreatePanel();
+        BillboardScreenPanel = CreatePanel();
         JFrame frame = new JFrame("Flow Layout");
         //frame.setLayout(new FlowLayout());
         frame.setBackground(Color.blue);
@@ -120,22 +125,22 @@ public class Billboard implements Serializable {
             upperText.setOpaque(false);
 
 
-            if(placement == "msg only") {
+            if(placement.equals("msg only")) {
 
                 upperText.setFont(new Font("Courier", BOLD, 150));
                 upperText.setBounds(0, 0, screenWidth, screenHeight);
 
             }
-            else if(placement == "msg and info") {
+            else if(placement.equals("msg and info")) {
                 upperText.setFont(new Font("Courier", BOLD, 100));
                 upperText.setBounds(0, 0, screenWidth, screenHeight/2);
             }
-            else if(placement == "msg and pic") {
+            else if(placement.equals("msg and pic")) {
                 upperText.setFont(new Font("Courier", BOLD, 100));
                 upperText.setBounds(0, 0, screenWidth, screenHeight / 3);
             }
 
-            else if(placement ==  "all") {
+            else if(placement.equals("all")) {
                 upperText.setFont(new Font("Courier", BOLD, 100));
                 upperText.setBounds(0, 0, screenWidth, screenHeight / 3);
             }
@@ -146,7 +151,7 @@ public class Billboard implements Serializable {
         else if(Name.equals("info") || Name.equals("Info")){
             JLabel lowerText = new JLabel(message_input,SwingConstants.CENTER);
 
-            if(placement ==  "info only")
+            if(placement.equals("info only"))
             {
                 lowerText.setFont(new Font("Courier", BOLD, 80));
 
@@ -156,17 +161,17 @@ public class Billboard implements Serializable {
 
             }
 
-            else if(placement == "msg and info")
+            else if(placement.equals("msg and info"))
             {
                 lowerText.setFont(new Font("Courier", BOLD, 75));
                 lowerText.setBounds(0, screenHeight/2, screenWidth, screenHeight/2);
             }
-            else if(placement == "info and pic") {
+            else if(placement.equals("info and pic")) {
                 lowerText.setFont(new Font("Courier", BOLD, 75));
                 lowerText.setBounds((screenWidth/8), (2*screenHeight)/3, (3*screenWidth)/4, screenHeight / 3);
                 lowerText.setHorizontalAlignment(SwingConstants.CENTER);
             }
-            else if(placement == "all") {
+            else if(placement.equals("all")) {
                 lowerText.setFont(new Font("Courier", BOLD, 75));
                 lowerText.setBounds((screenWidth/8), (2*screenHeight)/3, (3*screenWidth)/4, screenHeight / 3);
                 lowerText.setHorizontalAlignment(SwingConstants.CENTER);
@@ -232,15 +237,15 @@ public class Billboard implements Serializable {
         JLabel Image = new JLabel(icon);
 
         //placement adjustment
-        if (placement == "Image Only" || placement == "all"){
+        if (placement.equals("Image Only") || placement.equals("all")){
             Image.setBounds(0,(screenHeight/2)-(scaledHeight/2),screenWidth,screenHeight/2);
             Image.setHorizontalAlignment(SwingConstants.CENTER);
         }
-        else if(placement == "msg and pic"){
+        else if(placement.equals("msg and pic")){
             Image.setBounds(0,(2*screenHeight/3)-(scaledHeight/2),screenWidth,screenHeight/2);
             Image.setHorizontalAlignment(SwingConstants.CENTER);
         }
-        else if(placement == "info and pic"){
+        else if(placement.equals("info and pic")){
             Image.setBounds(0,(screenHeight/3)-(scaledHeight/2),screenWidth,screenHeight/2);
             Image.setHorizontalAlignment(SwingConstants.CENTER);
         }
@@ -252,13 +257,14 @@ public class Billboard implements Serializable {
     }
 
     public void showBillboard() throws Exception {
-        if(!ShowingBillBoard){
+        if(!ShowingBillBoard || PreviewDisplay){
             BillboardScreen = createFrame();
-            BillboardScreenPannel = CreatePanel();
-            BillboardScreenPannel.setBackground(getBackColour());
-            BillboardScreenPannel.setOpaque(true);
-            BillboardScreen.setContentPane(BillboardScreenPannel);
+            BillboardScreenPanel = CreatePanel();
+            BillboardScreenPanel.setBackground(getBackColour());
+            BillboardScreenPanel.setOpaque(true);
+            BillboardScreen.setContentPane(BillboardScreenPanel);
             ShowingBillBoard = true;
+
         }
 
         //msg only
@@ -321,20 +327,22 @@ public class Billboard implements Serializable {
 
 
 
-        BillboardScreenPannel.repaint();
-        BillboardScreenPannel.revalidate();
+        BillboardScreenPanel.repaint();
+        BillboardScreenPanel.revalidate();
 
         //close preview.
+        if(PreviewDisplay){
         JButton b3 = new JButton("Exit Preview");
 
         b3.setBounds(0, 0, 250, 50);
-        BillboardScreenPannel.add(b3);
+        BillboardScreenPanel.add(b3);
         b3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
                 BillboardScreen.dispose();
+                PreviewDisplay = false;
             }   // need to change to a keep changes button
-        });
+        });}
 
     }
 
@@ -418,12 +426,12 @@ public class Billboard implements Serializable {
      * Gets the pannel that has been made for this billboard.
      * @return JPanel stored in Billboard.
      */
-    public JPanel getJPanel() {return this.BillboardScreenPannel; }
+    public JPanel getJPanel() {return BillboardScreenPanel; }
     /**
      * Gets the pannel that has been made for this billboard.
      * @return JPanel stored in Billboard.
      */
-    public JFrame getJFrame() {return this.BillboardScreen; }
+    public JFrame getJFrame() {return BillboardScreen; }
 
     /**
      * Gets visibility of panel
