@@ -162,7 +162,7 @@ public class CreatePanel extends ControlPanelInterface {
         b_add = new JButton("Add");
         b_save = new JButton("Save");
         b_clear = new JButton("Clear");
-        b_load = new JButton("Edit");
+        b_load = new JButton("Load");
         b_delete = new JButton("Delete");
         b_preview = new JButton("Preview");
 
@@ -190,8 +190,7 @@ public class CreatePanel extends ControlPanelInterface {
             try {
                 imageFilePath = picture.getAbsolutePath();
                 tf_path.setText(imageFilePath);
-            } catch (NullPointerException ex) {
-            }
+            } catch (NullPointerException ex) { }
         });
 
         xmlChooser = new JFileChooser();
@@ -206,8 +205,7 @@ public class CreatePanel extends ControlPanelInterface {
             try {
                 String xmlFilePath = picture.getAbsolutePath();
                 importBb(xmlFilePath);
-            } catch (NullPointerException ex) {
-            }
+            } catch (NullPointerException ex) { }
         });
 
         dirChooser = new JFileChooser();
@@ -218,8 +216,7 @@ public class CreatePanel extends ControlPanelInterface {
             try {
                 String dirFilePath = directory.getAbsolutePath();
                 exportBb(dirFilePath);
-            } catch (NullPointerException ex) {
-            }
+            } catch (NullPointerException ex) { }
         });
 
         // Handle button events
@@ -312,35 +309,67 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void exportBb(String dirFilePath) {
-//        try {
-//            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-//            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-//            Document doc = docBuilder.newDocument();
-//            Element rootElement = doc.createElement("CONFIGURATION");
-//            doc.appendChild(rootElement);
-//            Element browser = doc.createElement("BROWSER");
-//            browser.appendChild(doc.createTextNode("chrome"));
-//            rootElement.appendChild(browser);
-//            Element base = doc.createElement("BASE");
-//            base.appendChild(doc.createTextNode("http:fut"));
-//            rootElement.appendChild(base);
-//            Element employee = doc.createElement("EMPLOYEE");
-//            rootElement.appendChild(employee);
-//            Element empName = doc.createElement("EMP_NAME");
-//            empName.appendChild(doc.createTextNode("Anhorn, Irene"));
-//            employee.appendChild(empName);
-//            Element actDate = doc.createElement("ACT_DATE");
-//            actDate.appendChild(doc.createTextNode("20131201"));
-//            employee.appendChild(actDate);
-//            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-//            Transformer transformer = transformerFactory.newTransformer();
-//            DOMSource source = new DOMSource(doc);
-//            StreamResult result = new StreamResult(new File("/Users/myXml/ScoreDetail.xml"));
-//            transformer.transform(source, result);
-//            System.out.println("File saved!");
-//        } catch (TransformerException | ParserConfigurationException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            populateBillboard();
+            DocumentBuilderFactory DBF = DocumentBuilderFactory.newInstance();
+            DocumentBuilder DB = DBF.newDocumentBuilder();
+            Document D = DB.newDocument();
+
+            // root element
+            Element root = D.createElement("billboard");
+            // Attribute of root element
+            Color bg = billboard.getBackColour();
+            root.setAttribute("background",
+                    String.format("#%02x%02x%02x", bg.getRed(), bg.getGreen(), bg.getBlue()));
+            D.appendChild(root);
+
+            if (!billboard.getMsg().equals(null)) {
+                // message element
+                Element message = D.createElement("message");
+                // Attribute of message element
+                Color msg = billboard.getMsgColour();
+                message.setAttribute("colour",
+                        String.format("#%02x%02x%02x", msg.getRed(), msg.getGreen(), msg.getBlue()));
+                // text node of message
+                message.appendChild(D.createTextNode(billboard.getMsg()));
+                root.appendChild(message);
+            }
+
+            if (billboard.getPicUrl() != null || billboard.getPicData() != null) {
+                // picture element
+                Element picture = D.createElement("picture");
+                // Attribute of message element
+                if (billboard.getPicUrl() != null) {
+                    picture.setAttribute("url", billboard.getPicUrl());
+                } else {
+                    picture.setAttribute("file", billboard.BytesToSixFour(billboard.getPicData()));
+                }
+                root.appendChild(picture);
+            }
+
+            if (!billboard.getInfo().equals(null)) {
+                // information element
+                Element info = D.createElement("information");
+                // Attribute of message element
+                Color inf = billboard.getInfoColour();
+                info.setAttribute("colour",
+                        String.format("#%02x%02x%02x", inf.getRed(), inf.getGreen(), inf.getBlue()));
+                // text node of message
+                info.appendChild(D.createTextNode(billboard.getInfo()));
+                root.appendChild(info);
+            }
+
+            D.setXmlStandalone(true);
+            TransformerFactory TF = TransformerFactory.newInstance();
+            Transformer transformer = TF.newTransformer();
+            DOMSource DOMS = new DOMSource(D);
+            StreamResult SR = new StreamResult(new File(dirFilePath + "\\" + billboard.getName() + ".xml"));
+            transformer.transform(DOMS, SR);
+
+
+        } catch (TransformerException | ParserConfigurationException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void loadBb() {
