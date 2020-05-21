@@ -1,5 +1,6 @@
 package Server.Handlers;
 
+import SerializableObjects.Billboard;
 import SerializableObjects.Lists;
 import SerializableObjects.User;
 import Server.Trackers.Authorised;
@@ -51,7 +52,7 @@ public class CPHandler extends ConnectionHandler {
                         Authorised.Remove(user.getUsername());
                         break;
                     case ("addUser"):
-                        AddNewUser();
+                        AddUser();
                         break;
                     case ("editUser"):
                         EditUser();
@@ -94,6 +95,7 @@ public class CPHandler extends ConnectionHandler {
                 if (user.isVerified()) {
                     Lists lists = new Lists(mariaDB.users.getAllUsernames(),
                             mariaDB.billboards.getAllBillboards(),
+                            mariaDB.billboards.getAllBillboardsCurrent(user.getUsername()),
                             null);
                     objectStreamer.Send(lists);
                     Log.Message("Lists object sent to control panel");
@@ -155,7 +157,7 @@ public class CPHandler extends ConnectionHandler {
     /**
      * Method to add a new user to the users table in the database
      */
-    private void AddNewUser() {
+    private void AddUser() {
         try {
             User newUser = (User) objectStreamer.Receive();
             Log.Message("User object received from control panel");
@@ -233,7 +235,14 @@ public class CPHandler extends ConnectionHandler {
     }
 
     private void AddBillboard() {
-
+        try {
+            Billboard newBillboard = (Billboard) objectStreamer.Receive();
+            Log.Message("User object received from control panel");
+            dos.writeBoolean(mariaDB.billboards.AddBillboard(newBillboard));
+        }
+        catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void EditBillboard() {

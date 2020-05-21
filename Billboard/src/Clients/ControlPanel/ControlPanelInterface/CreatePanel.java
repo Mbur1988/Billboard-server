@@ -1,16 +1,13 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
 import SerializableObjects.Billboard;
-import Tools.ColorIndex;
 import Tools.Log;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
-
 import static Clients.ControlPanel.ControlPanel.*;
 import static Tools.ColorIndex.*;
 
@@ -38,6 +35,7 @@ public class CreatePanel extends ControlPanelInterface {
     private static DefaultListModel model;
     private static JList list;
     private static JScrollPane scrollPane;
+    private static JFileChooser chooser;
     private static JButton b_fileSelect;
     private static JButton b_add;
     private static JButton b_save;
@@ -64,14 +62,14 @@ public class CreatePanel extends ControlPanelInterface {
         createPanel.add(lbl_users);
 
         // Add labels
-        JLabel lbl_name = new JLabel("Billboard name");
-        JLabel lbl_bgColor = new JLabel("Background color");
-        JLabel lbl_title = new JLabel("Title text");
-        JLabel lbl_titleColor = new JLabel("Title color");
-        JLabel lbl_info = new JLabel("Information text");
-        JLabel lbl_infoColor = new JLabel("Information Color");
-        JLabel lbl_picType = new JLabel("Picture type");
-        JLabel lbl_message = new JLabel("");
+        lbl_name = new JLabel("Billboard name");
+        lbl_bgColor = new JLabel("Background color");
+        lbl_title = new JLabel("Title text");
+        lbl_titleColor = new JLabel("Title color");
+        lbl_info = new JLabel("Information text");
+        lbl_infoColor = new JLabel("Information Color");
+        lbl_picType = new JLabel("Picture type");
+        lbl_message = new JLabel("");
 
         addLabel(createPanel, lbl_name, 10, 100, 300, 50);
         addLabel(createPanel, lbl_bgColor, 10, 150, 300, 50);
@@ -80,7 +78,7 @@ public class CreatePanel extends ControlPanelInterface {
         addLabel(createPanel, lbl_info, 10, 300, 300, 50);
         addLabel(createPanel, lbl_infoColor, 10, 350, 300, 50);
         addLabel(createPanel, lbl_picType, 10, 400, 300, 50);
-        addLabel(createPanel, lbl_message, 190, 500, 340, 50);
+        addLabel(createPanel, lbl_message, 190, 580, 340, 50);
 
         // Add text fields
         tf_name = new JTextField();
@@ -130,22 +128,21 @@ public class CreatePanel extends ControlPanelInterface {
 
         // Add default list model
         model = new DefaultListModel();
-        model.addAll(lists.billboards);
+        model.addAll(lists.userBillboards);
 
         // Add JList
         list = new JList(model);
 
         // Add JScrollPane
-        JScrollPane scrollPane = new JScrollPane(list);
+        scrollPane = new JScrollPane(list);
         scrollPane.setBounds(screenWidth/2 - 100, 100, 300, 400);
         createPanel.add(scrollPane);
-
 
         b_fileSelect = new JButton("Select File");
         b_fileSelect.setBounds(20, 450, 150, 50);
         createPanel.add(b_fileSelect);
 
-        JFileChooser chooser = new JFileChooser();
+        chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         b_fileSelect.addActionListener(e -> {
             chooser.showDialog(b_fileSelect,"Select Image");
@@ -196,40 +193,37 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void addBb() {
-        populateBilboard();
-        user.setAction("addBillboard");
-        if (AttemptConnect()) {
-            // Try a login attempt
-            try {
+        try {
+            populateBillboard();
+            user.setAction("addBillboard");
+            if (AttemptConnect()) {
                 // Send user object to server
                 objectStreamer.Send(user);
                 objectStreamer.Send(billboard);
                 // Await returned object from server
                 if (dis.readBoolean()) {
-                    lists.users.add(billboard.getName());
-                    Collections.sort(lists.billboards);
+                    lists.userBillboards.add(billboard.getName());
+                    Collections.sort(lists.userBillboards);
                     model.clear();
-                    model.addAll(lists.billboards);
+                    model.addAll(lists.userBillboards);
                     lbl_message.setText("Billboard added");
                     Log.Confirmation("New billboard added successfully");
-                }
-                else {
+                } else {
                     lbl_message.setText("Billboard already exists");
                     Log.Error("Error when attempting to add new billboard");
                 }
+                // Disconnect from server
+                AttemptDisconnect();
             }
-            catch (IOException e) {
-                e.printStackTrace();
-                Log.Error("Add billboard attempt request failed");
+            // Post message to user if unable to connect to server
+            else {
+                Log.Error("Unable to connect to server");
             }
-            // Disconnect from server
-            AttemptDisconnect();
+            resetFields();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.Error("Add billboard attempt request failed");
         }
-        // Post message to user if unable to connect to server
-        else {
-            Log.Error("Unable to connect to server");
-        }
-        resetFields();
     }
 
     private static void saveBb() {
@@ -259,33 +253,33 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void previewBb() {
-        populateBilboard();
-    }
-
-    private static void populateBilboard() {
         try {
-            String picURL = null;
-            byte[] picDATA = null;
-            if (rb_file.isSelected() && !tf_path.getText().equals("")) {
-                picDATA = billboard.ConvertImageToData(tf_path.getText());
-            } else if (rb_url.isSelected() && !tf_path.getText().equals("")) {
-                picURL = tf_path.getText();
-                picDATA = billboard.UrlToData(tf_path.getText());
-            }
-            billboard = new Billboard(
-                    tf_name.getText(),
-                    tf_title.getText(),
-                    tf_info.getText(),
-                    picURL, picDATA,
-                    colorFromString((String) cb_titleColor.getSelectedItem()),
-                    colorFromString((String) cb_bgColor.getSelectedItem()),
-                    colorFromString((String) cb_infoColor.getSelectedItem()),
-                    user.getUsername(),
-                    false);
-            billboard.showBillboard();
+            populateBillboard();
+            billboard.previewBillboard();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void populateBillboard() throws Exception {
+        String picURL = null;
+        byte[] picDATA = null;
+        if (rb_file.isSelected() && !tf_path.getText().equals("")) {
+            picDATA = billboard.ConvertImageToData(tf_path.getText());
+        } else if (rb_url.isSelected() && !tf_path.getText().equals("")) {
+            picURL = tf_path.getText();
+            picDATA = billboard.UrlToData(tf_path.getText());
+        }
+        billboard = new Billboard(
+                tf_name.getText(),
+                tf_title.getText(),
+                tf_info.getText(),
+                picURL, picDATA,
+                colorFromString((String) cb_titleColor.getSelectedItem()),
+                colorFromString((String) cb_bgColor.getSelectedItem()),
+                colorFromString((String) cb_infoColor.getSelectedItem()),
+                user.getUsername(),
+                false);
     }
 
     private static void resetFields() {

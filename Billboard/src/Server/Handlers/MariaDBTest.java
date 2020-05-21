@@ -130,15 +130,18 @@ public class MariaDBTest {
 //    //**
 //
     @Test
-    public void AddTest1() throws SQLException{
+    public void AddTest1() throws SQLException {
         undertest.billboards.AddBillboard("test board1", "msg1", "info1", "picurl1", test, "msgcolour1", "backcolour1", "infocolour1", "admin2", false);
-        assertTrue(true);
+        assertTrue(undertest.billboards.checkForBillboard("test board1"));
+        undertest.billboards.DeleteBillboard("test board1");
     }
 
     @Test
-    public void EditTest() throws SQLException{
-        undertest.billboards.edit("test board", "msgedit", "infoedit", "picurl1", test, "msgcolour1", "backcolour1", "infocolour1", "admin2", false);
-
+    public void EditTest() throws SQLException {
+        undertest.billboards.AddBillboard("test board1", "msg1", "info1", "picurl1", test, "msgcolour1", "backcolour1", "infocolour1", "admin2", false);
+        undertest.billboards.edit("test board1", "msgedit", "infoedit", "picurl1", test, "msgcolour1", "backcolour1", "infocolour1", "admin2", false);
+        assertEquals(undertest.billboards.getBillboardInfo("test board1"), "infoedit");
+        undertest.billboards.DeleteBillboard("test board");
     }
 //
 //    //**
