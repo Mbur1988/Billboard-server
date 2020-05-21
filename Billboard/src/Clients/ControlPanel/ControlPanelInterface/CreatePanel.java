@@ -196,7 +196,7 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void addBb() {
-        populateBilboard(false);
+        populateBilboard();
         user.setAction("addBillboard");
         if (AttemptConnect()) {
             // Try a login attempt
@@ -259,12 +259,11 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void previewBb() {
-
-        populateBilboard(true);
+        populateBilboard();
 
     }
 
-    private static void populateBilboard(boolean PreviewBoard) {
+    private static void populateBilboard() {
         try {
             String picURL = null;
             byte[] picDATA = null;
@@ -282,7 +281,7 @@ public class CreatePanel extends ControlPanelInterface {
                     colorFromString((String) cb_titleColor.getSelectedItem()),
                     colorFromString((String) cb_bgColor.getSelectedItem()),
                     colorFromString((String) cb_infoColor.getSelectedItem()));
-                    billboard.PreviewDisplay = PreviewBoard;
+                    billboard.PreviewDisplay = true;
             billboard.showBillboard();
         } catch (Exception e) {
             e.printStackTrace();
