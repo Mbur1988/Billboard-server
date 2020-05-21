@@ -33,9 +33,6 @@ public class Billboard implements Serializable {
     private static JFrame BillboardScreen;
     private static JPanel BillboardScreenPanel;
 
-    private static boolean ShowingBillBoard = false;
-
-
     //setting a blank Billboard
     public Billboard(){
         this.name = null;
@@ -264,14 +261,12 @@ public class Billboard implements Serializable {
     }
 
     public void showBillboard(boolean PreviewDisplay) throws Exception {
-        if(!ShowingBillBoard || PreviewDisplay){
+        if(BillboardScreen == null || PreviewDisplay){
             BillboardScreen = createFrame();
             BillboardScreenPanel = CreatePanel();
             BillboardScreenPanel.setBackground(getBackColour());
             BillboardScreenPanel.setOpaque(true);
             BillboardScreen.setContentPane(BillboardScreenPanel);
-            ShowingBillBoard = true;
-
         }
 
         //msg only
@@ -347,6 +342,7 @@ public class Billboard implements Serializable {
             public void actionPerformed(ActionEvent e)
             {
                 BillboardScreen.dispose();
+                BillboardScreen = null;
             }   // need to change to a keep changes button
         });}
 
