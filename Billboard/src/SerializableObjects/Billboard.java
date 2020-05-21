@@ -34,7 +34,6 @@ public class Billboard implements Serializable {
     private static JPanel BillboardScreenPanel;
 
     private static boolean ShowingBillBoard = false;
-    public static boolean PreviewDisplay = false;
 
 
     //setting a blank Billboard
@@ -257,6 +256,14 @@ public class Billboard implements Serializable {
     }
 
     public void showBillboard() throws Exception {
+        showBillboard(false);
+    }
+
+    public void previewBillboard() throws Exception {
+        showBillboard(true);
+    }
+
+    public void showBillboard(boolean PreviewDisplay) throws Exception {
         if(!ShowingBillBoard || PreviewDisplay){
             BillboardScreen = createFrame();
             BillboardScreenPanel = CreatePanel();
@@ -340,7 +347,6 @@ public class Billboard implements Serializable {
             public void actionPerformed(ActionEvent e)
             {
                 BillboardScreen.dispose();
-                PreviewDisplay = false;
             }   // need to change to a keep changes button
         });}
 
