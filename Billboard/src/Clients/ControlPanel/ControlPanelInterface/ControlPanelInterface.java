@@ -14,6 +14,7 @@ public class ControlPanelInterface {
     public static JFrame controlPanelScreen = new JFrame();
     public static JPanel createPanel = new JPanel();
     public static JPanel listPanel = new JPanel();
+    public static JPanel editPanel = new JPanel();
     public static JPanel schedulePanel = new JPanel();
     public static JPanel passwordPanel = new JPanel();
     public static JPanel editUserPanel = new JPanel();
@@ -43,14 +44,21 @@ public class ControlPanelInterface {
             tabs.add("Create Billboard",createPanel);
         }
         if (UserAccess.dec2bool(user.getAccess())[1]) {
-            tabs.add("Edit Billboards", listPanel);
+            tabs.add("Edit Billboards", editPanel);
+            EditPanel.editPanelScreen();
+        } else {
+            tabs.add("List Billboards", listPanel);
+            ListPanel.listPanelScreen();
         }
         if (UserAccess.dec2bool(user.getAccess())[2]) {
             tabs.add("Schedule Billboards", schedulePanel);
+            SchedulePanel.schedulePanelScreen();
         }
         tabs.add("Change Password",passwordPanel);
+        ChangePWPanel.changePWScreen();
         if (UserAccess.dec2bool(user.getAccess())[3]) {
             tabs.add("Edit Users", editUserPanel);
+            EditUsersPanel.editUserScreen();
         }
 
         try {
@@ -58,11 +66,6 @@ public class ControlPanelInterface {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        ListPanel.listPanelScreen();
-        SchedulePanel.schedulePanelScreen();
-        ChangePWPanel.changePWScreen();
-        EditUsersPanel.editUserScreen();
 
         Tools.addExitButton(screenWidth - 105, screenHeight - 60, 100, 30);
 

@@ -431,7 +431,6 @@ public class Billboard implements Serializable {
      */
     public Color getMsgColour() {return msgColour; }
 
-
     /**
      * Helper to get the background colour stored
      * @return String background colour
@@ -552,11 +551,8 @@ public class Billboard implements Serializable {
         return Out = "" + R + G + B;
     }
 
-
-
     /**
      * Converts a RGB 9 number string into a Hex String.
-     *
      * @param r = red   (0-255)
      * @param g = green (0-255)
      * @param b = blue  (0-255)
@@ -571,12 +567,16 @@ public class Billboard implements Serializable {
      * Converts a image from the file path to a byte array
      * @param filePath image to be converted
      * @return image in byte[] form
-     * @throws Exception if no file found
+     * @throws IOException
      */
-    public static byte[] ConvertImageToData(String filePath) throws Exception {
+    public static byte[] ConvertImageToData(String filePath) throws IOException {
         BufferedImage bImage = ImageIO.read(new File(filePath));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ImageIO.write(bImage, "jpg", bos );
+        String formatName = "jpg";
+        if (filePath.length() > 3) {
+            formatName = filePath.substring(filePath.length() - 3);
+        }
+        ImageIO.write(bImage, formatName, bos );
         byte [] data = bos.toByteArray();
         return data;
     }
@@ -587,7 +587,6 @@ public class Billboard implements Serializable {
      * @return buffered image
      * @throws IOException if cant read
      */
-
     public static BufferedImage ConvertDataToImage(byte[] imageData) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
         BufferedImage image = ImageIO.read(bais);
@@ -600,8 +599,7 @@ public class Billboard implements Serializable {
      * @return byte[] of image.
      * @throws Exception in case
      */
-
-    public static byte[] UrlToData(String input) throws Exception {
+    public static byte[] UrlToData(String input) throws IOException {
         URL url = new URL(input);
         BufferedImage image = ImageIO.read(url);
         byte[] byteArray = ByteArrayHelper(image, "png");

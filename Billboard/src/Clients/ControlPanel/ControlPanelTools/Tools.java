@@ -96,6 +96,7 @@ public class Tools {
 
         ControlPanelInterface.createPanel.add(b_ExitCreate);
         ControlPanelInterface.listPanel.add(b_ExitList);
+        ControlPanelInterface.editPanel.add(b_ExitList);
         ControlPanelInterface.schedulePanel.add(b_ExitSched);
         ControlPanelInterface.passwordPanel.add(b_ExitPW);
         ControlPanelInterface.editUserPanel.add(b_ExitEU);
