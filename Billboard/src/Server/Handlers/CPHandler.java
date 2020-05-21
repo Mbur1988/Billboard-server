@@ -247,7 +247,17 @@ public class CPHandler extends ConnectionHandler {
     }
 
     private void EditBillboard() {
-
+        try {
+            String name = dis.readUTF();
+            Billboard billboard = mariaDB.billboards.getBillboard(name);
+            boolean confirm = (billboard != null);
+            dos.writeBoolean(confirm);
+            if (confirm) {
+                objectStreamer.Send(billboard);
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void DeleteBillboard() {

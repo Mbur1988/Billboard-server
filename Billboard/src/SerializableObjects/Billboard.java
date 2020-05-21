@@ -576,7 +576,11 @@ public class Billboard implements Serializable {
     public static byte[] ConvertImageToData(String filePath) throws Exception {
         BufferedImage bImage = ImageIO.read(new File(filePath));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ImageIO.write(bImage, "jpg", bos );
+        String formatName = "jpg";
+        if (filePath.length() > 3) {
+            formatName = filePath.substring(filePath.length() - 3);
+        }
+        ImageIO.write(bImage, formatName, bos );
         byte [] data = bos.toByteArray();
         return data;
     }

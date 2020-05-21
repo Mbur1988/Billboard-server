@@ -1,6 +1,7 @@
 package Server.Handlers;
 
 import SerializableObjects.Billboard;
+import Tools.ColorIndex;
 import Tools.HashCredentials;
 import Tools.Log;
 import Tools.PropertyReader;
@@ -475,7 +476,7 @@ public class MariaDB {
          * @throws SQLException
          */
 
-        public boolean AddBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour, String username, boolean scheduled) throws SQLException {
+        public boolean AddBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour, String username, Boolean scheduled) throws SQLException {
             if (checkForBillboard(name)) {
                 return false;
             } else {
@@ -574,26 +575,25 @@ public class MariaDB {
          * Confirms all billboards in the database via a log confirmation.
          * @throws SQLException
          */
-        public void getBillboard() throws SQLException {
-            String retrieve = "SELECT * FROM billboards";
-            Statement query = connection.createStatement();
-            ResultSet result = statement.executeQuery(retrieve);
+        public Billboard getBillboard(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
 
-            int count = 0;
-
-            while (result.next()) {
-                String name = result.getString("name");
-                String msg = result.getString("msg");
-                String info = result.getString("info");
-                String picURL = result.getString("picURL");
-                String msgColour = result.getString("msgColour");
-                String backColour = result.getString("backColour");
-                String infoColour = result.getString("infoColour");
-                String username = result.getString("username");
-                boolean scheduled = result.getBoolean("scheduled");
-
-                String output = "Billboard #%d: %s - %s - %s - %s - %s - %s - %s - %s - %s";
-                Log.Confirmation(String.format(output, ++count, name, msg, info, picURL, msgColour, backColour, infoColour, username, scheduled));
+            if (result.next()) {
+                Billboard billboard = new Billboard(
+                        result.getString("name"),
+                        result.getString("msg"),
+                        result.getString("info"),
+                        result.getString("picURL"),
+                        result.getBytes("picData"),
+                        ColorIndex.colorFromString(result.getString("msgColour")),
+                        ColorIndex.colorFromString(result.getString("backColour")),
+                        ColorIndex.colorFromString(result.getString("infoColour")),
+                        result.getString("username"),
+                        result.getBoolean("scheduled"))   ;
+                return billboard;
+            }
+            else {
+                return null;
             }
         }
         

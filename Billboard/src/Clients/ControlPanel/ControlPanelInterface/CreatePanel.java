@@ -1,6 +1,9 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
+import Clients.ControlPanel.ControlPanelTools.UserAccess;
 import SerializableObjects.Billboard;
+import SerializableObjects.User;
+import Tools.ColorIndex;
 import Tools.Log;
 
 import javax.swing.*;
@@ -247,7 +250,51 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void loadBb() {
-
+        String name = (String) list.getSelectedValue();
+        user.setAction("editBillboard");
+        if (AttemptConnect()) {
+            // Try a login attempt
+            try {
+                // Send user object to server
+                objectStreamer.Send(user);
+                dos.writeUTF(name);
+                if (dis.readBoolean()) {
+                    billboard = (Billboard) objectStreamer.Receive();
+                    tf_name.setEnabled(false);
+                    tf_name.setText(name);
+                    cb_bgColor.setSelectedItem(ColorIndex.stringFromColor(billboard.getBackColour()));
+                    tf_title.setText(billboard.getMsg());
+                    cb_titleColor.setSelectedItem(ColorIndex.stringFromColor(billboard.getMsgColour()));
+                    tf_info.setText(billboard.getInfo());
+                    cb_infoColor.setSelectedItem(ColorIndex.stringFromColor(billboard.getInfoColour()));
+                    if (billboard.getPicUrl() != null) {
+                        tf_path.setText(billboard.getPicUrl());
+                        rb_url.setSelected(true);
+                    } else if (billboard.getPicData() != null) {
+                        tf_path.setText("Image data loaded");
+                        rb_file.setSelected(true);
+                    } else {
+                        tf_path.setText("");
+                    }
+                    b_add.setVisible(false);
+                    b_save.setVisible(true);
+                    lbl_message.setText("Billboard loaded");
+                }
+                else {
+                    lbl_message.setText("Unable to load billboard");
+                }
+            }
+            catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                Log.Error("Failed to retrieve billboard credentials");
+            }
+            // Disconnect from server
+            AttemptDisconnect();
+        }
+        // Post message to user if unable to connect to server
+        else {
+            Log.Error("Unable to connect to server");
+        }
     }
 
     private static void deleteBb() {
