@@ -28,8 +28,9 @@ public class Billboard implements Serializable {
     private Color backColour;
     private Color infoColour;
     private String createdBy;
-    private JFrame BillboardScreen;
-    private JPanel BillboardScreenPannel;
+    private static JFrame BillboardScreen;
+    private static JPanel BillboardScreenPannel;
+    private static boolean ShowingBillBoard = false;
 
     //setting a blank Billboard
     public Billboard(){
@@ -182,7 +183,7 @@ public class Billboard implements Serializable {
      * This method finds the image that is stored at the location of the Filepath and creates an image in the system
      * @param Filepath location of image to use
      * @return Image of the file
-     * @throws Exception can through IO exception and left open for saftey.
+     * @throws Exception can through IO exception and left open for softey.
      */
     public static JLabel CreateImageFilepath(String Filepath) throws Exception {
 
@@ -198,9 +199,9 @@ public class Billboard implements Serializable {
     /**
      * This is the method to display the image as a scaled version to be limited to half of the screen which ever
      * x or y that is.
-     * @param Data byte[] of data to diplay, See ConvertImageToData
+     * @param Data byte[] of data to display, See ConvertImageToData
      * @return returns JLabel to display
-     * @throws Exception IO exception and brawd in case
+     * @throws Exception IO exception and broad in case
      */
     public static JLabel CreateImageData(byte[] Data, String placement) throws Exception {
         // get image into BIS
@@ -219,7 +220,7 @@ public class Billboard implements Serializable {
             // if the image is taller then wid make it the width ratio
             imageChanger = widthRatio;
         }
-        //helpers for neetness
+        //helpers for neatness
         int scaledWidth = (int) (img.getWidth()*imageChanger);
         int scaledHeight = (int) (img.getHeight()*imageChanger);
         //scales image
@@ -250,12 +251,15 @@ public class Billboard implements Serializable {
     }
 
     public void showBillboard() throws Exception {
+        if(!ShowingBillBoard){
+            BillboardScreen = createFrame();
+            BillboardScreenPannel = CreatePanel();
+            BillboardScreenPannel.setBackground(getBackColour());
+            BillboardScreenPannel.setOpaque(true);
+            BillboardScreen.setContentPane(BillboardScreenPannel);
+            ShowingBillBoard = true;
+        }
 
-        BillboardScreen = createFrame();
-        BillboardScreenPannel = CreatePanel();
-        BillboardScreenPannel.setBackground(getBackColour());
-        BillboardScreenPannel.setOpaque(true);
-        BillboardScreen.setContentPane(BillboardScreenPannel);
         //msg only
         if(getMsg() != null && getInfo() == null && (getPicUrl() == null && getPicData() == null)){
             JLabel MessageText = CreateTextArea("message", msg,"msg only");

@@ -20,7 +20,8 @@ public class ControlPanel extends Client {
 
         //** Uncomment the below line for testing of control panel. **//
         //** Remember to comment it again before any pull request is made **//
-        // ControlPanelInterface.controlPanelScreen();
+
+         //ControlPanelInterface.controlPanelScreen();
 
         LoginInterface.loginScreen();
     }
