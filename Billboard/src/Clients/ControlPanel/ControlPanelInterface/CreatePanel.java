@@ -35,6 +35,7 @@ public class CreatePanel extends ControlPanelInterface {
     private static DefaultListModel model;
     private static JList list;
     private static JScrollPane scrollPane;
+    private static JFileChooser chooser;
     private static JButton b_fileSelect;
     private static JButton b_add;
     private static JButton b_save;
@@ -61,14 +62,14 @@ public class CreatePanel extends ControlPanelInterface {
         createPanel.add(lbl_users);
 
         // Add labels
-        JLabel lbl_name = new JLabel("Billboard name");
-        JLabel lbl_bgColor = new JLabel("Background color");
-        JLabel lbl_title = new JLabel("Title text");
-        JLabel lbl_titleColor = new JLabel("Title color");
-        JLabel lbl_info = new JLabel("Information text");
-        JLabel lbl_infoColor = new JLabel("Information Color");
-        JLabel lbl_picType = new JLabel("Picture type");
-        JLabel lbl_message = new JLabel("");
+        lbl_name = new JLabel("Billboard name");
+        lbl_bgColor = new JLabel("Background color");
+        lbl_title = new JLabel("Title text");
+        lbl_titleColor = new JLabel("Title color");
+        lbl_info = new JLabel("Information text");
+        lbl_infoColor = new JLabel("Information Color");
+        lbl_picType = new JLabel("Picture type");
+        lbl_message = new JLabel("");
 
         addLabel(createPanel, lbl_name, 10, 100, 300, 50);
         addLabel(createPanel, lbl_bgColor, 10, 150, 300, 50);
@@ -77,7 +78,7 @@ public class CreatePanel extends ControlPanelInterface {
         addLabel(createPanel, lbl_info, 10, 300, 300, 50);
         addLabel(createPanel, lbl_infoColor, 10, 350, 300, 50);
         addLabel(createPanel, lbl_picType, 10, 400, 300, 50);
-        addLabel(createPanel, lbl_message, 190, 500, 340, 50);
+        addLabel(createPanel, lbl_message, 190, 580, 340, 50);
 
         // Add text fields
         tf_name = new JTextField();
@@ -133,16 +134,15 @@ public class CreatePanel extends ControlPanelInterface {
         list = new JList(model);
 
         // Add JScrollPane
-        JScrollPane scrollPane = new JScrollPane(list);
+        scrollPane = new JScrollPane(list);
         scrollPane.setBounds(screenWidth/2 - 100, 100, 300, 400);
         createPanel.add(scrollPane);
-
 
         b_fileSelect = new JButton("Select File");
         b_fileSelect.setBounds(20, 450, 150, 50);
         createPanel.add(b_fileSelect);
 
-        JFileChooser chooser = new JFileChooser();
+        chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         b_fileSelect.addActionListener(e -> {
             chooser.showDialog(b_fileSelect,"Select Image");
@@ -202,7 +202,7 @@ public class CreatePanel extends ControlPanelInterface {
                 objectStreamer.Send(billboard);
                 // Await returned object from server
                 if (dis.readBoolean()) {
-                    lists.users.add(billboard.getName());
+                    lists.userBillboards.add(billboard.getName());
                     Collections.sort(lists.userBillboards);
                     model.clear();
                     model.addAll(lists.userBillboards);

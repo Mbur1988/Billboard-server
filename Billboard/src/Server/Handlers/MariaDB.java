@@ -500,7 +500,7 @@ public class MariaDB {
             if (checkForBillboard(billboard.getName())) {
                 return false;
             } else {
-                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour, username, scheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 prepareAdd.setString(1, billboard.getName());
                 prepareAdd.setString(2, billboard.getMsg());
                 prepareAdd.setString(3, billboard.getInfo());
@@ -509,6 +509,8 @@ public class MariaDB {
                 prepareAdd.setString(6, stringFromColor(billboard.getMsgColour()));
                 prepareAdd.setString(7, stringFromColor(billboard.getBackColour()));
                 prepareAdd.setString(8, stringFromColor(billboard.getInfoColour()));
+                prepareAdd.setString(9, billboard.getCreatedBy());
+                prepareAdd.setBoolean(10, billboard.getScheduled());
                 prepareAdd.executeUpdate();
                 return true;
             }
