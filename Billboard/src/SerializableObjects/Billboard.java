@@ -538,32 +538,6 @@ public class Billboard implements Serializable {
     //   converters    //
 
     /**
-     * Converts a String in a Hex form and spits out a 9 number string representing rrrgggbbb
-     *
-     * @param string String that represents a hex colour Ex %FFFFFF
-     * @return String representing red green blue Ex 255255255
-     */
-    public static String ConvertStringToRGB(String string) {
-        String Out;
-        int R =(Integer.parseInt(string.substring(1,3),16));
-        int G =(Integer.parseInt(string.substring(3,5),16));
-        int B =(Integer.parseInt(string.substring(5,7),16));
-        return Out = "" + R + G + B;
-    }
-
-    /**
-     * Converts a RGB 9 number string into a Hex String.
-     * @param r = red   (0-255)
-     * @param g = green (0-255)
-     * @param b = blue  (0-255)
-     * @return String of the entered RGB as a Hex representation in a string. Ex #FFFFFF
-     */
-    public static String ConvertRGBtoString(int r, int g, int b) {
-        String hex = String.format("#%02X%02X%02X", r, g, b);
-        return hex;
-    }
-
-    /**
      * Converts a image from the file path to a byte array
      * @param filePath image to be converted
      * @return image in byte[] form
