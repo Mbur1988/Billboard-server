@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import static Clients.ControlPanel.ControlPanel.*;
 import static Tools.ColorIndex.*;
@@ -234,6 +235,7 @@ public class CreatePanel extends ControlPanelInterface {
         b_save.setVisible(false);
         b_add.setVisible(true);
         resetFields();
+        lbl_message.setText("");
     }
 
     private static void importBb() {
@@ -249,7 +251,44 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void deleteBb() {
-
+        String name = (String) list.getSelectedValue();
+        user.setAction("deleteBillboard");
+        // Attempt connection to server
+        if (AttemptConnect()) {
+            // Try a login attempt
+            try {
+                // Send user object to server
+                objectStreamer.Send(user);
+                dos.writeUTF(name);
+                // check if billboard scheduled
+                if (!dis.readBoolean()) {
+                    // check if deleted successfully
+                    if (dis.readBoolean()) {
+                        lists.userBillboards.remove(name);
+                        model.removeElement(name);
+                        lbl_message.setText("Billboard deleted");
+                        Log.Confirmation("Billboard successfully deleted");
+                    } else {
+                        lbl_message.setText("Billboard not deleted");
+                        Log.Error("Error when attempting to delete billboard");
+                    }
+                } else {
+                    lbl_message.setText("Billboard is currently scheduled");
+                    Log.Error("Can't delete scheduled billboard");
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+                Log.Error("Failed to delete billboard");
+            }
+            // Disconnect from server
+            AttemptDisconnect();
+        }
+        // Post message to user if unable to connect to server
+        else {
+            Log.Error("Unable to connect to server");
+        }
+        resetFields();
     }
 
     private static void previewBb() {

@@ -193,8 +193,9 @@ public class CPHandler extends ConnectionHandler {
 
     private void DeleteUser() {
         try {
+            String received = dis.readUTF();
             Log.Message("String data received from control panel");
-            dos.writeBoolean(mariaDB.users.delete(dis.readUTF()));
+            dos.writeBoolean(mariaDB.users.delete(received));
         }
         catch (IOException | SQLException e) {
             e.printStackTrace();
@@ -250,7 +251,19 @@ public class CPHandler extends ConnectionHandler {
     }
 
     private void DeleteBillboard() {
-
+        try {
+            String name = dis.readUTF();
+            Log.Message("String data received from control panel");
+            // check to see if billboard is scheduled
+            boolean scheduled = mariaDB.billboards.getBillboardSchedule(name);
+            dos.writeBoolean(scheduled);
+            if (!scheduled) {
+                dos.writeBoolean(mariaDB.billboards.DeleteBillboard(name));
+            }
+        }
+        catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void AddSchedule() {
