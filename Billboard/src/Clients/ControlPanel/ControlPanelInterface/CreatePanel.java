@@ -5,6 +5,9 @@ import Tools.ColorIndex;
 import Tools.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -305,39 +308,64 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void importBb(String xmlFilePath) {
+        try {
+            File file = new File(xmlFilePath);
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = null;
+            documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            Document document = documentBuilder.parse(file);
+            document.getDocumentElement().normalize();
+            NodeList nodeList = document.getElementsByTagName("billboard");
+            Node node = nodeList.item(0);
+            Element root = (Element) node;
+            Element message = (Element) root.getElementsByTagName("message").item(0);
+            Element picture = (Element) root.getElementsByTagName("picture").item(0);
+            Element info = (Element) root.getElementsByTagName("information").item(0);
+            cb_bgColor.setSelectedItem(root.getAttribute("background"));
+            tf_title.setText(message.getTextContent());
+            cb_titleColor.setSelectedItem();
+            tf_info.setText(info.getTextContent());
+            cb_infoColor.setSelectedItem();
+            picture.hasAttribute("url");
+            picture.hasAttribute("file");
 
+
+
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+                e.printStackTrace();
+            }
     }
 
     private static void exportBb(String dirFilePath) {
         try {
             populateBillboard();
-            DocumentBuilderFactory DBF = DocumentBuilderFactory.newInstance();
-            DocumentBuilder DB = DBF.newDocumentBuilder();
-            Document D = DB.newDocument();
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            Document document = documentBuilder.newDocument();
 
             // root element
-            Element root = D.createElement("billboard");
+            Element root = document.createElement("billboard");
             // Attribute of root element
             Color bg = billboard.getBackColour();
             root.setAttribute("background",
                     String.format("#%02x%02x%02x", bg.getRed(), bg.getGreen(), bg.getBlue()));
-            D.appendChild(root);
+            document.appendChild(root);
 
             if (!billboard.getMsg().equals(null)) {
                 // message element
-                Element message = D.createElement("message");
+                Element message = document.createElement("message");
                 // Attribute of message element
                 Color msg = billboard.getMsgColour();
                 message.setAttribute("colour",
                         String.format("#%02x%02x%02x", msg.getRed(), msg.getGreen(), msg.getBlue()));
                 // text node of message
-                message.appendChild(D.createTextNode(billboard.getMsg()));
+                message.appendChild(document.createTextNode(billboard.getMsg()));
                 root.appendChild(message);
             }
 
             if (billboard.getPicUrl() != null || billboard.getPicData() != null) {
                 // picture element
-                Element picture = D.createElement("picture");
+                Element picture = document.createElement("picture");
                 // Attribute of message element
                 if (billboard.getPicUrl() != null) {
                     picture.setAttribute("url", billboard.getPicUrl());
@@ -349,24 +377,22 @@ public class CreatePanel extends ControlPanelInterface {
 
             if (!billboard.getInfo().equals(null)) {
                 // information element
-                Element info = D.createElement("information");
+                Element info = document.createElement("information");
                 // Attribute of message element
                 Color inf = billboard.getInfoColour();
                 info.setAttribute("colour",
                         String.format("#%02x%02x%02x", inf.getRed(), inf.getGreen(), inf.getBlue()));
                 // text node of message
-                info.appendChild(D.createTextNode(billboard.getInfo()));
+                info.appendChild(document.createTextNode(billboard.getInfo()));
                 root.appendChild(info);
             }
 
-            D.setXmlStandalone(true);
-            TransformerFactory TF = TransformerFactory.newInstance();
-            Transformer transformer = TF.newTransformer();
-            DOMSource DOMS = new DOMSource(D);
-            StreamResult SR = new StreamResult(new File(dirFilePath + "\\" + billboard.getName() + ".xml"));
-            transformer.transform(DOMS, SR);
-
-
+            document.setXmlStandalone(true);
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(document);
+            StreamResult streamResult = new StreamResult(new File(dirFilePath + "\\" + billboard.getName() + ".xml"));
+            transformer.transform(source, streamResult);
         } catch (TransformerException | ParserConfigurationException | IOException e) {
             e.printStackTrace();
         }
