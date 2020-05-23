@@ -8,9 +8,9 @@ import static Clients.ControlPanel.ControlPanelTools.TimeSetter.setTime;
 import javax.swing.*;
 import java.awt.*;
 
-public class SchedulePanel extends ControlPanelInterface {
+class SchedulePanel extends ControlPanelInterface {
 
-    public static void schedulePanelScreen() {
+    protected static void schedulePanelScreen() {
 
         schedulePanel.setLayout(null);
 

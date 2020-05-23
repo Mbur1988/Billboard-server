@@ -11,7 +11,7 @@ import java.util.Collections;
 import static Clients.ControlPanel.ControlPanel.*;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 
-public class EditUsersPanel extends ControlPanelInterface {
+class EditUsersPanel extends ControlPanelInterface {
 
     // Variables required by the class
     private static JLabel lbl_password;
@@ -31,7 +31,7 @@ public class EditUsersPanel extends ControlPanelInterface {
     /**
      * The main method of the edit user class populates the GUI page with all required objects
      */
-    public static void editUserScreen() {
+    protected static void editUserScreen() {
 
         editUserPanel.setLayout(null);
 

@@ -76,7 +76,10 @@ public class CPHandler extends ConnectionHandler {
                         SaveBillboard();
                         break;
                     case ("deleteBillboard"):
-                        DeleteBillboard();
+                        DeleteBillboard(false);
+                        break;
+                    case ("delBillboard"):
+                        DeleteBillboard(true);
                         break;
                     case ("addSchedule"):
                         AddSchedule();
@@ -274,10 +277,18 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
-    private void DeleteBillboard() {
+    /**
+     * Deletes a billboard
+     * @param skip boolean true to skip scheduled check
+     */
+    private void DeleteBillboard(boolean skip) {
         try {
             String name = dis.readUTF();
             Log.Message("String data received from control panel");
+            if (skip) {
+                dos.writeBoolean(mariaDB.billboards.DeleteBillboard(name));
+                return;
+            }
             // check to see if billboard is scheduled
             boolean scheduled = mariaDB.billboards.getBillboardSchedule(name);
             dos.writeBoolean(scheduled);

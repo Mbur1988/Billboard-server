@@ -180,41 +180,104 @@ public class Tools {
         frame.add(butt);
     }
 
+    /**
+     * Adds a text field to the desired panel
+     * @param panel
+     * @param textField
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     public static void addTextfield(JPanel panel, JTextField textField, int x, int y, int width, int height) {
         textField.setBounds(x, y, width, height);
         textField.setFont(font);
         panel.add(textField);
     }
 
+    /**
+     * Adds a password field to the desired panel
+     * @param panel
+     * @param passwordField
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     public static void addPasswordField(JPanel panel, JPasswordField passwordField, int x, int y, int width, int height) {
         passwordField.setBounds(x, y, width, height);
         passwordField.setFont(font);
         panel.add(passwordField);
     }
 
+    /**
+     * Adds a checkbox to the desired panel
+     * @param panel
+     * @param checkbox
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     public static void addCheckBox(JPanel panel, JCheckBox checkbox, int x, int y, int width, int height) {
         checkbox.setBounds(x, y, width, height);
         checkbox.setFont(font);
         panel.add(checkbox);
     }
 
+    /**
+     * Adds a button to the desired panel
+     * @param panel
+     * @param button
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     public static void addButton(JPanel panel, JButton button, int x, int y, int width, int height) {
         button.setBounds(x, y, width, height);
         panel.add(button);
     }
 
+    /**
+     * Adds a label to the desired panel
+     * @param panel
+     * @param label
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     public static void addLabel(JPanel panel, JLabel label, int x, int y, int width, int height) {
         label.setBounds(x, y, width, height);
         label.setFont(font);
         panel.add(label);
     }
 
+    /**
+     * Adds a combobox to the desired panel
+     * @param panel
+     * @param combobox
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     public static void addCombobox(JPanel panel, JComboBox combobox, int x, int y, int width, int height) {
         combobox.setBounds(x, y, width, height);
         combobox.setFont(font);
         panel.add(combobox);
     }
 
+    /**
+     * Adds a radio button to the desired panel
+     * @param panel
+     * @param radiobutton
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     public static void addRadioButton(JPanel panel, JRadioButton radiobutton, int x, int y, int width, int height) {
         radiobutton.setBounds(x, y, width, height);
         radiobutton.setFont(font);
