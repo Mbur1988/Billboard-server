@@ -4,9 +4,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ListPanel extends ControlPanelInterface {
+class ListPanel extends ControlPanelInterface {
 
-    public static void listPanelScreen(){
+    protected static void listPanelScreen(){
 
         listPanel.setLayout(null);
 
@@ -55,5 +55,4 @@ public class ListPanel extends ControlPanelInterface {
 
 
     }
-
 }

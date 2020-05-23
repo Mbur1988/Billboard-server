@@ -22,12 +22,14 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
+
 import static Clients.ControlPanel.ControlPanel.*;
+import static Clients.ControlPanel.ControlPanelInterface.EditPanel.allListModel;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
+import static SerializableObjects.Lists.sortAdd;
 import static Tools.ColorIndex.*;
 
-public class CreatePanel extends ControlPanelInterface {
+class CreatePanel extends ControlPanelInterface {
 
     // Variables required by the class
     private static Billboard billboard;
@@ -41,7 +43,7 @@ public class CreatePanel extends ControlPanelInterface {
     private static JComboBox<String> cb_infoColor;
     private static JRadioButton rb_url;
     private static JRadioButton rb_file;
-    private static DefaultListModel model;
+    static DefaultListModel usersListModel;
     private static JList list;
     private static JButton b_fileSelect;
     private static JFileChooser imageChooser;
@@ -55,7 +57,7 @@ public class CreatePanel extends ControlPanelInterface {
     /**
      * The main method of the create panel class populates the GUI page with all required objects
      */
-    public static void createPanelScreen() {
+    protected static void createPanelScreen() {
 
         createPanel.setLayout(null);
         billboard = new Billboard();
@@ -144,11 +146,11 @@ public class CreatePanel extends ControlPanelInterface {
         rb_url.addActionListener(rb_ActionListener);
 
         // Create and add a default list model
-        model = new DefaultListModel();
-        model.addAll(lists.userBillboards);
+        usersListModel = new DefaultListModel();
+        usersListModel.addAll(lists.userBillboards);
 
         // Create a new JList
-        list = new JList(model);
+        list = new JList(usersListModel);
 
         // Create and add JScrollPane
         JScrollPane scrollPane = new JScrollPane(list);
@@ -264,10 +266,12 @@ public class CreatePanel extends ControlPanelInterface {
                 // Await confirmation that the billboard was added successfully
                 if (dis.readBoolean()) {
                     // add new billboard to the list of the current user's billboards and resort it alphabetically
-                    lists.userBillboards.add(billboard.getName());
-                    Collections.sort(lists.userBillboards);
-                    model.clear();
-                    model.addAll(lists.userBillboards);
+                    sortAdd(lists.userBillboards, billboard.getName());
+                    sortAdd(lists.billboards, billboard.getName());
+                    usersListModel.clear();
+                    allListModel.clear();
+                    usersListModel.addAll(lists.userBillboards);
+                    allListModel.addAll(lists.billboards);
                     // display confirmation message to the user and post log confirmation
                     lbl_message.setText("Billboard added");
                     Log.Confirmation("New billboard added successfully");
@@ -615,7 +619,9 @@ public class CreatePanel extends ControlPanelInterface {
                     if (dis.readBoolean()) {
                         // remove the billboard from the list
                         lists.userBillboards.remove(name);
-                        model.removeElement(name);
+                        lists.billboards.remove(name);
+                        usersListModel.removeElement(name);
+                        allListModel.removeElement(name);
                         // display confirmation message to the user and post log confirmation
                         lbl_message.setText("Billboard deleted");
                         Log.Confirmation("Billboard successfully deleted");

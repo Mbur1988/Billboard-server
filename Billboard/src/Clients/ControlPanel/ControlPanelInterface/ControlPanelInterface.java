@@ -4,7 +4,6 @@ import Clients.ControlPanel.ControlPanelTools.Tools;
 import Clients.ControlPanel.ControlPanelTools.UserAccess;
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import static Clients.ControlPanel.ControlPanel.user;
 
 public class ControlPanelInterface {
@@ -39,13 +38,13 @@ public class ControlPanelInterface {
 
         // Add the tabs to the tab pane.
         if (UserAccess.dec2bool(user.getAccess())[0]) {
-            tabs.add("Create Billboard",createPanel);
+            tabs.add("My Billboards",createPanel);
         }
         if (UserAccess.dec2bool(user.getAccess())[1]) {
-            tabs.add("Edit Billboards", editPanel);
+            tabs.add("All Billboards", editPanel);
             EditPanel.editPanelScreen();
         } else {
-            tabs.add("List Billboards", listPanel);
+            tabs.add("All Billboards", listPanel);
             ListPanel.listPanelScreen();
         }
         if (UserAccess.dec2bool(user.getAccess())[2]) {
@@ -72,6 +71,5 @@ public class ControlPanelInterface {
         controlPanelScreen.setUndecorated(true);
         controlPanelScreen.setVisible(true);
         controlPanelScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // May need HIDE_ON_CLOSE instead of exit.
-
     }
 }

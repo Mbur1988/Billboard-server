@@ -8,7 +8,7 @@ import java.io.IOException;
 import static Clients.ControlPanel.ControlPanel.*;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 
-public class ChangePWPanel extends ControlPanelInterface {
+class ChangePWPanel extends ControlPanelInterface {
 
     // Variables required by the class
     private static JPasswordField tf_old;
@@ -19,7 +19,7 @@ public class ChangePWPanel extends ControlPanelInterface {
     /**
      * The main method of the change password class populates the GUI page with all required objects
      */
-    public static void changePWScreen() {
+    protected static void changePWScreen() {
 
         passwordPanel.setLayout(null);
 
