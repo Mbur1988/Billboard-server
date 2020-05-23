@@ -5,14 +5,15 @@ import Tools.ColorIndex;
 import Tools.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -28,13 +29,6 @@ import static Tools.ColorIndex.*;
 public class CreatePanel extends ControlPanelInterface {
 
     private static Billboard billboard;
-    private static JLabel lbl_name;
-    private static JLabel lbl_bgColor;
-    private static JLabel lbl_title;
-    private static JLabel lbl_titleColor;
-    private static JLabel lbl_info;
-    private static JLabel lbl_infoColor;
-    private static JLabel lbl_picType;
     private static JLabel lbl_message;
     private static JTextField tf_name;
     private static JTextField tf_title;
@@ -45,27 +39,21 @@ public class CreatePanel extends ControlPanelInterface {
     private static JComboBox<String> cb_infoColor;
     private static JRadioButton rb_url;
     private static JRadioButton rb_file;
-    private static ButtonGroup group;
     private static DefaultListModel model;
     private static JList list;
-    private static JScrollPane scrollPane;
     private static JButton b_fileSelect;
     private static JFileChooser imageChooser;
     private static JFileChooser xmlChooser;
     private static JFileChooser dirChooser;
     private static JButton b_add;
     private static JButton b_save;
-    private static JButton b_clear;
     private static JButton b_import;
     private static JButton b_export;
-    private static JButton b_load;
-    private static JButton b_delete;
-    private static JButton b_preview;
-
 
     public static void createPanelScreen() {
 
         createPanel.setLayout(null);
+        billboard = new Billboard();
 
         // Add title labels
         JLabel label_editUser = new JLabel("Billboard details");
@@ -79,13 +67,13 @@ public class CreatePanel extends ControlPanelInterface {
         createPanel.add(lbl_users);
 
         // Add labels
-        lbl_name = new JLabel("Billboard name");
-        lbl_bgColor = new JLabel("Background color");
-        lbl_title = new JLabel("Title text");
-        lbl_titleColor = new JLabel("Title color");
-        lbl_info = new JLabel("Information text");
-        lbl_infoColor = new JLabel("Information Color");
-        lbl_picType = new JLabel("Picture type");
+        JLabel lbl_name = new JLabel("Billboard name");
+        JLabel lbl_bgColor = new JLabel("Background color");
+        JLabel lbl_title = new JLabel("Title text");
+        JLabel lbl_titleColor = new JLabel("Title color");
+        JLabel lbl_info = new JLabel("Information text");
+        JLabel lbl_infoColor = new JLabel("Information Color");
+        JLabel lbl_picType = new JLabel("Picture type");
         lbl_message = new JLabel("");
 
         addLabel(createPanel, lbl_name, 10, 100, 300, 50);
@@ -130,7 +118,7 @@ public class CreatePanel extends ControlPanelInterface {
         addRadioButton(createPanel, rb_url, 340, 400, 150, 50);
 
         // Add radio buttons to group and register action listeners
-        group = new ButtonGroup();
+        ButtonGroup group = new ButtonGroup();
         group.add(rb_file);
         group.add(rb_url);
 
@@ -151,7 +139,7 @@ public class CreatePanel extends ControlPanelInterface {
         list = new JList(model);
 
         // Add JScrollPane
-        scrollPane = new JScrollPane(list);
+        JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setBounds(screenWidth / 2 - 100, 100, 300, 400);
         createPanel.add(scrollPane);
 
@@ -161,10 +149,10 @@ public class CreatePanel extends ControlPanelInterface {
         b_export = new JButton("Export");
         b_add = new JButton("Add");
         b_save = new JButton("Save");
-        b_clear = new JButton("Clear");
-        b_load = new JButton("Load");
-        b_delete = new JButton("Delete");
-        b_preview = new JButton("Preview");
+        JButton b_clear = new JButton("Clear");
+        JButton b_load = new JButton("Load");
+        JButton b_delete = new JButton("Delete");
+        JButton b_preview = new JButton("Preview");
 
         addButton(createPanel, b_fileSelect, 10, 450, 180, 40);
         addButton(createPanel, b_import, screenWidth / 2 - 100, 530, 150, 30);
@@ -234,6 +222,10 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void addBb() {
+        if (tf_name.getText().equals("")) {
+            lbl_message.setText("Billbaord must have a name");
+            return;
+        }
         try {
             populateBillboard();
             user.setAction("addBillboard");
@@ -268,6 +260,10 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void saveBb() {
+        if (tf_name.getText().equals("")) {
+            lbl_message.setText("Billbaord must have a name");
+            return;
+        }
         try {
             populateBillboard();
             user.setAction("saveBillboard");
@@ -305,39 +301,84 @@ public class CreatePanel extends ControlPanelInterface {
     }
 
     private static void importBb(String xmlFilePath) {
-
+        try {
+            File file = new File(xmlFilePath);
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            Document document = documentBuilder.parse(file);
+            document.getDocumentElement().normalize();
+            NodeList nodeList = document.getElementsByTagName("billboard");
+            Node node = nodeList.item(0);
+            Element root = (Element) node;
+            if (root != null) {
+                resetFields();
+                Element message = (Element) root.getElementsByTagName("message").item(0);
+                Element picture = (Element) root.getElementsByTagName("picture").item(0);
+                Element info = (Element) root.getElementsByTagName("information").item(0);
+                String colour = root.getAttribute("background");
+                Color color = Color.decode(colour);
+                cb_bgColor.setSelectedItem(ColorIndex.stringFromColor(color));
+                if (message != null) {
+                    tf_title.setText(message.getTextContent());
+                    colour = message.getAttribute("colour");
+                    color = Color.decode(colour);
+                    cb_titleColor.setSelectedItem(ColorIndex.stringFromColor(color));
+                }
+                if (info != null) {
+                    tf_info.setText(info.getTextContent());
+                    colour = info.getAttribute("colour");
+                    color = Color.decode(colour);
+                    cb_infoColor.setSelectedItem(ColorIndex.stringFromColor(color));
+                }
+                if (picture != null) {
+                    if (picture.hasAttribute("url")) {
+                        rb_url.setSelected(true);
+                        tf_path.setText(picture.getAttribute("url"));
+                    } else if (picture.hasAttribute("file")) {
+                        rb_file.setSelected(true);
+                        tf_path.setText("Loaded image data");
+                        String pic64 = picture.getAttribute("file");
+                        byte[] picData = billboard.SixFourToByte(pic64);
+                        billboard.setPicData(picData);
+                    }
+                }
+                b_save.setVisible(true);
+                b_add.setVisible(false);
+                lbl_message.setText("Billboard imported");
+            }
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void exportBb(String dirFilePath) {
         try {
             populateBillboard();
-            DocumentBuilderFactory DBF = DocumentBuilderFactory.newInstance();
-            DocumentBuilder DB = DBF.newDocumentBuilder();
-            Document D = DB.newDocument();
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            Document document = documentBuilder.newDocument();
 
             // root element
-            Element root = D.createElement("billboard");
+            Element root = document.createElement("billboard");
             // Attribute of root element
             Color bg = billboard.getBackColour();
             root.setAttribute("background",
                     String.format("#%02x%02x%02x", bg.getRed(), bg.getGreen(), bg.getBlue()));
-            D.appendChild(root);
-
-            if (!billboard.getMsg().equals(null)) {
+            document.appendChild(root);
+            if (!billboard.getMsg().equals("")) {
                 // message element
-                Element message = D.createElement("message");
+                Element message = document.createElement("message");
                 // Attribute of message element
                 Color msg = billboard.getMsgColour();
                 message.setAttribute("colour",
                         String.format("#%02x%02x%02x", msg.getRed(), msg.getGreen(), msg.getBlue()));
                 // text node of message
-                message.appendChild(D.createTextNode(billboard.getMsg()));
+                message.appendChild(document.createTextNode(billboard.getMsg()));
                 root.appendChild(message);
             }
-
             if (billboard.getPicUrl() != null || billboard.getPicData() != null) {
                 // picture element
-                Element picture = D.createElement("picture");
+                Element picture = document.createElement("picture");
                 // Attribute of message element
                 if (billboard.getPicUrl() != null) {
                     picture.setAttribute("url", billboard.getPicUrl());
@@ -346,27 +387,24 @@ public class CreatePanel extends ControlPanelInterface {
                 }
                 root.appendChild(picture);
             }
-
-            if (!billboard.getInfo().equals(null)) {
+            if (!billboard.getInfo().equals("")) {
                 // information element
-                Element info = D.createElement("information");
+                Element info = document.createElement("information");
                 // Attribute of message element
                 Color inf = billboard.getInfoColour();
                 info.setAttribute("colour",
                         String.format("#%02x%02x%02x", inf.getRed(), inf.getGreen(), inf.getBlue()));
                 // text node of message
-                info.appendChild(D.createTextNode(billboard.getInfo()));
+                info.appendChild(document.createTextNode(billboard.getInfo()));
                 root.appendChild(info);
             }
-
-            D.setXmlStandalone(true);
-            TransformerFactory TF = TransformerFactory.newInstance();
-            Transformer transformer = TF.newTransformer();
-            DOMSource DOMS = new DOMSource(D);
-            StreamResult SR = new StreamResult(new File(dirFilePath + "\\" + billboard.getName() + ".xml"));
-            transformer.transform(DOMS, SR);
-
-
+            document.setXmlStandalone(true);
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(document);
+            StreamResult streamResult = new StreamResult(new File(dirFilePath + "\\" + billboard.getName() + ".xml"));
+            transformer.transform(source, streamResult);
+            lbl_message.setText("Billboard exported");
         } catch (TransformerException | ParserConfigurationException | IOException e) {
             e.printStackTrace();
         }

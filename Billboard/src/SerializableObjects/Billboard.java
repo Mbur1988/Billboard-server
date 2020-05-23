@@ -36,7 +36,7 @@ public class Billboard implements Serializable {
     private static JPanel BillboardScreenPanel;
 
     //setting a blank Billboard
-    public Billboard(){
+    public Billboard() {
         this.name = null;
         this.msg = null;
         this.info = null;
@@ -50,6 +50,7 @@ public class Billboard implements Serializable {
         BillboardScreenPanel = null;
         BillboardScreen = null;
     }
+
     /**
      *
      * @param name The name of the billboard for database control
