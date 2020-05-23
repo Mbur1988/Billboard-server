@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import static Clients.ControlPanel.ControlPanel.*;
+import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 
 public class ChangePWPanel extends ControlPanelInterface {
 

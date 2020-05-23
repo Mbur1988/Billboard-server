@@ -19,6 +19,8 @@ import static Clients.ControlPanel.ControlPanel.*;
  */
 public class Tools {
 
+    private static final Font font = new Font("Courier", Font.PLAIN, 20);
+
     /**
      * addExitButton will add the exit button to each panel and utilise the one action
      * listener to perform the close action.
@@ -177,14 +179,45 @@ public class Tools {
         butt.setBounds(x,y,width,height);
         frame.add(butt);
     }
-/**
- *  I don't think buttons can be added this way.
- *  It breaks the action listener. Unless there's a way to tell the listener that the button has been added,
- *  just by another class.
- *  Return button or something lol
- *
- *  Another thought is to have all the buttons with their listeners in one method, would be huge.
- *  Seems more appropriate to keep them with their respective classes.
- */
 
+    public static void addTextfield(JPanel panel, JTextField textField, int x, int y, int width, int height) {
+        textField.setBounds(x, y, width, height);
+        textField.setFont(font);
+        panel.add(textField);
+    }
+
+    public static void addPasswordField(JPanel panel, JPasswordField passwordField, int x, int y, int width, int height) {
+        passwordField.setBounds(x, y, width, height);
+        passwordField.setFont(font);
+        panel.add(passwordField);
+    }
+
+    public static void addCheckBox(JPanel panel, JCheckBox checkbox, int x, int y, int width, int height) {
+        checkbox.setBounds(x, y, width, height);
+        checkbox.setFont(font);
+        panel.add(checkbox);
+    }
+
+    public static void addButton(JPanel panel, JButton button, int x, int y, int width, int height) {
+        button.setBounds(x, y, width, height);
+        panel.add(button);
+    }
+
+    public static void addLabel(JPanel panel, JLabel label, int x, int y, int width, int height) {
+        label.setBounds(x, y, width, height);
+        label.setFont(font);
+        panel.add(label);
+    }
+
+    public static void addCombobox(JPanel panel, JComboBox combobox, int x, int y, int width, int height) {
+        combobox.setBounds(x, y, width, height);
+        combobox.setFont(font);
+        panel.add(combobox);
+    }
+
+    public static void addRadioButton(JPanel panel, JRadioButton radiobutton, int x, int y, int width, int height) {
+        radiobutton.setBounds(x, y, width, height);
+        radiobutton.setFont(font);
+        panel.add(radiobutton);
+    }
 }

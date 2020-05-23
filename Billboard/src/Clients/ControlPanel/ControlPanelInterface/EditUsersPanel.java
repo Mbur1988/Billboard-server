@@ -9,6 +9,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Collections;
 import static Clients.ControlPanel.ControlPanel.*;
+import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 
 public class EditUsersPanel extends ControlPanelInterface {
 
