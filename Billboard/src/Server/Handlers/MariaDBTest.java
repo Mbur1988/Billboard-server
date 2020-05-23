@@ -39,7 +39,7 @@ public class MariaDBTest {
     static int access;
     static byte[] salt;
     static boolean existing = false;
-    static byte[] test = new byte[1];
+    static byte[] test = new byte[56];
 
     @BeforeEach
      void NewMariaDB() throws SQLException {
@@ -139,9 +139,9 @@ public class MariaDBTest {
     @Test
     public void EditTest() throws SQLException {
         undertest.billboards.AddBillboard("test board1", "msg1", "info1", "picurl1", test, "msgcolour1", "backcolour1", "infocolour1", "admin2", false);
-        undertest.billboards.edit("test board1", "msgedit", "infoedit", "picurl1", test, "msgcolour1", "backcolour1", "infocolour1", "admin2", false);
+        undertest.billboards.edit("test board1", "msgedit", "infoedit", "picurl1", test, "msgcolour1", "backcolour1", "infocolour1", "admin2", true);
         assertEquals(undertest.billboards.getBillboardInfo("test board1"), "infoedit");
-        undertest.billboards.DeleteBillboard("test board");
+        //undertest.billboards.DeleteBillboard("test board");
     }
 //
 //    //**
