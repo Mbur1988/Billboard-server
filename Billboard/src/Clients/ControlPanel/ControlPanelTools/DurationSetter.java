@@ -1,9 +1,9 @@
 package Clients.ControlPanel.ControlPanelTools;
 
-import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.schedulePanel;
+import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 
 public class DurationSetter {
 
@@ -11,10 +11,11 @@ public class DurationSetter {
 
     public static void setDuration() {
 
-        JTextField tf_mins = new JTextField("               ");
-        tf_mins.setBounds(100,100,100,100);
-
         JLabel lbl_duration = new JLabel("Set duration (in minutes): ");
+        addLabel(schedulePanel, lbl_duration, 10, 250, 300, 50);
+
+        JTextField tf_mins = new JTextField("");
+        addTextfield(schedulePanel, tf_mins, 10, 300, 300, 40);
 
         tf_mins.addFocusListener(new FocusListener() {
             @Override
@@ -28,9 +29,5 @@ public class DurationSetter {
                 lbl_duration.setText("Set duration (in minutes): " + mins);
             }
         });
-        schedulePanel.add(lbl_duration);
-        schedulePanel.add(tf_mins);
-
     }
-
 }

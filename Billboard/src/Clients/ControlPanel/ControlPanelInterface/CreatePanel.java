@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import static Clients.ControlPanel.ControlPanel.*;
+import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 import static Tools.ColorIndex.*;
 
 public class CreatePanel extends ControlPanelInterface {

@@ -1,14 +1,13 @@
 package Clients.ControlPanel.ControlPanelTools;
 
-import Clients.ControlPanel.ControlPanelInterface.SchedulePanel;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Date;
 import javax.swing.*;
-
+import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.schedulePanel;
 
 public class DateChooser {
+
+    public static String storeDate;
 
     int month = java.util.Calendar.getInstance().get(java.util.Calendar.MONTH);
     int year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);    // Is there a better way to do these???
@@ -60,12 +59,9 @@ public class DateChooser {
                 button[i].setFocusPainted(false);
 
                 if (i > 6) {
-                    button[i].addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            day = button[selection].getActionCommand();
-                            dlg_date.dispose();
-                        }
+                    button[i].addActionListener(e -> {
+                        day = button[selection].getActionCommand();
+                        dlg_date.dispose();
                     });
                 }
 
@@ -82,24 +78,18 @@ public class DateChooser {
 
         JButton b_prev = new JButton("<");
 
-        b_prev.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                month--;
-                displayDate();
-            }
+        b_prev.addActionListener(e -> {
+            month--;
+            displayDate();
         });
 
         chooserWindow.add(b_prev);
         chooserWindow.add(lbl_date);
         JButton b_next = new JButton(">");
 
-        b_next.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                month++;
-                displayDate();
-            }
+        b_next.addActionListener(e -> {
+            month++;
+            displayDate();
         });
 
         chooserWindow.add(b_next);
@@ -113,18 +103,18 @@ public class DateChooser {
 
     public static void chooseDate() {
         JLabel lbl_date = new JLabel("Date:");
-        JLabel tf_date = new JLabel("                   ");
-        JButton b_selDate = new JButton("Select Date");
-        schedulePanel.add(lbl_date);
-        schedulePanel.add(tf_date);
-        schedulePanel.add(b_selDate);
+        JLabel tf_date = new JLabel("");
 
-        b_selDate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tf_date.setText(new DateChooser(schedulePanel).setPickedDate());
-                String storeDate = tf_date.getText(); // This will store the date for anyone who needs it... convenient right? Thanks Shane. You're welcome guys!
-            }
+        addLabel(schedulePanel, lbl_date, 10,130,50,20);
+        addLabel(schedulePanel, tf_date, 60,130,120,20);
+
+        JButton b_selDate = new JButton("Select Date");
+
+        addButton(schedulePanel, b_selDate, 10,100,160,20);
+
+        b_selDate.addActionListener(e -> {
+            tf_date.setText(new DateChooser(schedulePanel).setPickedDate());
+            storeDate = tf_date.getText(); // This will store the date for anyone who needs it... convenient right? Thanks Shane. You're welcome guys!
         });
 
     }
