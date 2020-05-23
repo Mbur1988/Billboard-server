@@ -258,6 +258,7 @@ public class CreatePanel extends ControlPanelInterface {
             if (AttemptConnect()) {
                 // Send user object to server
                 objectStreamer.Send(user);
+                // Send billboard object to server
                 objectStreamer.Send(billboard);
                 // Await confirmation that the billboard was added successfully
                 if (dis.readBoolean()) {
