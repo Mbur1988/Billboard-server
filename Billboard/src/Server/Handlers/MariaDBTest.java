@@ -390,14 +390,19 @@ public class MariaDBTest {
 
     @Test
     public void getTime() throws SQLException{
-        Log.Confirmation(undertest.scheduling.getScheduleMins("schedule1"));
+        undertest.scheduling.getScheduleMins("schedule1");
 
     }
 
     @Test
     public void getDuration() throws SQLException{
-        Log.Confirmation(undertest.scheduling.getScheduleDuration("schedule1"));
+        undertest.scheduling.getScheduleDuration("schedule1");
 
+    }
+
+    @Test
+    public void deleteSchedleTest() throws SQLException{
+        undertest.scheduling.deleteSchedule("schedule1");
     }
 
 }

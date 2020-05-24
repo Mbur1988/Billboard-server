@@ -937,7 +937,7 @@ public class MariaDB {
 
         /**
          * Checks to see if scheduling table is already in the database.
-         * name: name of the schduled billboard
+         * @param name: name of the schduled billboard
          * @throws SQLException
          */
 
@@ -955,23 +955,71 @@ public class MariaDB {
             }
         }
 
-        public String getScheduleMins(String name) throws SQLException {
+        /**
+         * Gets the time for a specific shedule entry from the database.
+         * @param name: name of the schduled billboard
+         * @throws SQLException
+         */
+
+        public Time getScheduleMins(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
             if (result.next()) {
-                return result.getString("time");
+                return result.getTime("time");
             } else {
                 return null;
             }
         }
 
-        public String getScheduleDuration(String name) throws SQLException {
+        /**
+         * Gets the duration for a specific shedule entry from the database.
+         * @param name: name of the schduled billboard
+         * @throws SQLException
+         */
+
+        public Integer getScheduleDuration(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
             if (result.next()) {
-                return result.getString("duration");
+                return result.getInt("duration");
             } else {
                 return null;
             }
         }
+        /**
+         * Deletes the specified schedule entry from the database
+         * @param name: name of the schduled billboard
+         * @throws SQLException
+         */
+
+        public boolean deleteSchedule(String name) throws SQLException {
+            if (checkForSchedule(name)) {
+                statement.executeQuery("DELETE FROM scheduling WHERE name='" + name + "';");
+                if (checkForSchedule(name)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        /**
+         * Method to retrieve all of the schedule entries in the database, saving the names in a list.
+         * Returns the list as a String list.
+         * @throws SQLException
+         */
+        public ArrayList<String> getAllSchedules() throws SQLException {
+            String retrieve = "SELECT * FROM scheduling";
+            ResultSet result = statement.executeQuery(retrieve);
+            ArrayList<String> allschedules = new ArrayList<>();
+            while (result.next()){
+                String name = result.getString("name");
+                allschedules.add(name);
+            }
+            return allschedules;
+        }
+
+
 
 
     }
