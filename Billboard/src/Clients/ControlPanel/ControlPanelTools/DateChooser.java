@@ -2,6 +2,8 @@ package Clients.ControlPanel.ControlPanelTools;
 
 import java.awt.*;
 import javax.swing.*;
+
+import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.screenWidth;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.schedulePanel;
 
@@ -105,12 +107,12 @@ public class DateChooser {
         JLabel lbl_date = new JLabel("Date:");
         JLabel tf_date = new JLabel("");
 
-        addLabel(schedulePanel, lbl_date, 10,130,50,20);
-        addLabel(schedulePanel, tf_date, 60,130,120,20);
+        addLabel(schedulePanel, lbl_date, ((screenWidth / 3)),130,50,20);
+        addLabel(schedulePanel, tf_date, ((screenWidth / 3) + 50),130,120,20);
 
         JButton b_selDate = new JButton("Select Date");
 
-        addButton(schedulePanel, b_selDate, 10,100,160,20);
+        addButton(schedulePanel, b_selDate, ((screenWidth / 3)),100,160,20);
 
         b_selDate.addActionListener(e -> {
             tf_date.setText(new DateChooser(schedulePanel).setPickedDate());

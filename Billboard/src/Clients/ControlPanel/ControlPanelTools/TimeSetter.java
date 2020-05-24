@@ -2,6 +2,7 @@ package Clients.ControlPanel.ControlPanelTools;
 
 import javax.swing.*;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.schedulePanel;
+import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.screenWidth;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 
 public class TimeSetter {
@@ -65,11 +66,11 @@ public class TimeSetter {
             lbl_hour.setText("Hour: " + hour + "    " + "Min: " + min);
         });
 
-        addLabel(schedulePanel, lbl_hour, 10, 200, 200, 20); 
-        addButton(schedulePanel, b_upHour,10, 170, 80, 20);
-        addButton(schedulePanel, b_dwnHour,10, 230, 80, 20);
-        addButton(schedulePanel, b_upMin,90, 170, 80, 20);
-        addButton(schedulePanel, b_dwnMin,90, 230, 80, 20);
+        addLabel(schedulePanel, lbl_hour, ((screenWidth / 3)), 200, 200, 20);
+        addButton(schedulePanel, b_upHour,((screenWidth / 3)), 170, 80, 20);
+        addButton(schedulePanel, b_dwnHour,((screenWidth / 3)), 230, 80, 20);
+        addButton(schedulePanel, b_upMin,((screenWidth / 3) + 90), 170, 80, 20);
+        addButton(schedulePanel, b_dwnMin,((screenWidth / 3) + 90), 230, 80, 20);
     }
 
 }
