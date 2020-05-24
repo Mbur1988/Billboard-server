@@ -981,17 +981,17 @@ public class MariaDB {
          * @throws SQLException
          */
 
-        public Integer getScheduleDuration(String name) throws SQLException {
+        public Long getScheduleDuration(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
             if (result.next()) {
-                return result.getInt("duration");
+                return result.getLong("duration");
             } else {
                 return null;
             }
         }
 
         /**
-         * Gets the duration for a specific shedule entry from the database.
+         * Gets the billboard name for a specific shedule entry from the database.
          *
          * @param name: name of the schduled billboard
          * @throws SQLException
@@ -1007,10 +1007,20 @@ public class MariaDB {
             }
         }
 
+
+        public LocalDate getScheduleDate(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getDate("date").toLocalDate();
+            } else {
+                return null;
+            }
+        }
+
         /**
          * Deletes the specified schedule entry from the database
          *
-         * @param name: name of the schduled billboard
+         * @param name: name of the scheduled billboard
          * @throws SQLException
          */
 
@@ -1045,8 +1055,41 @@ public class MariaDB {
             return allSchedules;
         }
 
+        /**
+         * Method to edit a schedule in the scheduling database.
+         * @param name          : name of the schduling
+         * @param billboardName :: Name of the billboard being Scheduled
+         * @param date          : Date to be scheduled
+         * @param time          : Time to be scheduled
+         * @param duration      :: how long the billboard will be shceduled for
+         * @throws SQLException
+         *
+         */
 
 
+        public boolean edit(String name, String billboardName, LocalDate date, LocalTime time, Duration duration) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
+            Long storeDuration = duration.toMinutes();
+            if (result.next()) {
+                if (billboardName == null) {
+                    billboardName = scheduling.getScheduleBillboard(name);
+                }
+                if (date == null) {
+                    date = scheduling.getScheduleDate(name);
+                }
+                if (time == null) {
+                    time = scheduling.getScheduleTime(name).toLocalTime();
+                }
+                if (duration == null){
+                    storeDuration = scheduling.getScheduleDuration(name);
+                }
+                scheduling.deleteScheduled(name);
+                scheduling.AddSchedule(name, billboardName, date, time, duration);
+                return true;
+            } else {
+                return false;
+            }
+        }
 
 
 

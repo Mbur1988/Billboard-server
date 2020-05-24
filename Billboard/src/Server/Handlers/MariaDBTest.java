@@ -48,8 +48,13 @@ public class MariaDBTest {
     static boolean existing = false;
     static byte[] test = new byte[56];
     static LocalDate testDate = LocalDate.of(2020, 5,24);
+    static LocalDate editTestDate = LocalDate.of(2021, 6,5);
+
     static LocalTime testTime = LocalTime.of(4, 24);
+    static LocalTime editTestTime = LocalTime.of(1, 36);
+
     static Duration testDuration = Duration.ZERO.plus(43,MINUTES);
+    static Duration editTestDuration = Duration.ZERO.plus(59,MINUTES);
 
     @BeforeEach
      void NewMariaDB() throws SQLException {
@@ -262,11 +267,11 @@ public class MariaDBTest {
 //    //**
 //
 //    @Test
-//    public void allEntries() throws SQLException{
-//        List<String> actual = undertest.billboards.getAllBillboards();
-//        List<String> expected = Arrays.asList("testBoard", "test1", "test25", "boolean test1");
-//
-//       assertEquals(actual, expected);
+////    public void allEntries() throws SQLException{
+////        List<String> actual = undertest.billboards.getAllBillboards();
+////        List<String> expected = Arrays.asList("testBoard", "test1", "test25", "boolean test1");
+////
+////       assertEquals(actual, expected);
 //
 //    }
 
@@ -406,5 +411,9 @@ public class MariaDBTest {
 
     }
 
+    @Test
+    public void editTest1() throws SQLException{
 
+        undertest.scheduling.edit("schedule1", "editbillboard1", editTestDate, editTestTime, editTestDuration);
+    }
 }
