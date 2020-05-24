@@ -1,4 +1,5 @@
 package Server.Handlers;
+import Clients.ControlPanel.ControlPanelTools.DurationSetter;
 import SerializableObjects.User;
 import org.junit.jupiter.api.*;
 
@@ -9,11 +10,17 @@ import Tools.PropertyReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static java.lang.System.exit;
 import static java.lang.System.out;
+import static java.time.Duration.*;
+import static java.time.temporal.ChronoUnit.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /*************************************************** This is the test class for the billboards database in MariaDB*******************************************
@@ -40,6 +47,14 @@ public class MariaDBTest {
     static byte[] salt;
     static boolean existing = false;
     static byte[] test = new byte[56];
+    static LocalDate testDate = LocalDate.of(2020, 5,24);
+    static LocalDate editTestDate = LocalDate.of(2021, 6,5);
+
+    static LocalTime testTime = LocalTime.of(4, 24);
+    static LocalTime editTestTime = LocalTime.of(1, 36);
+
+    static Duration testDuration = Duration.ZERO.plus(43,MINUTES);
+    static Duration editTestDuration = Duration.ZERO.plus(59,MINUTES);
 
     @BeforeEach
      void NewMariaDB() throws SQLException {
@@ -252,11 +267,11 @@ public class MariaDBTest {
 //    //**
 //
 //    @Test
-//    public void allEntries() throws SQLException{
-//        List<String> actual = undertest.billboards.getAllBillboards();
-//        List<String> expected = Arrays.asList("testBoard", "test1", "test25", "boolean test1");
-//
-//       assertEquals(actual, expected);
+////    public void allEntries() throws SQLException{
+////        List<String> actual = undertest.billboards.getAllBillboards();
+////        List<String> expected = Arrays.asList("testBoard", "test1", "test25", "boolean test1");
+////
+////       assertEquals(actual, expected);
 //
 //    }
 
@@ -353,5 +368,52 @@ public class MariaDBTest {
         assertEquals(undertest.users.getPassword("user1"), "password2");
         assertEquals(undertest.users.getAccess("user1"), 2);
         undertest.users.delete("user1");
+    }
+
+
+
+    /*************************************************** This is the test class for the scheduling database in MariaDB****************************************************************
+
+     *A range of tests to determine viability of mariaDB scheudling methods. The Methods tested range from adding scheudling, deleting scheduling and editing scheduling
+     * Add scheduling tests
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *************************************************************************************************************************************************************/
+
+
+    @Test
+    public void addScheduling1() throws SQLException{
+        undertest.scheduling.AddSchedule("schedule1", "billboard1", testDate, testTime, testDuration);
+    }
+
+    @Test
+    public void getTime() throws SQLException{
+        undertest.scheduling.getScheduleTime("schedule1");
+
+    }
+
+    @Test
+    public void getDuration() throws SQLException{
+        undertest.scheduling.getScheduleDuration("schedule1");
+
+    }
+
+    @Test
+    public void deleteScheduledTest() throws SQLException{
+        undertest.scheduling.deleteScheduled("schedule1");
+
+    }
+
+    @Test
+    public void editTest1() throws SQLException{
+
+        undertest.scheduling.edit("schedule1", "editbillboard1", editTestDate, editTestTime, editTestDuration);
     }
 }
