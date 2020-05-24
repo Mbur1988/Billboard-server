@@ -17,21 +17,7 @@ public class DurationSetter {
         JTextField tf_mins = new JTextField("");
         addTextfield(schedulePanel, tf_mins, 10, 300, 300, 40);
 
-        // Only allow integer inputs for duration
-        tf_mins.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                String test = tf_mins.getText();
-                if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9')
-                {
-                    mins = Integer.parseInt(tf_mins.getText());
-                }
 
-                else {
-                    tf_mins.setText("Only numerical values are valid.");
-                }
-            }
-        });
 
         tf_mins.addFocusListener(new FocusListener() {
             @Override
@@ -45,5 +31,22 @@ public class DurationSetter {
                 lbl_duration.setText("Set duration (in minutes): " + mins);
             }
         });
+        // Only allow integer inputs for duration
+        tf_mins.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                String test = tf_mins.getText();
+                if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9')
+                {
+                    mins = Integer.parseInt(tf_mins.getText());
+                }
+
+                else {
+                    JOptionPane.showMessageDialog(schedulePanel, "Please set duration in number of minutes.", "Input Error", JOptionPane.ERROR_MESSAGE );
+                    tf_mins.setText("");
+                }
+            }
+        });
+
     }
 }
