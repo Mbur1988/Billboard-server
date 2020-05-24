@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 
-import static Clients.ControlPanel.ControlPanel.lists;
 import static Tools.ColorIndex.stringFromColor;
 import static java.lang.System.exit;
 
@@ -901,32 +901,32 @@ public class MariaDB {
          * @throws SQLException
          */
         private void CreateSchedulingTable() throws SQLException {
-            statement.executeQuery("CREATE TABLE schedule (name VARCHAR(64) UNIQUE KEY), billboardName VARCHAR(64), date DATE, time TIME, duration TIME;");
+            statement.executeQuery("CREATE TABLE scheduling (name VARCHAR(64) UNIQUE KEY, billboardName VARCHAR(64), date DATE, time TIME, duration INT);");
             Log.Confirmation("Table created: scheduling");
         }
 
         /**
          * Adds a scheduling table to the scheduling database
-         * @param name: name of the schduling
-         * @param billboardName:: Name of the billboard being Scheduled
-         * @param date: Date to be scheduled
-         *@param time: Time to be scheduled
-         * @param duration:: how long the billboard will be shceduled for
+         * @param name : name of the schduling
+         * @param billboardName :: Name of the billboard being Scheduled
+         * @param date : Date to be scheduled
+         * @param time : Time to be scheduled
+         * @param duration :: how long the billboard will be shceduled for
          * @throws SQLException
          */
 
-        public boolean AddSchedule(String name, String billboardName, Date date, Time time, Duration duration) throws SQLException {
+        public boolean AddSchedule(String name, String billboardName, LocalDate date, LocalTime time, Duration duration) throws SQLException {
             if (checkForSchedule(name)) {
                 return false;
             } else {
-                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `schedule`(name, billboardName, date, time, duration ) VALUES (?, ?, ?, ?, ?)");
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `scheduling`(name, billboardName, date, time, duration) VALUES (?, ?, ?, ?, ?)");
 
                 Long storeDuration = duration.toMinutes();
 
                 prepareAdd.setString(1, name);
                 prepareAdd.setString(2, billboardName);
-                prepareAdd.setDate(3, (java.sql.Date) date);
-                prepareAdd.setTime(4, time);
+                prepareAdd.setDate(3, Date.valueOf(date));
+                prepareAdd.setTime(4, Time.valueOf(time));
                 prepareAdd.setLong(5, storeDuration);
 
                 prepareAdd.executeUpdate();
@@ -944,14 +944,32 @@ public class MariaDB {
         public boolean checkForSchedule(String name) throws SQLException {
             ResultSet result;
             if (name == null) {
-                result = statement.executeQuery("SELECT * FROM schedule;");
+                result = statement.executeQuery("SELECT * FROM scheduling;");
             } else {
-                result = statement.executeQuery("SELECT * FROM schedule WHERE name = '" + name + "';");
+                result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
             }
             if (result.next()) {
                 return true;
             } else {
                 return false;
+            }
+        }
+
+        public String getScheduleMins(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("time");
+            } else {
+                return null;
+            }
+        }
+
+        public String getScheduleDuration(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("duration");
+            } else {
+                return null;
             }
         }
 
