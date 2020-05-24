@@ -67,16 +67,16 @@ class EditPanel extends ControlPanelInterface {
 
         // Add title labels
         // Title label for billboard details
-        JLabel label_editUser = new JLabel("Billboard details");
-        label_editUser.setBounds(0, 0, 400, 50);
-        label_editUser.setFont(new Font("Courier", Font.PLAIN, 50));
-        editPanel.add(label_editUser);
+        JLabel label_editBillboard = new JLabel("Billboard details");
+        label_editBillboard.setBounds(0, 0, 400, 50);
+        label_editBillboard.setFont(new Font("Courier", Font.PLAIN, 50));
+        editPanel.add(label_editBillboard);
 
         // Title label for the billboards list
-        JLabel lbl_users = new JLabel("All billboards");
-        lbl_users.setBounds(screenWidth / 2 - 100, 0, 450, 50);
-        lbl_users.setFont(new Font("Courier", Font.PLAIN, 50));
-        editPanel.add(lbl_users);
+        JLabel lbl_billboards = new JLabel("All billboards");
+        lbl_billboards.setBounds(screenWidth / 2 - 100, 0, 450, 50);
+        lbl_billboards.setFont(new Font("Courier", Font.PLAIN, 50));
+        editPanel.add(lbl_billboards);
 
         // Create labels
         JLabel lbl_name = new JLabel("Billboard name");
