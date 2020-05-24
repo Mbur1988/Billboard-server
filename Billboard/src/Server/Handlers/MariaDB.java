@@ -8,8 +8,10 @@ import Tools.PropertyReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 import static Clients.ControlPanel.ControlPanel.lists;
 import static Tools.ColorIndex.stringFromColor;
@@ -497,6 +499,23 @@ public class MariaDB {
 
         }
 
+        /**
+         * Adds a new billboard to the billboard table as long as the username does not already exist using billboard object
+         *
+         * the name of the billboard being added
+         *  msg of the displaying billboard being added
+         * information about the billboard being added
+         * Picture url included in the billboard
+         * ata of the picture included in the billboard to be added
+         * The colour of msg in the billboard
+         * The back colour of the billboard
+         * The colour of the information of the billboard
+         * Current user adding the billboard
+         * boolean to determine if the billboard has been scheduled
+         * Checks to see if billboard already exists, otherwise adds the billboard and returns true.
+         * @throws SQLException
+         */
+
         public boolean AddBillboard(Billboard billboard) {
             try {
                 if (checkForBillboard(billboard.getName())) {
@@ -780,6 +799,23 @@ public class MariaDB {
             return userBillboards;
         }
 
+        /**
+         * Edits a  billboard entry in the billboard Database
+         *
+         * @param name       the name of the billboard being added
+         * @param msg        msg of the displaying billboard being added
+         * @param info       information about the billboard being added
+         * @param picURL     Picture url included in the billboard
+         * @param picData    data of the picture included in the billboard to be added
+         * @param msgColour  The colour of msg in the billboard
+         * @param backColour The back colour of the billboard
+         * @param infoColour The colour of the information of the billboard
+         * @param username   Current user adding the billboard
+         * @param scheduled  boolean to determine if the billboard has been scheduled
+         * Checks to see if billboard already exists, otherwise adds the billboard and returns true.
+         * @throws SQLException
+         */
+
         public boolean edit(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour, String username, Boolean scheduled) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
             if (result.next()) {
@@ -857,13 +893,69 @@ public class MariaDB {
 
         /**
          * Creates a new scheduling table
-         *
+         * name: name of the schduled billboard
+         * Billboard Name: Name of the billboard being Scheduled
+         * Data: Date to be scheduled
+         *time: time to be scheduled
+         * duration: how long the billboard will be shceduled for
          * @throws SQLException
          */
         private void CreateSchedulingTable() throws SQLException {
-            statement.executeQuery("CREATE TABLE scheduling (name VARCHAR(64) UNIQUE KEY);");
+            statement.executeQuery("CREATE TABLE schedule (name VARCHAR(64) UNIQUE KEY), billboardName VARCHAR(64), date DATE, time TIME, duration TIME;");
             Log.Confirmation("Table created: scheduling");
         }
+
+        /**
+         * Adds a scheduling table to the scheduling database
+         * @param name: name of the schduling
+         * @param billboardName:: Name of the billboard being Scheduled
+         * @param date: Date to be scheduled
+         *@param time: Time to be scheduled
+         * @param duration:: how long the billboard will be shceduled for
+         * @throws SQLException
+         */
+
+        public boolean AddSchedule(String name, String billboardName, Date date, Time time, Duration duration) throws SQLException {
+            if (checkForSchedule(name)) {
+                return false;
+            } else {
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `schedule`(name, billboardName, date, time, duration ) VALUES (?, ?, ?, ?, ?)");
+
+                Long storeDuration = duration.toMinutes();
+
+                prepareAdd.setString(1, name);
+                prepareAdd.setString(2, billboardName);
+                prepareAdd.setDate(3, (java.sql.Date) date);
+                prepareAdd.setTime(4, time);
+                prepareAdd.setLong(5, storeDuration);
+
+                prepareAdd.executeUpdate();
+                return true;
+            }
+
+        }
+
+        /**
+         * Checks to see if scheduling table is already in the database.
+         * name: name of the schduled billboard
+         * @throws SQLException
+         */
+
+        public boolean checkForSchedule(String name) throws SQLException {
+            ResultSet result;
+            if (name == null) {
+                result = statement.executeQuery("SELECT * FROM schedule;");
+            } else {
+                result = statement.executeQuery("SELECT * FROM schedule WHERE name = '" + name + "';");
+            }
+            if (result.next()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+
     }
 
 }
