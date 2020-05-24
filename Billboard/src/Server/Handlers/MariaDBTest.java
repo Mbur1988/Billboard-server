@@ -390,7 +390,7 @@ public class MariaDBTest {
 
     @Test
     public void getTime() throws SQLException{
-        undertest.scheduling.getScheduleMins("schedule1");
+        undertest.scheduling.getScheduleTime("schedule1");
 
     }
 
@@ -401,8 +401,10 @@ public class MariaDBTest {
     }
 
     @Test
-    public void deleteSchedleTest() throws SQLException{
-        undertest.scheduling.deleteSchedule("schedule1");
+    public void deleteScheduledTest() throws SQLException{
+        undertest.scheduling.deleteScheduled("schedule1");
+
     }
+
 
 }

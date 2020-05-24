@@ -896,8 +896,9 @@ public class MariaDB {
          * name: name of the schduled billboard
          * Billboard Name: Name of the billboard being Scheduled
          * Data: Date to be scheduled
-         *time: time to be scheduled
+         * time: time to be scheduled
          * duration: how long the billboard will be shceduled for
+         *
          * @throws SQLException
          */
         private void CreateSchedulingTable() throws SQLException {
@@ -907,11 +908,12 @@ public class MariaDB {
 
         /**
          * Adds a scheduling table to the scheduling database
-         * @param name : name of the schduling
+         *
+         * @param name          : name of the schduling
          * @param billboardName :: Name of the billboard being Scheduled
-         * @param date : Date to be scheduled
-         * @param time : Time to be scheduled
-         * @param duration :: how long the billboard will be shceduled for
+         * @param date          : Date to be scheduled
+         * @param time          : Time to be scheduled
+         * @param duration      :: how long the billboard will be shceduled for
          * @throws SQLException
          */
 
@@ -937,6 +939,7 @@ public class MariaDB {
 
         /**
          * Checks to see if scheduling table is already in the database.
+         *
          * @param name: name of the schduled billboard
          * @throws SQLException
          */
@@ -957,11 +960,12 @@ public class MariaDB {
 
         /**
          * Gets the time for a specific shedule entry from the database.
+         *
          * @param name: name of the schduled billboard
          * @throws SQLException
          */
 
-        public Time getScheduleMins(String name) throws SQLException {
+        public Time getScheduleTime(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
             if (result.next()) {
                 return result.getTime("time");
@@ -972,6 +976,7 @@ public class MariaDB {
 
         /**
          * Gets the duration for a specific shedule entry from the database.
+         *
          * @param name: name of the schduled billboard
          * @throws SQLException
          */
@@ -984,13 +989,32 @@ public class MariaDB {
                 return null;
             }
         }
+
         /**
-         * Deletes the specified schedule entry from the database
+         * Gets the duration for a specific shedule entry from the database.
+         *
          * @param name: name of the schduled billboard
          * @throws SQLException
          */
 
-        public boolean deleteSchedule(String name) throws SQLException {
+
+        public String getScheduleBillboard(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
+            if (result.next()) {
+                return result.getString("billboardName");
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * Deletes the specified schedule entry from the database
+         *
+         * @param name: name of the schduled billboard
+         * @throws SQLException
+         */
+
+        public boolean deleteScheduled(String name) throws SQLException {
             if (checkForSchedule(name)) {
                 statement.executeQuery("DELETE FROM scheduling WHERE name='" + name + "';");
                 if (checkForSchedule(name)) {
@@ -1006,24 +1030,37 @@ public class MariaDB {
         /**
          * Method to retrieve all of the schedule entries in the database, saving the names in a list.
          * Returns the list as a String list.
+         *
          * @throws SQLException
          */
         public ArrayList<String> getAllSchedules() throws SQLException {
             String retrieve = "SELECT * FROM scheduling";
             ResultSet result = statement.executeQuery(retrieve);
-            ArrayList<String> allschedules = new ArrayList<>();
-            while (result.next()){
+            ArrayList<String> allSchedules = new ArrayList<>();
+            while (result.next()) {
                 String name = result.getString("name");
-                allschedules.add(name);
+                allSchedules.add(name);
+
             }
-            return allschedules;
+            return allSchedules;
         }
 
 
 
 
-    }
 
+
+
+
+
+
+
+
+
+
+
+
+    }
 }
 
 
