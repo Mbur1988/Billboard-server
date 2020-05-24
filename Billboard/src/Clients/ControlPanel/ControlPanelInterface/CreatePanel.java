@@ -22,9 +22,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-
 import static Clients.ControlPanel.ControlPanel.*;
 import static Clients.ControlPanel.ControlPanelInterface.EditPanel.allListModel;
+import static Clients.ControlPanel.ControlPanelInterface.ListPanel.listModel;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 import static SerializableObjects.Lists.sortAdd;
 import static Tools.ColorIndex.*;
@@ -268,10 +268,22 @@ class CreatePanel extends ControlPanelInterface {
                     // add new billboard to the list of the current user's billboards and resort it alphabetically
                     sortAdd(lists.userBillboards, billboard.getName());
                     sortAdd(lists.billboards, billboard.getName());
-                    usersListModel.clear();
-                    allListModel.clear();
-                    usersListModel.addAll(lists.userBillboards);
-                    allListModel.addAll(lists.billboards);
+                    if(usersListModel != null) {
+                        usersListModel.clear();
+                        usersListModel.addAll(lists.userBillboards);
+                    }
+//                    if(scheduleListModel != null) {
+//                        scheduleListModel.clear();
+//                        scheduleListModel.addAll(lists.userBillboards);
+//                    }
+                    if(allListModel != null) {
+                        allListModel.clear();
+                        allListModel.addAll(lists.billboards);
+                    }
+                    else if (listModel != null) {
+                        listModel.clear();
+                        listModel.addAll(lists.billboards);
+                    }
                     // display confirmation message to the user and post log confirmation
                     lbl_message.setText("Billboard added");
                     Log.Confirmation("New billboard added successfully");
@@ -421,8 +433,8 @@ class CreatePanel extends ControlPanelInterface {
                 }
             }
             // set save button visible
-            b_save.setVisible(true);
-            b_add.setVisible(false);
+            b_save.setVisible(false);
+            b_add.setVisible(true);
             lbl_message.setText("Billboard imported");
 
         }
@@ -530,7 +542,7 @@ class CreatePanel extends ControlPanelInterface {
             return;
         }
         // set the action request to the server
-        user.setAction("editBillboard");
+        user.setAction("getBillboard");
         // attempt connection to the server
         if (AttemptConnect()) {
             try {
@@ -620,8 +632,18 @@ class CreatePanel extends ControlPanelInterface {
                         // remove the billboard from the list
                         lists.userBillboards.remove(name);
                         lists.billboards.remove(name);
-                        usersListModel.removeElement(name);
-                        allListModel.removeElement(name);
+                        if (usersListModel != null) {
+                            usersListModel.removeElement(name);
+                        }
+//                        if (scheduleListModel != null) {
+//                            scheduleListModel.removeElement(name);
+//                        }
+                        if (allListModel != null) {
+                            allListModel.removeElement(name);
+                        }
+                        else if (listModel != null) {
+                            listModel.removeElement(name);
+                        }
                         // display confirmation message to the user and post log confirmation
                         lbl_message.setText("Billboard deleted");
                         Log.Confirmation("Billboard successfully deleted");
