@@ -28,6 +28,8 @@ import static Clients.Client.*;
 import static Clients.ControlPanel.ControlPanel.*;
 import static Clients.ControlPanel.ControlPanelInterface.CreatePanel.usersListModel;
 import static Clients.ControlPanel.ControlPanelInterface.ListPanel.listModel;
+import static Clients.ControlPanel.ControlPanelInterface.SchedulePanel.billboardListModel;
+import static Clients.ControlPanel.ControlPanelInterface.SchedulePanel.scheduleListModel;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 import static SerializableObjects.Lists.sortAdd;
 import static Tools.ColorIndex.*;
@@ -278,10 +280,10 @@ class EditPanel extends ControlPanelInterface {
                         usersListModel.clear();
                         usersListModel.addAll(lists.userBillboards);
                     }
-//                    if(scheduleListModel != null) {
-//                        scheduleListModel.clear();
-//                        scheduleListModel.addAll(lists.userBillboards);
-//                    }
+                    if(billboardListModel != null) {
+                        billboardListModel.clear();
+                        billboardListModel.addAll(lists.billboards);
+                    }
                     if (allListModel != null) {
                         allListModel.clear();
                         allListModel.addAll(lists.billboards);
@@ -641,9 +643,9 @@ class EditPanel extends ControlPanelInterface {
                     if (usersListModel != null) {
                         usersListModel.removeElement(name);
                     }
-//                    if (scheduleListModel != null) {
-//                        scheduleListModel.removeElement(name);
-//                    }
+                    if (billboardListModel != null) {
+                        billboardListModel.removeElement(name);
+                    }
                     if (allListModel != null) {
                         allListModel.removeElement(name);
                     }
