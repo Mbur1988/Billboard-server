@@ -65,7 +65,7 @@ public class TimeSetter {
             lbl_hour.setText("Hour: " + hour + "    " + "Min: " + min);
         });
 
-        addLabel(schedulePanel, lbl_hour, 10, 200, 160, 20);
+        addLabel(schedulePanel, lbl_hour, 10, 200, 200, 20); 
         addButton(schedulePanel, b_upHour,10, 170, 80, 20);
         addButton(schedulePanel, b_dwnHour,10, 230, 80, 20);
         addButton(schedulePanel, b_upMin,90, 170, 80, 20);
