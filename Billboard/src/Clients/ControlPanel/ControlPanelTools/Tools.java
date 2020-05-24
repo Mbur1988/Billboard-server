@@ -73,6 +73,10 @@ public class Tools {
         b_ExitCreate.setBounds(x, y, width, height);
         b_ExitCreate.addActionListener(new ExitButton());
 
+        JButton b_ExitEdit = new JButton("Exit");
+        b_ExitEdit.setBounds(x, y, width, height);
+        b_ExitEdit.addActionListener(new ExitButton());
+
         JButton b_ExitList = new JButton("Exit");
         b_ExitList.setBounds(x, y, width, height);
         b_ExitList.addActionListener(new ExitButton());
@@ -97,13 +101,12 @@ public class Tools {
         b_ExitLogin.addActionListener(new ExitButton());
 
         ControlPanelInterface.createPanel.add(b_ExitCreate);
+        ControlPanelInterface.editPanel.add(b_ExitEdit);
         ControlPanelInterface.listPanel.add(b_ExitList);
-        ControlPanelInterface.editPanel.add(b_ExitList);
         ControlPanelInterface.schedulePanel.add(b_ExitSched);
         ControlPanelInterface.passwordPanel.add(b_ExitPW);
         ControlPanelInterface.editUserPanel.add(b_ExitEU);
         LoginInterface.loginScreen.add(b_ExitLogin);
-
     }
 
     /**

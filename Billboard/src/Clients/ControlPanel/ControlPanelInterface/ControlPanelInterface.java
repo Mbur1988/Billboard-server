@@ -2,6 +2,8 @@ package Clients.ControlPanel.ControlPanelInterface;
 
 import Clients.ControlPanel.ControlPanelTools.Tools;
 import Clients.ControlPanel.ControlPanelTools.UserAccess;
+import SerializableObjects.Lists;
+
 import javax.swing.*;
 import java.awt.*;
 import static Clients.ControlPanel.ControlPanel.user;
@@ -61,7 +63,7 @@ public class ControlPanelInterface {
         try {
             CreatePanel.createPanelScreen();
         } catch (Exception e) {
-            e.printStackTrace();
+            ListPanel.listPanelScreen();
         }
 
         Tools.addExitButton(screenWidth - 105, screenHeight - 60, 100, 30);

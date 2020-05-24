@@ -35,7 +35,9 @@ public class CPHandler extends ConnectionHandler {
         objectStreamer = new ObjectStreamer(socket);
     }
 
-    //Override of the run function of parent class
+    /**
+     * Override of the run function of parent class
+     */
     @Override
     public void run() {
         Log.Message(socket + " control panel handler started");
@@ -69,8 +71,8 @@ public class CPHandler extends ConnectionHandler {
                     case ("addBillboard"):
                         AddBillboard();
                         break;
-                    case ("editBillboard"):
-                        EditBillboard();
+                    case ("getBillboard"):
+                        GetBillboard();
                         break;
                     case ("saveBillboard"):
                         SaveBillboard();
@@ -180,6 +182,9 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
+    /**
+     * Method to edit an existing user in the database
+     */
     private void EditUser() {
         try {
             String username = dis.readUTF();
@@ -197,6 +202,9 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
+    /**
+     * Method to delete an existing user from the database
+     */
     private void DeleteUser() {
         try {
             String received = dis.readUTF();
@@ -208,6 +216,9 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
+    /**
+     * Method to change an existing users password
+     */
     private void ChangePassword() {
         try {
             String username = user.getUsername();
@@ -233,6 +244,9 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
+    /**
+     * Retrieves the access level of a user and sends it to the control panel
+     */
     private void GetAccess() {
         try {
             dos.write(mariaDB.users.getAccess(dis.readUTF()));
@@ -241,6 +255,9 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
+    /**
+     * Adds a new billboard to the database
+     */
     private void AddBillboard() {
         try {
             Billboard newBillboard = (Billboard) objectStreamer.Receive();
@@ -252,7 +269,10 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
-    private void EditBillboard() {
+    /**
+     * Gets an existing billboard from the database and sends it to the control panel
+     */
+    private void GetBillboard() {
         try {
             String name = dis.readUTF();
             Billboard billboard = mariaDB.billboards.getBillboard(name);
@@ -266,6 +286,9 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
+    /**
+     * Saves changes to an existing billboard
+     */
     private void SaveBillboard() {
         try {
             Billboard newBillboard = (Billboard) objectStreamer.Receive();
@@ -301,14 +324,23 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
+    /**
+     * Adds a new schedule to the database
+     */
     private void AddSchedule() {
 
     }
 
+    /**
+     * Edits an existing schedule from the database
+     */
     private void EditSchedule() {
 
     }
 
+    /**
+     * Deletes and existing schedule from the database
+     */
     private void DeleteSchedule() {
 
     }
