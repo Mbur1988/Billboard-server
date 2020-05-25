@@ -143,19 +143,21 @@ public class CPHandler extends ConnectionHandler {
             // check whether the salt-hashed password matches that stored on the database
             if (toCheck.equals(mariaDB.users.getPassword(username))) {
                 // if passwords match then validate user and update authorised list
-                user.setVerified(true);
                 UUID uuid = UUID.randomUUID();
                 Authorised.Add(username, uuid);
                 user.setId(uuid);
                 user.setAccess(mariaDB.users.getAccess(username));
+                user.setVerified(true);
                 // print confirmation log message
                 Log.Confirmation("User credentials validated");
             }
             else {
                 // user could not be validated - print warning log message
-                Log.Warning("User credentials could not be validated");
+                user.setVerified(false);
+                Log.Error("User credentials could not be validated");
             }
         } catch (SQLException e) {
+            user.setVerified(false);
             e.printStackTrace();
         }
         // clear user password variable for security
@@ -178,6 +180,7 @@ public class CPHandler extends ConnectionHandler {
                     salt));
         }
         catch (IOException | ClassNotFoundException | SQLException e) {
+            sendFalse();
             e.printStackTrace();
         }
     }
@@ -198,6 +201,7 @@ public class CPHandler extends ConnectionHandler {
             }
             dos.writeBoolean(mariaDB.users.edit(username, access) && confirm);
         } catch (IOException | SQLException e) {
+            sendFalse();
             e.printStackTrace();
         }
     }
@@ -212,6 +216,7 @@ public class CPHandler extends ConnectionHandler {
             dos.writeBoolean(mariaDB.users.delete(received));
         }
         catch (IOException | SQLException e) {
+            sendFalse();
             e.printStackTrace();
         }
     }
@@ -240,6 +245,7 @@ public class CPHandler extends ConnectionHandler {
                 dos.writeBoolean(false);
             }
         } catch (IOException | SQLException e) {
+            sendFalse();
             e.printStackTrace();
         }
     }
@@ -265,6 +271,7 @@ public class CPHandler extends ConnectionHandler {
             dos.writeBoolean(mariaDB.billboards.AddBillboard(newBillboard));
         }
         catch (IOException | ClassNotFoundException e) {
+            sendFalse();
             e.printStackTrace();
         }
     }
@@ -282,6 +289,7 @@ public class CPHandler extends ConnectionHandler {
                 objectStreamer.Send(billboard);
             }
         } catch (IOException | SQLException e) {
+            sendFalse();
             e.printStackTrace();
         }
     }
@@ -296,6 +304,7 @@ public class CPHandler extends ConnectionHandler {
             dos.writeBoolean(mariaDB.billboards.edit(newBillboard));
         }
         catch (IOException | ClassNotFoundException | SQLException e) {
+            sendFalse();
             e.printStackTrace();
         }
     }
@@ -320,6 +329,7 @@ public class CPHandler extends ConnectionHandler {
             }
         }
         catch (IOException | SQLException e) {
+            sendFalse();
             e.printStackTrace();
         }
     }
@@ -343,5 +353,16 @@ public class CPHandler extends ConnectionHandler {
      */
     private void DeleteSchedule() {
 
+    }
+
+    /**
+     * Sends a false boolean over data output stream to indicate that an action has failed
+     */
+    private void sendFalse() {
+        try {
+            dos.writeBoolean(false);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
     }
 }

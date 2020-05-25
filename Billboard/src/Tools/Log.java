@@ -7,7 +7,7 @@ public class Log {
     private static final String ANSI_RED = "\u001B[31m";
     private static final String ANSI_GREEN = "\u001B[32m";
     private static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
+    private static final String ANSI_PURPLE = "\u001B[35m";
 
     // declare log statement in purple
     private static final String log = ANSI_PURPLE + "log: " + ANSI_RESET;
@@ -32,7 +32,7 @@ public class Log {
      * Print log warning to console in yellow
      * @param message
      */
-    public static void Warning(String message) {
+    private static void Warning(String message) {
         System.out.println(log + ANSI_YELLOW + message + ANSI_RESET);
     }
 

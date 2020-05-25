@@ -2,7 +2,6 @@ package Clients.ControlPanel.ControlPanelInterface;
 
 import Clients.ControlPanel.ControlPanelTools.Tools;
 import Clients.ControlPanel.ControlPanelTools.UserAccess;
-import SerializableObjects.Lists;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,38 +33,40 @@ public class ControlPanelInterface {
 
         // Create the tabbed pane.
         JTabbedPane tabs = new JTabbedPane();
-        tabs.setBounds(0,0,screenWidth,screenHeight);
+        tabs.setBounds(0, 0, screenWidth, screenHeight);
 
         // Elements for each pane:
 
-        // Add the tabs to the tab pane.
+        // If the user has authorisation to create billboards then add the create panel screen
         if (UserAccess.dec2bool(user.getAccess())[0]) {
-            tabs.add("My Billboards",createPanel);
+            tabs.add("My Billboards", createPanel);
+            CreatePanel.createPanelScreen();
         }
+        // If the user has authorisation to edit all billboards then add the edit panel screen
         if (UserAccess.dec2bool(user.getAccess())[1]) {
             tabs.add("All Billboards", editPanel);
             EditPanel.editPanelScreen();
-        } else {
+        }
+        // If the user is not authorised to edit all billboards then add the list panel screen
+        else {
             tabs.add("All Billboards", listPanel);
             ListPanel.listPanelScreen();
         }
+        // If the user has authorisation to schedule billboards then add the schedule panel screen
         if (UserAccess.dec2bool(user.getAccess())[2]) {
             tabs.add("Schedule Billboards", schedulePanel);
             SchedulePanel.schedulePanelScreen();
         }
+        // All users are able to access the password panel
         tabs.add("Change Password",passwordPanel);
         ChangePWPanel.changePWScreen();
+        // If the user has authorisation to edit users then add the edit user screen
         if (UserAccess.dec2bool(user.getAccess())[3]) {
             tabs.add("Edit Users", editUserPanel);
             EditUsersPanel.editUserScreen();
         }
 
-        try {
-            CreatePanel.createPanelScreen();
-        } catch (Exception e) {
-            ListPanel.listPanelScreen();
-        }
-
+        // Add exit buttons to all panels
         Tools.addExitButton(screenWidth - 105, screenHeight - 60, 100, 30);
 
         controlPanelScreen.getContentPane().add(tabs);
