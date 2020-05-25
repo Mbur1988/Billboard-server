@@ -270,7 +270,7 @@ public class CPHandler extends ConnectionHandler {
             Log.Message("User object received from control panel");
             dos.writeBoolean(mariaDB.billboards.AddBillboard(newBillboard));
         }
-        catch (IOException | ClassNotFoundException e) {
+        catch (IOException | ClassNotFoundException | SQLException e) {
             sendFalse();
             e.printStackTrace();
         }
@@ -303,7 +303,7 @@ public class CPHandler extends ConnectionHandler {
             Log.Message("User object received from control panel");
             dos.writeBoolean(mariaDB.billboards.edit(newBillboard));
         }
-        catch (IOException | ClassNotFoundException | SQLException e) {
+        catch (IOException | ClassNotFoundException e) {
             sendFalse();
             e.printStackTrace();
         }

@@ -516,29 +516,23 @@ public class MariaDB {
          * @throws SQLException
          */
 
-        public boolean AddBillboard(Billboard billboard) {
-            try {
-                if (checkForBillboard(billboard.getName())) {
-                    return false;
-                } else {
-                    PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour, username, scheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    prepareAdd.setString(1, billboard.getName());
-                    prepareAdd.setString(2, billboard.getMsg());
-                    prepareAdd.setString(3, billboard.getInfo());
-                    prepareAdd.setString(4, billboard.getPicUrl());
-                    prepareAdd.setBytes(5, billboard.getPicData());
-                    prepareAdd.setString(6, stringFromColor(billboard.getMsgColour()));
-                    prepareAdd.setString(7, stringFromColor(billboard.getBackColour()));
-                    prepareAdd.setString(8, stringFromColor(billboard.getInfoColour()));
-                    prepareAdd.setString(9, billboard.getCreatedBy());
-                    prepareAdd.setBoolean(10, billboard.getScheduled());
-                    prepareAdd.executeUpdate();
-                    return true;
-                }
-            } catch (SQLException e) {
-                Log.Error("SQL exception thrown when attempting to add billboard");
-                e.printStackTrace();
+        public boolean AddBillboard(Billboard billboard) throws SQLException {
+            if (checkForBillboard(billboard.getName())) {
                 return false;
+            } else {
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour, username, scheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                prepareAdd.setString(1, billboard.getName());
+                prepareAdd.setString(2, billboard.getMsg());
+                prepareAdd.setString(3, billboard.getInfo());
+                prepareAdd.setString(4, billboard.getPicUrl());
+                prepareAdd.setBytes(5, billboard.getPicData());
+                prepareAdd.setString(6, stringFromColor(billboard.getMsgColour()));
+                prepareAdd.setString(7, stringFromColor(billboard.getBackColour()));
+                prepareAdd.setString(8, stringFromColor(billboard.getInfoColour()));
+                prepareAdd.setString(9, billboard.getCreatedBy());
+                prepareAdd.setBoolean(10, billboard.getScheduled());
+                prepareAdd.executeUpdate();
+                return true;
             }
         }
 
@@ -817,48 +811,60 @@ public class MariaDB {
          * @throws SQLException
          */
 
-        public boolean edit(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour, String username, Boolean scheduled) throws SQLException {
-            ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
-            if (result.next()) {
-                if (msg == null) {
-                    msg = billboards.getBillboardMsg(name);
+        public boolean edit(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour, String username, Boolean scheduled) {
+            try {
+                ResultSet result = statement.executeQuery("SELECT * FROM billboards WHERE name = '" + name + "';");
+                if (result.next()) {
+                    if (msg == null) {
+                        msg = billboards.getBillboardMsg(name);
+                    }
+                    if (info == null) {
+                        info = billboards.getBillboardInfo(name);
+                    }
+                    if (picURL == null) {
+                        picURL = billboards.getBillboardPicURL(name);
+                    }
+                    if (picData == null) {
+                        picData = billboards.getBillboardPicData(name);
+                    }
+                    if (msgColour == null) {
+                        msgColour = billboards.getBillboardMsgColour(name);
+                    }
+                    if (backColour == null) {
+                        backColour = billboards.getBillboardBackColour(name);
+                    }
+                    if (infoColour == null) {
+                        infoColour = billboards.getBillboardInfoColour(name);
+                    }
+                    if (username == null) {
+                        username = billboards.getBillboardUser(name);
+                    }
+                    if (scheduled == null) {
+                        scheduled = billboards.getBillboardSchedule(name);
+                    }
+                    billboards.DeleteBillboard(name);
+                    billboards.AddBillboard(name, msg, info, picURL, picData, msgColour, backColour, infoColour, username, scheduled);
+                    return true;
+                } else {
+                    return false;
                 }
-                if (info == null) {
-                    info = billboards.getBillboardInfo(name);
-                }
-                if (picURL == null) {
-                    picURL = billboards.getBillboardPicURL(name);
-                }
-                if (picData == null) {
-                    picData = billboards.getBillboardPicData(name);
-                }
-                if (msgColour == null) {
-                    msgColour = billboards.getBillboardMsgColour(name);
-                }
-                if (backColour == null) {
-                    backColour = billboards.getBillboardBackColour(name);
-                }
-                if (infoColour == null) {
-                    infoColour = billboards.getBillboardInfoColour(name);
-                }
-                if (username == null) {
-                    username = billboards.getBillboardUser(name);
-                }
-                if (scheduled == null) {
-                    scheduled = billboards.getBillboardSchedule(name);
-                }
-                billboards.DeleteBillboard(name);
-                billboards.AddBillboard(name, msg, info, picURL, picData, msgColour, backColour, infoColour, username, scheduled);
-                return true;
-            } else {
+            } catch (SQLException e) {
+                Log.Error("SQL exception thrown when attempting to delete or add billboard");
+                e.printStackTrace();
                 return false;
             }
         }
 
-        public boolean edit(Billboard billboard) throws SQLException {
-            boolean delete = billboards.DeleteBillboard(billboard.getName());
-            boolean add = billboards.AddBillboard(billboard);
-            return (delete && add);
+        public boolean edit(Billboard billboard) {
+            try {
+                boolean delete = billboards.DeleteBillboard(billboard.getName());
+                boolean add = billboards.AddBillboard(billboard);
+                return (delete && add);
+            } catch (SQLException e) {
+                Log.Error("SQL exception thrown when attempting to delete or add billboard");
+                e.printStackTrace();
+                return false;
+            }
         }
 
         public boolean AddBillboardColour(Billboard billboard) throws SQLException {
