@@ -125,7 +125,7 @@ class EditPanel extends ControlPanelInterface {
         // Create action listener
         ActionListener rb_ActionListener = actionEvent -> {
             AbstractButton aButton = (AbstractButton) actionEvent.getSource();
-            b_fileSelect.setVisible(aButton.getText().equals("File:"));
+            b_fileSelect.setEnabled(aButton.getText().equals("File:"));
             tf_path.setText("");
         };
         // Add the action listener to the radio buttons
@@ -289,7 +289,7 @@ class EditPanel extends ControlPanelInterface {
                     if (billboard.getPicUrl() != null) {
                         tf_path.setText(billboard.getPicUrl());
                         rb_url.setSelected(true);
-                        b_fileSelect.setVisible(false);
+                        b_fileSelect.setEnabled(false);
                     }
                     // if the pic was loaded from a file then inform the user that the picture data has been loaded
                     else if (billboard.getPicData() != null) {
@@ -297,7 +297,7 @@ class EditPanel extends ControlPanelInterface {
                         tf_path.selectAll();
                         tf_path.requestFocus();
                         rb_file.setSelected(true);
-                        b_fileSelect.setVisible(true);
+                        b_fileSelect.setEnabled(true);
                     }
                     // if there is no picture then clear the path text field
                     else {
@@ -446,7 +446,7 @@ class EditPanel extends ControlPanelInterface {
         cb_infoColor.setSelectedItem("gray");
         rb_url.setSelected(false);
         rb_file.setSelected(true);
-        b_fileSelect.setVisible(true);
+        b_fileSelect.setEnabled(true);
     }
 
     private static void fieldsEnabled(boolean state) {
