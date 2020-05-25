@@ -575,6 +575,7 @@ class CreatePanel extends ControlPanelInterface {
                     if (billboard.getPicUrl() != null) {
                         tf_path.setText(billboard.getPicUrl());
                         rb_url.setSelected(true);
+                        b_fileSelect.setVisible(false);
                     }
                     // if the pic was loaded from a file then inform the user that the picture data has been loaded
                     else if (billboard.getPicData() != null) {
@@ -582,6 +583,7 @@ class CreatePanel extends ControlPanelInterface {
                         tf_path.selectAll();
                         tf_path.requestFocus();
                         rb_file.setSelected(true);
+                        b_fileSelect.setVisible(true);
                     }
                     // if there is no picture then clear the path text field
                     else {

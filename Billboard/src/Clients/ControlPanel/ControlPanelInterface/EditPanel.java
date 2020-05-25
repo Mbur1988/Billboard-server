@@ -91,6 +91,9 @@ class EditPanel extends ControlPanelInterface {
         addTextfield(editPanel, tf_info, 190, 305, 300, 40);
         addTextfield(editPanel, tf_path, 190, 450, 300, 40);
 
+        // Disable name field
+        tf_name.setEnabled(false);
+
         // Create combo boxes
         cb_bgColor = new JComboBox<>(COLOR_STRINGS);
         cb_titleColor = new JComboBox<>(COLOR_STRINGS);
@@ -273,8 +276,8 @@ class EditPanel extends ControlPanelInterface {
                 if (dis.readBoolean()) {
                     // receive the requested billboard as an object
                     billboard = (Billboard) objectStreamer.Receive();
-                    // disable the billboard name text field
-                    tf_name.setEnabled(false);
+                    // enable the edit billboard fields
+                    fieldsEnabled(true);
                     // populate the user input fields with the billboard credentials
                     tf_name.setText(name);
                     cb_bgColor.setSelectedItem(ColorIndex.stringFromColor(billboard.getBackColour()));
@@ -286,6 +289,7 @@ class EditPanel extends ControlPanelInterface {
                     if (billboard.getPicUrl() != null) {
                         tf_path.setText(billboard.getPicUrl());
                         rb_url.setSelected(true);
+                        b_fileSelect.setVisible(false);
                     }
                     // if the pic was loaded from a file then inform the user that the picture data has been loaded
                     else if (billboard.getPicData() != null) {
@@ -293,6 +297,7 @@ class EditPanel extends ControlPanelInterface {
                         tf_path.selectAll();
                         tf_path.requestFocus();
                         rb_file.setSelected(true);
+                        b_fileSelect.setVisible(true);
                     }
                     // if there is no picture then clear the path text field
                     else {
@@ -302,7 +307,6 @@ class EditPanel extends ControlPanelInterface {
                     b_save.setEnabled(true);
                     // display message to the user
                     lbl_message.setText("Billboard loaded");
-                    fieldsEnabled(true);
                 }
                 // if the server was unable to load the billboard then notify the user
                 else {
@@ -446,7 +450,6 @@ class EditPanel extends ControlPanelInterface {
     }
 
     private static void fieldsEnabled(boolean state) {
-        tf_name.setEnabled(state);
         tf_title.setEnabled(state);
         tf_info.setEnabled(state);
         tf_path.setEnabled(state);
