@@ -369,16 +369,15 @@ public class Billboard implements Serializable {
 
     }
 
-    // - - - - - - - helpers bellow - - - - - - - - - //
 
+    // - - - - - - - helpers bellow - - - - - - - - - //
 
     //  aux helper //
 
-    /** WishhyWassyTheBillyBoard() is the cleaning function that is related to the clear button.
-     * Hopefully the function name gives a LOL here or there.
-     *
+    /**
+     * A cleaning function that is related to the clear button.
      */
-    public void WishhyWassyTheBillyBoardy() {
+    public void clearBillboard() {
         setMsg(null);
         setName(null);
         setInfo(null);
@@ -396,6 +395,7 @@ public class Billboard implements Serializable {
      * @return String msg
      */
     public String getBillboardName() {return name;}
+
     /**
      * Helper to get the billboard name stored
      * @return String info
@@ -452,25 +452,6 @@ public class Billboard implements Serializable {
         return scheduled;
     }
 
-    /**
-     * Gets the pannel that has been made for this billboard.
-     * @return JPanel stored in Billboard.
-     */
-    public JPanel getJPanel() {return BillboardScreenPanel; }
-
-    /**
-     * Gets the pannel that has been made for this billboard.
-     * @return JPanel stored in Billboard.
-     */
-    public JFrame getJFrame() {return BillboardScreen; }
-
-    /**
-     * Gets visibility of panel
-     * @param panel JPanel created elswhere
-     * @return Bool true if visible false if not
-     */
-    public boolean GetVisibility(JPanel panel) { return panel.isVisible();}
-
     //  setters  //
 
     /**
@@ -521,23 +502,7 @@ public class Billboard implements Serializable {
      */
     public void setInfoColour(Color infoColour) { this.infoColour = infoColour;}
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public void setScheduled(Boolean scheduled) {
-        this.scheduled = scheduled;
-    }
-
-    /**
-     * Sets the Panel created elsewhere (see CreatePanel) to bool visibility
-     * @param visibility bool true = visible, false = not
-     * @param panel created panel elsewhere
-     */
-    public void SetVisible(Boolean visibility,JPanel panel) {panel.setVisible(visibility);}
-
     //   converters    //
-
     /**
      * Converts a image from the file path to a byte array
      * @param filePath image to be converted
@@ -546,14 +511,11 @@ public class Billboard implements Serializable {
      */
     public static byte[] ConvertImageToData(String filePath) throws IOException {
         BufferedImage bImage = ImageIO.read(new File(filePath));
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
         String formatName = "jpg";
         if (filePath.length() > 3) {
             formatName = filePath.substring(filePath.length() - 3);
         }
-        ImageIO.write(bImage, formatName, bos );
-        byte [] data = bos.toByteArray();
-        return data;
+        return ByteArrayHelper(bImage, formatName);
     }
 
     /**
@@ -577,8 +539,11 @@ public class Billboard implements Serializable {
     public static byte[] UrlToData(String input) throws IOException {
         URL url = new URL(input);
         BufferedImage image = ImageIO.read(url);
-        byte[] byteArray = ByteArrayHelper(image, "png");
-        return byteArray;
+        String formatName = "jpg";
+        if (input.length() > 3) {
+            formatName = input.substring(input.length() - 3);
+        }
+        return ByteArrayHelper(image, formatName);
     }
 
     /**
@@ -589,19 +554,28 @@ public class Billboard implements Serializable {
      * @throws IOException if file is not there.
      */
     private static byte[] ByteArrayHelper(BufferedImage image, String type) throws IOException {
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
-            ImageIO.write(image, type, out);
-            return out.toByteArray();
-        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ImageIO.write(image, type, out);
+        return out.toByteArray();
     }
 
-    public static String BytesToSixFour(byte[] testS) {
-        String Output = Base64.getEncoder().encodeToString(testS);
-        return Output;
+    /**
+     * Converts a byte array image to a base64 format
+     * @param byteArray the image to convert as a byte array
+     * @return the converted image in base64 format in string form
+     */
+    public static String BytesToSixFour(byte[] byteArray) {
+        String base64 = Base64.getEncoder().encodeToString(byteArray);
+        return base64;
     }
 
-    public static byte[] SixFourToByte(String stringInSixFour) {
-        byte[] Output = Base64.getDecoder().decode(stringInSixFour);
+    /**
+     * Converts an image in base64 format to a byte array
+     * @param stringSixFour Image in base64 format as a string
+     * @return the converted image as a byte array
+     */
+    public static byte[] SixFourToByte(String stringSixFour) {
+        byte[] Output = Base64.getDecoder().decode(stringSixFour);
         return Output;
     }
 }
