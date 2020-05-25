@@ -546,7 +546,7 @@ public class BillboardTest {
     @Test
     public void WishhyWassyTheBillyBoardyTest(){
 
-        underTestFull.WishhyWassyTheBillyBoardy();
+        underTestFull.clearBillboard();
         assertNull(underTestEmpty.getMsg());
         assertNull(underTestEmpty.getName());
         assertNull(underTestEmpty.getInfo());
