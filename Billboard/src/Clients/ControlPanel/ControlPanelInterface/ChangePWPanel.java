@@ -75,15 +75,14 @@ class ChangePWPanel extends ControlPanelInterface {
         String confirmPassword = new String(tf_confirm.getPassword());
         // check that all fields are populated
         if (oldPassword.equals("") || newPass.equals("") || confirmPassword.equals((""))) {
+            clear();
             lbl_message.setText("All fields must be populated");
             return;
         }
         // check that the new password matches the confirmed password string
         if (!newPass.equals(confirmPassword)) {
             // if new password fields dont match then clear fields, display user message and return
-            tf_old.setText("");
-            tf_new.setText("");
-            tf_confirm.setText("");
+            clear();
             lbl_message.setText("New password fields must match");
             return;
         }
