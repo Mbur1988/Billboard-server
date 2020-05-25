@@ -128,7 +128,7 @@ public class LoginInterface {
                         }
                         // Post message to user if username of password was incorrect
                         else {
-                            Log.Warning("User credentials could not be verified by server");
+                            Log.Error("User credentials could not be verified by server");
                             labelMessage.setText("Incorrect username or password");
                         }
                     }

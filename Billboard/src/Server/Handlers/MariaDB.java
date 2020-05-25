@@ -537,6 +537,7 @@ public class MariaDB {
                 }
             } catch (SQLException e) {
                 Log.Error("SQL exception thrown when attempting to add billboard");
+                e.printStackTrace();
                 return false;
             }
         }

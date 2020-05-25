@@ -26,7 +26,6 @@ import static Clients.ControlPanel.ControlPanel.*;
 import static Clients.ControlPanel.ControlPanelInterface.EditPanel.allListModel;
 import static Clients.ControlPanel.ControlPanelInterface.ListPanel.listModel;
 import static Clients.ControlPanel.ControlPanelInterface.SchedulePanel.billboardListModel;
-import static Clients.ControlPanel.ControlPanelInterface.SchedulePanel.scheduleListModel;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 import static SerializableObjects.Lists.sortAdd;
 import static Tools.ColorIndex.*;
@@ -199,7 +198,9 @@ class CreatePanel extends ControlPanelInterface {
                 // Add the absolute directory path of the selected image to the path text field
                 imageFilePath = picture.getAbsolutePath();
                 tf_path.setText(imageFilePath);
-            } catch (NullPointerException ex) { }
+            } catch (NullPointerException ex) {
+                ex.printStackTrace();
+            }
         });
 
         // Create and add a file chooser to select an xml file to import
@@ -218,7 +219,9 @@ class CreatePanel extends ControlPanelInterface {
                 // Get the absolute directory path of the selected xml and use it to call importBb method
                 String xmlFilePath = picture.getAbsolutePath();
                 importBb(xmlFilePath);
-            } catch (NullPointerException ex) { }
+            } catch (NullPointerException ex) {
+                ex.printStackTrace();
+            }
         });
 
         // Create and add a directory chooser to select a directory to export the billboard to
@@ -232,7 +235,9 @@ class CreatePanel extends ControlPanelInterface {
                 // Get the absolute directory path of the selected directory and use it to call exportBb method
                 String dirFilePath = directory.getAbsolutePath();
                 exportBb(dirFilePath);
-            } catch (NullPointerException ex) { }
+            } catch (NullPointerException ex) {
+                ex.printStackTrace();
+            }
         });
 
         // Handle button press events
@@ -444,6 +449,7 @@ class CreatePanel extends ControlPanelInterface {
         catch (ParserConfigurationException | SAXException | IOException e) {
             lbl_message.setText("error importing billboard");
             Log.Confirmation("error importing billboard");
+            e.printStackTrace();
         }
     }
 
@@ -691,7 +697,7 @@ class CreatePanel extends ControlPanelInterface {
 
     /**
      * Populates the static billboard instance with the user inputted data
-     * @throws IOException
+     * @throws IOException Signals that an I/O exception of some sort has occurred
      */
     private static void populateBillboard() throws IOException {
         // create picture staging variables

@@ -8,7 +8,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
@@ -23,13 +22,11 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-
 import static Clients.Client.*;
 import static Clients.ControlPanel.ControlPanel.*;
 import static Clients.ControlPanel.ControlPanelInterface.CreatePanel.usersListModel;
 import static Clients.ControlPanel.ControlPanelInterface.ListPanel.listModel;
 import static Clients.ControlPanel.ControlPanelInterface.SchedulePanel.billboardListModel;
-import static Clients.ControlPanel.ControlPanelInterface.SchedulePanel.scheduleListModel;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 import static SerializableObjects.Lists.sortAdd;
 import static Tools.ColorIndex.*;
@@ -203,6 +200,7 @@ class EditPanel extends ControlPanelInterface {
                 imageFilePath = picture.getAbsolutePath();
                 tf_path.setText(imageFilePath);
             } catch (NullPointerException ex) {
+                ex.printStackTrace();
             }
         });
 
@@ -223,6 +221,7 @@ class EditPanel extends ControlPanelInterface {
                 String xmlFilePath = picture.getAbsolutePath();
                 importBb(xmlFilePath);
             } catch (NullPointerException ex) {
+                ex.printStackTrace();
             }
         });
 
@@ -238,6 +237,7 @@ class EditPanel extends ControlPanelInterface {
                 String dirFilePath = directory.getAbsolutePath();
                 exportBb(dirFilePath);
             } catch (NullPointerException ex) {
+                ex.printStackTrace();
             }
         });
 
@@ -451,6 +451,7 @@ class EditPanel extends ControlPanelInterface {
         catch (ParserConfigurationException | SAXException | IOException e) {
             lbl_message.setText("error importing billboard");
             Log.Confirmation("error importing billboard");
+            e.printStackTrace();
         }
     }
 
@@ -691,8 +692,7 @@ class EditPanel extends ControlPanelInterface {
 
     /**
      * Populates the static billboard instance with the user inputted data
-     *
-     * @throws IOException
+     * @throws IOException Signals that an I/O exception of some sort has occurred
      */
     private static void populateBillboard() throws IOException {
         // create picture staging variables

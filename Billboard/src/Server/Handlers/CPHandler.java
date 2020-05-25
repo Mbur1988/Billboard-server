@@ -154,7 +154,7 @@ public class CPHandler extends ConnectionHandler {
             else {
                 // user could not be validated - print warning log message
                 user.setVerified(false);
-                Log.Warning("User credentials could not be validated");
+                Log.Error("User credentials could not be validated");
             }
         } catch (SQLException e) {
             user.setVerified(false);
