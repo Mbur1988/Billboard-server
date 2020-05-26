@@ -6,6 +6,7 @@ import static Clients.ControlPanel.ControlPanel.lists;
 import static Clients.ControlPanel.ControlPanelTools.DateChooser.chooseDate;
 import static Clients.ControlPanel.ControlPanelTools.DurationSetter.setDuration;
 import static Clients.ControlPanel.ControlPanelTools.TimeSetter.setTime;
+import static Clients.ControlPanel.ControlPanelTools.Tools.addButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,7 +37,7 @@ class SchedulePanel extends ControlPanelInterface {
         // Title label for change password details
         JLabel lbl_schedule = new JLabel("Schedule Billboard");
         lbl_schedule.setFont(new Font("Courier", Font.PLAIN, 40));
-        lbl_schedule.setBounds((screenWidth / 2) - (450 / 2), 0, 450, 50);
+        lbl_schedule.setBounds(((screenWidth / 3)),0, 450, 50);
         schedulePanel.add(lbl_schedule);
 
         // Title label for the billboards list
@@ -75,12 +76,18 @@ class SchedulePanel extends ControlPanelInterface {
 
         // Create buttons
         b_add = new JButton("Add");
-        b_clear = new JButton("Clear");
+        b_clear = new JButton("Clear All");
         b_delete = new JButton("Delete");
         b_load = new JButton("Load");
         b_save = new JButton("Save");
 
-        
+        // Add buttons to panel
+        addButton(schedulePanel, b_add, ((screenWidth / 3)), 380, 160, 30);
+        addButton(schedulePanel, b_clear, ((screenWidth / 3)), 345, 160, 30);
+        addButton(schedulePanel, b_delete, ((screenWidth / 3) * 2) + 150, 500, 150, 30);
+        addButton(schedulePanel, b_load, (screenWidth / 3) * 2, 500, 150, 30);
+        addButton(schedulePanel, b_save, ((screenWidth / 3)), 380, 160, 30);
+        b_save.setVisible(false);
 
     }
 
