@@ -16,6 +16,11 @@ class SchedulePanel extends ControlPanelInterface {
     static DefaultListModel billboardListModel;
     private static JList scheduleList;
     private static JList billboardList;
+    private static JButton b_add;
+    private static JButton b_save;
+    private static JButton b_clear;
+    private static JButton b_load;
+    private static JButton b_delete;
 
     protected static void schedulePanelScreen() {
 
@@ -67,6 +72,15 @@ class SchedulePanel extends ControlPanelInterface {
         JScrollPane scheduleScrollPane = new JScrollPane(scheduleList);
         scheduleScrollPane.setBounds(((screenWidth / 3) * 2), 100, 300, 400);
         schedulePanel.add(scheduleScrollPane);
+
+        // Create buttons
+        b_add = new JButton("Add");
+        b_clear = new JButton("Clear");
+        b_delete = new JButton("Delete");
+        b_load = new JButton("Load");
+        b_save = new JButton("Save");
+
+        
 
     }
 
