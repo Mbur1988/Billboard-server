@@ -52,9 +52,9 @@ public class DurationSetter {
             }
 
             @Override
-            public void removeUpdate(DocumentEvent e) {     // This part seems to create some errors.
-                mins = Integer.parseInt(tf_mins.getText()); // It's just meant to update the label when
-                lbl_duration.setText("Set duration: " + mins); // values are removed.       
+            public void removeUpdate(DocumentEvent e) {        // This part seems to create some errors.
+                //mins = Integer.parseInt(tf_mins.getText());    // It's just meant to update the label when
+                //lbl_duration.setText("Set duration: " + mins); // values are removed.
             }
 
             @Override
