@@ -56,10 +56,7 @@ class SchedulePanel extends ControlPanelInterface {
 
         billboardListModel.addAll(lists.billboards);
 
-        // Temporary line until schedules list can be retrieved from database
-        scheduleListModel.addAll(lists.billboards);
-        // Remove above line and uncomment below line once schedules list can be retrieved
-//        scheduleListModel.addAll(lists.schedules);
+        scheduleListModel.addAll(lists.schedules);
 
         // Create a new JList
         billboardList = new JList(billboardListModel);
