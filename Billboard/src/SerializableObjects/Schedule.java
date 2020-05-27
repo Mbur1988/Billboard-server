@@ -1,15 +1,12 @@
 package SerializableObjects;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 public class Schedule implements Serializable {
     private String ScheduleName;
     private String BillboardName;
-    private LocalDate date;
-    private LocalTime time;
-    private long duration;
+    private String date;
+    private String time;
+    private int duration;
 
 
     public Schedule(){
@@ -28,13 +25,13 @@ public class Schedule implements Serializable {
     public String getBillboardName() {
         return BillboardName;
     }
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
-    public LocalTime getTime() {
+    public String getTime() {
         return time;
     }
-    public long getDuration() {
+    public int getDuration() {
         return duration;
     }
     //setters
@@ -44,13 +41,13 @@ public class Schedule implements Serializable {
     public void setBillboardName(String billboardName) {
         BillboardName = billboardName;
     }
-    public void setTime(LocalTime time) {
+    public void setTime(String time) {
         this.time = time;
     }
-    public void setDate(LocalDate date) {
+    public void setDate(String date) {
         this.date = date;
     }
-    public void setDuration(long duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 
