@@ -14,11 +14,7 @@ import java.time.LocalTime;
  *      Local Date - Used to get the date and set the date of the Billboard to be displayed
  *      Local Time - Used to set the time accuratly to display the image.
  *      Duration - Used to control the time that the billboard will be displayed.
- *
- *
  */
-
-
 public class Schedule implements Serializable {
     // Setting the local variables that will be associated with the class
     private String          ScheduleName;
@@ -36,6 +32,13 @@ public class Schedule implements Serializable {
         this.duration=      null;
     }
 
+    public Schedule(String ScheduleName, String BillboardName, LocalDate date, LocalTime time, Duration duration) {
+        this.ScheduleName = ScheduleName;
+        this.BillboardName = BillboardName;
+        this.date = date;
+        this.time = time;
+        this.duration = duration;
+    }
 
     //getter
     public String getScheduleName() {
@@ -65,7 +68,4 @@ public class Schedule implements Serializable {
         this.date = date;
     }
     public void setDuration(Duration duration) {this.duration = duration;}
-
-
-
 }

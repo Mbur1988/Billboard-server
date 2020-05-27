@@ -1,6 +1,7 @@
 package Server.Handlers;
 
 import SerializableObjects.Billboard;
+import SerializableObjects.Schedule;
 import Tools.ColorIndex;
 import Tools.HashCredentials;
 import Tools.Log;
@@ -892,7 +893,7 @@ public class MariaDB {
 
         /**
          * Creates a new scheduling table
-         * name: name of the schduled billboard
+         * name: name of the scheduled billboard
          * Billboard Name: Name of the billboard being Scheduled
          * Data: Date to be scheduled
          * time: time to be scheduled
@@ -936,7 +937,31 @@ public class MariaDB {
                 prepareAdd.executeUpdate();
                 return true;
             }
+        }
 
+        /**
+         * Adds a scheduling table to the scheduling database
+         * @param schedule
+         * @return
+         * @throws SQLException
+         */
+        public boolean AddSchedule(Schedule schedule) throws SQLException {
+            if (checkForSchedule(schedule.getScheduleName())) {
+                return false;
+            } else {
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `scheduling`(name, billboardName, date, time, duration) VALUES (?, ?, ?, ?, ?)");
+
+                Long storeDuration = schedule.getDuration().toMinutes();
+
+                prepareAdd.setString(1, schedule.getScheduleName());
+                prepareAdd.setString(2, schedule.getBillboardName());
+                prepareAdd.setDate(3, Date.valueOf(schedule.getDate()));
+                prepareAdd.setTime(4, Time.valueOf(schedule.getTime()));
+                prepareAdd.setLong(5, storeDuration);
+
+                prepareAdd.executeUpdate();
+                return true;
+            }
         }
 
         /**
