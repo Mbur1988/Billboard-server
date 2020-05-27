@@ -1,6 +1,7 @@
 package Clients.ControlPanel.ControlPanelTools;
 
 import java.awt.*;
+import java.time.LocalDate;
 import javax.swing.*;
 
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.screenWidth;
@@ -9,7 +10,8 @@ import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.s
 
 public class DateChooser {
 
-    public static String storeDate;
+    public static LocalDate date;
+    private static JLabel lbl_setDate;
 
     int month = java.util.Calendar.getInstance().get(java.util.Calendar.MONTH);
     int year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);    // Is there a better way to do these???
@@ -20,7 +22,7 @@ public class DateChooser {
 
     JButton[] button = new JButton[49];
 
-    public void displayDate() {
+    private void displayDate() {
         for (int x = 7; x < button.length; x++)
             button[x].setText("");
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
@@ -35,17 +37,17 @@ public class DateChooser {
         dlg_date.setTitle("Select date");
     }
 
-    public String setPickedDate() {
+    private String setPickedDate() {
         if (day.equals(""))
             return day;
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
-                "dd-MM-yyyy");
+                "yyyy-MM-dd");
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.set(year, month, Integer.parseInt(day));
         return sdf.format(cal.getTime());
     }
 
-    public DateChooser(JPanel parent) {
+    private DateChooser(JPanel parent) {
         dlg_date = new JDialog();
         dlg_date.setModal(true);
 
@@ -105,20 +107,23 @@ public class DateChooser {
 
     public static void chooseDate() {
         JLabel lbl_date = new JLabel("Date:");
-        JLabel tf_date = new JLabel("");
+        lbl_setDate = new JLabel("");
 
         addLabel(schedulePanel, lbl_date, ((screenWidth / 3)),130,50,20);
-        addLabel(schedulePanel, tf_date, ((screenWidth / 3) + 50),130,120,20);
+        addLabel(schedulePanel, lbl_setDate, ((screenWidth / 3) + 50),130,120,20);
 
         JButton b_selDate = new JButton("Select Date");
 
         addButton(schedulePanel, b_selDate, ((screenWidth / 3)),100,160,20);
 
         b_selDate.addActionListener(e -> {
-            tf_date.setText(new DateChooser(schedulePanel).setPickedDate());
-            storeDate = tf_date.getText(); // This will store the date for anyone who needs it... convenient right? Thanks Shane. You're welcome guys!
+            lbl_setDate.setText(new DateChooser(schedulePanel).setPickedDate());
+            date = LocalDate.parse(lbl_setDate.getText()); // This will store the date for anyone who needs it
         });
-
     }
 
+    public static void clearDate() {
+        lbl_setDate.setText("");
+        date = null;
+    }
 }

@@ -2,6 +2,7 @@ package Server.Handlers;
 
 import SerializableObjects.Billboard;
 import SerializableObjects.Lists;
+import SerializableObjects.Schedule;
 import SerializableObjects.User;
 import Server.Trackers.Authorised;
 import Tools.HashCredentials;
@@ -104,7 +105,7 @@ public class CPHandler extends ConnectionHandler {
                     Lists lists = new Lists(mariaDB.users.getAllUsernames(),
                             mariaDB.billboards.getAllBillboards(),
                             mariaDB.billboards.getAllBillboardsCurrent(user.getUsername()),
-                            null);
+                            mariaDB.scheduling.getAllSchedules());
                     objectStreamer.Send(lists);
                     Log.Message("Lists object sent to control panel");
                 }
@@ -338,7 +339,15 @@ public class CPHandler extends ConnectionHandler {
      * Adds a new schedule to the database
      */
     private void AddSchedule() {
-
+        try {
+            Schedule newSchedule = (Schedule) objectStreamer.Receive();
+            Log.Message("User object received from control panel");
+            dos.writeBoolean(mariaDB.scheduling.AddSchedule(newSchedule));
+        }
+        catch (IOException | ClassNotFoundException | SQLException e) {
+            sendFalse();
+            e.printStackTrace();
+        }
     }
 
     /**

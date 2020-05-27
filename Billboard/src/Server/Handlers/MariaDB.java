@@ -1,6 +1,7 @@
 package Server.Handlers;
 
 import SerializableObjects.Billboard;
+import SerializableObjects.Schedule;
 import Tools.ColorIndex;
 import Tools.HashCredentials;
 import Tools.Log;
@@ -884,14 +885,6 @@ public class MariaDB {
                 return true;
             }
         }
-
-//        public boolean editBillboard(String name, String msg, String info, String picURL, byte[] picData, String msgColour, String backColour, String infoColour) throws SQLException {
-//            return editBillboard(null, null,  null, null, null, null, null, null);
-
-//        }
-
-
-
     }
 
 
@@ -900,7 +893,7 @@ public class MariaDB {
 
         /**
          * Creates a new scheduling table
-         * name: name of the schduled billboard
+         * name: name of the scheduled billboard
          * Billboard Name: Name of the billboard being Scheduled
          * Data: Date to be scheduled
          * time: time to be scheduled
@@ -923,8 +916,11 @@ public class MariaDB {
          * @param duration      :: how long the billboard will be shceduled for
          * @throws SQLException
          */
-
-        public boolean AddSchedule(String name, String billboardName, LocalDate date, LocalTime time, Duration duration) throws SQLException {
+        public boolean AddSchedule(String name,
+                                   String billboardName,
+                                   LocalDate date,
+                                   LocalTime time,
+                                   Duration duration) throws SQLException {
             if (checkForSchedule(name)) {
                 return false;
             } else {
@@ -941,7 +937,31 @@ public class MariaDB {
                 prepareAdd.executeUpdate();
                 return true;
             }
+        }
 
+        /**
+         * Adds a scheduling table to the scheduling database
+         * @param schedule
+         * @return
+         * @throws SQLException
+         */
+        public boolean AddSchedule(Schedule schedule) throws SQLException {
+            if (checkForSchedule(schedule.getScheduleName())) {
+                return false;
+            } else {
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `scheduling`(name, billboardName, date, time, duration) VALUES (?, ?, ?, ?, ?)");
+
+                Long storeDuration = schedule.getDuration().toMinutes();
+
+                prepareAdd.setString(1, schedule.getScheduleName());
+                prepareAdd.setString(2, schedule.getBillboardName());
+                prepareAdd.setDate(3, Date.valueOf(schedule.getDate()));
+                prepareAdd.setTime(4, Time.valueOf(schedule.getTime()));
+                prepareAdd.setLong(5, storeDuration);
+
+                prepareAdd.executeUpdate();
+                return true;
+            }
         }
 
         /**
@@ -950,7 +970,6 @@ public class MariaDB {
          * @param name: name of the schduled billboard
          * @throws SQLException
          */
-
         public boolean checkForSchedule(String name) throws SQLException {
             ResultSet result;
             if (name == null) {
@@ -971,7 +990,6 @@ public class MariaDB {
          * @param name: name of the schduled billboard
          * @throws SQLException
          */
-
         public Time getScheduleTime(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
             if (result.next()) {
@@ -987,7 +1005,6 @@ public class MariaDB {
          * @param name: name of the schduled billboard
          * @throws SQLException
          */
-
         public Long getScheduleDuration(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
             if (result.next()) {
@@ -999,12 +1016,10 @@ public class MariaDB {
 
         /**
          * Gets the billboard name for a specific shedule entry from the database.
-         *
          * @param name: name of the schduled billboard
+         * @return
          * @throws SQLException
          */
-
-
         public String getScheduleBillboard(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
             if (result.next()) {
@@ -1014,7 +1029,12 @@ public class MariaDB {
             }
         }
 
-
+        /**
+         * Gets the date of the schedule
+         * @param name name of the schduled billboard
+         * @return
+         * @throws SQLException
+         */
         public LocalDate getScheduleDate(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
             if (result.next()) {
@@ -1030,7 +1050,6 @@ public class MariaDB {
          * @param name: name of the scheduled billboard
          * @throws SQLException
          */
-
         public boolean deleteScheduled(String name) throws SQLException {
             if (checkForSchedule(name)) {
                 statement.executeQuery("DELETE FROM scheduling WHERE name='" + name + "';");
@@ -1063,17 +1082,36 @@ public class MariaDB {
         }
 
         /**
+         * returns all the schedules for the specified billboard
+         * @param billboard the billboard to find the schedules of
+         * @return list of schedules for the specified billboard
+         * @throws SQLException
+         */
+        public ArrayList<String> getAllBillboardSchedules(String billboard) throws SQLException{
+            String retrieve = "SELECT * FROM scheduling";
+            ResultSet result = statement.executeQuery(retrieve);
+            ArrayList<String> billboardSchedules = new ArrayList<>();
+            while (result.next()){
+                String name = result.getString("name");
+                try {
+                    if (name.equals(billboard)) {
+                        billboardSchedules.add(result.getString("name"));
+                    }
+                } catch (NullPointerException e) { }
+            }
+            return billboardSchedules;
+        }
+
+        /**
          * Method to edit a schedule in the scheduling database.
          * @param name          : name of the schduling
-         * @param billboardName :: Name of the billboard being Scheduled
+         * @param billboardName : Name of the billboard being Scheduled
          * @param date          : Date to be scheduled
          * @param time          : Time to be scheduled
-         * @param duration      :: how long the billboard will be shceduled for
+         * @param duration      : how long the billboard will be shceduled for
          * @throws SQLException
          *
          */
-
-
         public boolean edit(String name, String billboardName, LocalDate date, LocalTime time, Duration duration) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
             Long storeDuration = duration.toMinutes();
@@ -1097,19 +1135,6 @@ public class MariaDB {
                 return false;
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
 
