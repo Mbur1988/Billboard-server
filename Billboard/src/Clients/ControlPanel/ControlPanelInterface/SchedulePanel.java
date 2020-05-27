@@ -4,15 +4,20 @@ import Clients.ControlPanel.ControlPanelTools.TimeSetter;
 
 import static Clients.ControlPanel.ControlPanel.lists;
 import static Clients.ControlPanel.ControlPanelTools.DateChooser.chooseDate;
+import static Clients.ControlPanel.ControlPanelTools.DateChooser.clearDate;
+import static Clients.ControlPanel.ControlPanelTools.DurationSetter.clearDuration;
 import static Clients.ControlPanel.ControlPanelTools.DurationSetter.setDuration;
+import static Clients.ControlPanel.ControlPanelTools.TimeSetter.clearTime;
 import static Clients.ControlPanel.ControlPanelTools.TimeSetter.setTime;
 import static Clients.ControlPanel.ControlPanelTools.Tools.addButton;
+import static Clients.ControlPanel.ControlPanelTools.Tools.addLabel;
 
 import javax.swing.*;
 import java.awt.*;
 
 class SchedulePanel extends ControlPanelInterface {
 
+    private static JLabel lbl_message;
     static DefaultListModel scheduleListModel;
     static DefaultListModel billboardListModel;
     private static JList scheduleList;
@@ -37,7 +42,7 @@ class SchedulePanel extends ControlPanelInterface {
         // Title label for change password details
         JLabel lbl_schedule = new JLabel("Schedule Billboard");
         lbl_schedule.setFont(new Font("Courier", Font.PLAIN, 40));
-        lbl_schedule.setBounds(((screenWidth / 3)),0, 450, 50);
+        lbl_schedule.setBounds((screenWidth / 3),0, 450, 50);
         schedulePanel.add(lbl_schedule);
 
         // Title label for the billboards list
@@ -49,6 +54,9 @@ class SchedulePanel extends ControlPanelInterface {
         chooseDate();
         setTime();
         setDuration();
+
+        lbl_message = new JLabel("");
+        addLabel(schedulePanel, lbl_message, (screenWidth / 3), 430, 340, 50);
 
         // Create and add a default list model
         billboardListModel = new DefaultListModel();
@@ -86,6 +94,31 @@ class SchedulePanel extends ControlPanelInterface {
         addButton(schedulePanel, b_save, ((screenWidth / 3)), 380, 160, 30);
         b_save.setVisible(false);
 
+        // Handle button press events
+        b_add.addActionListener(event -> addSchedule());
+        b_save.addActionListener(event -> saveSchedule());
+        b_clear.addActionListener(event -> clearFields());
+        b_load.addActionListener(event -> loadSchedule());
+        b_delete.addActionListener(event -> deleteSchedule());
+    }
+
+    private static void addSchedule() {
+    }
+
+    private static void saveSchedule() {
+    }
+
+    private static void clearFields() {
+        clearDate();
+        clearTime();
+        clearDuration();
+        lbl_message.setText("");
+    }
+
+    private static void loadSchedule() {
+    }
+
+    private static void deleteSchedule() {
     }
 
 }
