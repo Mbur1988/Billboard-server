@@ -1134,6 +1134,22 @@ public class MariaDB {
                 return false;
             }
         }
+
+        public ArrayList<String> getDaySchedules(String day) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE day = '" + day + "';");
+            ArrayList<String> daySchedules = new ArrayList<>();
+            while (result.next()) {
+                    String scheduleDay = result.getString("name");
+                    String billboardName = result.getString("billboardName");
+                    int recur = result.getInt("recur");
+                    daySchedules.add(scheduleDay);
+                    daySchedules.add(billboardName);
+                    daySchedules.add(String.valueOf(recur));
+
+            }
+            return daySchedules;
+        }
+
     }
 }
 
