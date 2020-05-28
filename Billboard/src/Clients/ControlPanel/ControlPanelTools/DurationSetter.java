@@ -6,13 +6,14 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.schedulePanel;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.screenWidth;
+import static Clients.ControlPanel.ControlPanelTools.DateChooser.minRec;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 
 public class DurationSetter {
 
     public static long duration;
     private static JLabel lbl_duration;
-    private static JTextField tf_duration;
+    public static JTextField tf_duration;
 
     public static void setDuration() {
 
@@ -38,6 +39,7 @@ public class DurationSetter {
             public void insertUpdate(DocumentEvent e) {
                 try {
                     duration = Integer.parseInt(tf_duration.getText());
+
                 } catch (NumberFormatException i) {
                     if (tf_duration != null) {
                         JOptionPane.showMessageDialog(schedulePanel,
@@ -46,12 +48,14 @@ public class DurationSetter {
                     }
                 }
                 lbl_duration.setText("Set duration: " + duration);
+                checkDurationVsRecurrence.checkDVsR(minRec, duration);
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 try {
                     duration = Integer.parseInt(tf_duration.getText());
+
                 } catch (NumberFormatException i) {
                     if (tf_duration != null) {
 //                        JOptionPane.showMessageDialog(schedulePanel,
@@ -65,6 +69,7 @@ public class DurationSetter {
             public void changedUpdate(DocumentEvent e) {
                 try {
                     duration = Integer.parseInt(tf_duration.getText());
+                    checkDurationVsRecurrence.checkDVsR(minRec, duration);
                 } catch (NumberFormatException i) {
                     if (tf_duration != null) {
                         JOptionPane.showMessageDialog(schedulePanel,
@@ -73,6 +78,7 @@ public class DurationSetter {
                     }
                 }
                 lbl_duration.setText("Set duration: " + duration);
+                checkDurationVsRecurrence.checkDVsR(minRec, duration);
             }
         });
     }

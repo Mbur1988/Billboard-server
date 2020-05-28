@@ -16,11 +16,6 @@ import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 
 class SchedulePanel extends ControlPanelInterface {
 
-    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    private static final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-    private static final int [] hours = IntStream.range(0, 24).toArray(); // From 0 to 23
-    private static final int [] minutes = IntStream.range(0, 60).toArray(); // From 0 to 59
-
     private static Schedule schedule;
     private static JLabel lbl_message;
     static DefaultListModel scheduleListModel;
@@ -44,7 +39,7 @@ class SchedulePanel extends ControlPanelInterface {
         lbl_select.setFont(new Font("Courier", Font.PLAIN, 40));
         schedulePanel.add(lbl_select);
 
-        // Title label for change password details
+        // Title label for schedule billboard
         JLabel lbl_schedule = new JLabel("Schedule Billboard");
         lbl_schedule.setFont(new Font("Courier", Font.PLAIN, 40));
         lbl_schedule.setBounds((screenWidth / 3),0, 450, 50);
@@ -56,7 +51,7 @@ class SchedulePanel extends ControlPanelInterface {
         lbl_schedules.setFont(new Font("Courier", Font.PLAIN, 40));
         schedulePanel.add(lbl_schedules);
 
-        chooseDate();
+        selectDay();
         setTime();
         setDuration();
 
@@ -109,6 +104,10 @@ class SchedulePanel extends ControlPanelInterface {
 
     private static void addSchedule() {
         // if any required fields are empty then display a message to the user and return
+
+        // FOR TESTING:
+        String date = "daaaate";
+
         if (date == null) {
             lbl_message.setText("Select a date");
             return;
@@ -191,7 +190,7 @@ class SchedulePanel extends ControlPanelInterface {
     }
 
     private static void resetFields() {
-        clearDate();
+       // clearDate();  // Commented out for testing
         clearTime();
         clearDuration();
     }

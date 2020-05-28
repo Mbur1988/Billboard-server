@@ -13,6 +13,7 @@ import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -410,4 +411,26 @@ public class MariaDBTest {
 
         undertest.scheduling.edit("schedule1", "editbillboard1", "Thursday", editTestTime, 4, 4);
     }
+
+    @Test
+    public void getdaySchule() throws SQLException{
+
+     List<String> actual = undertest.scheduling.getDaySchedules("thursday");
+       List<String> expected = Arrays.asList("schedule1", "editbillboard1", "5");
+       assertEquals(actual, expected);
+
+    }
+
+    //**
+//    //Test21 uses uses getAllBillboards method to retrieve the names of all billboards in the database. Uses a predefined list to test against.
+//    //**
+//
+//    @Test
+////    public void allEntries() throws SQLException{
+////        List<String> actual = undertest.billboards.getAllBillboards();
+////        List<String> expected = Arrays.asList("testBoard", "test1", "test25", "boolean test1");
+////
+////       assertEquals(actual, expected);
+//
+//    }
 }
