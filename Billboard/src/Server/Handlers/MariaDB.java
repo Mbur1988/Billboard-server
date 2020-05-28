@@ -1061,6 +1061,21 @@ public class MariaDB {
         }
 
         /**
+         * Deletes the specified schedule entry from the database
+         *
+         * @param billboard: name of the scheduled billboard
+         * @throws SQLException
+         */
+        public boolean deleteScheduledBillboard(String billboard) throws SQLException {
+            statement.executeQuery("DELETE FROM scheduling WHERE billboardName='" + billboard + "';");
+            if (checkForSchedule(billboard)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        /**
          * Method to retrieve all of the schedule entries in the database, saving the names in a list.
          * Returns the list as a String list.
          *

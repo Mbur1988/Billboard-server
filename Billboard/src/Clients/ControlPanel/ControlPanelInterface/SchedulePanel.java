@@ -4,12 +4,11 @@ import SerializableObjects.Schedule;
 import Tools.Log;
 import javax.swing.*;
 import java.awt.*;
-import java.time.format.DateTimeFormatter;
-import java.util.stream.IntStream;
+import java.io.IOException;
 
 import static Clients.Client.*;
 import static Clients.ControlPanel.ControlPanel.*;
-import static Clients.ControlPanel.ControlPanelTools.DateChooser.*;
+import static Clients.ControlPanel.ControlPanelTools.DayChooser.*;
 import static Clients.ControlPanel.ControlPanelTools.DurationSetter.*;
 import static Clients.ControlPanel.ControlPanelTools.TimeSetter.*;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
@@ -56,7 +55,7 @@ class SchedulePanel extends ControlPanelInterface {
         setDuration();
 
         lbl_message = new JLabel("");
-        addLabel(schedulePanel, lbl_message, (screenWidth / 3), 430, 340, 50);
+        addLabel(schedulePanel, lbl_message, (screenWidth / 3), 500, 340, 50);
 
         // Create and add a default list model
         billboardListModel = new DefaultListModel();
@@ -76,7 +75,7 @@ class SchedulePanel extends ControlPanelInterface {
         schedulePanel.add(billboardScrollPane);
 
         JScrollPane scheduleScrollPane = new JScrollPane(scheduleList);
-        scheduleScrollPane.setBounds(((screenWidth / 3) * 2), 100, 300, 400);
+        scheduleScrollPane.setBounds(((screenWidth / 3) * 2), 100, 300, 370);
         schedulePanel.add(scheduleScrollPane);
 
         // Create buttons
@@ -87,11 +86,11 @@ class SchedulePanel extends ControlPanelInterface {
         b_save = new JButton("Save");
 
         // Add buttons to panel
-        addButton(schedulePanel, b_add, ((screenWidth / 3)), 380, 160, 30);
-        addButton(schedulePanel, b_clear, ((screenWidth / 3)), 345, 160, 30);
-        addButton(schedulePanel, b_delete, ((screenWidth / 3) * 2) + 150, 500, 150, 30);
-        addButton(schedulePanel, b_load, (screenWidth / 3) * 2, 500, 150, 30);
-        addButton(schedulePanel, b_save, ((screenWidth / 3)), 380, 160, 30);
+        addButton(schedulePanel, b_add, (screenWidth / 3), 470, 160, 30);
+        addButton(schedulePanel, b_clear, ((screenWidth / 3) + 170), 470, 160, 30);
+        addButton(schedulePanel, b_delete, ((screenWidth / 3) * 2) + 150, 470, 150, 30);
+        addButton(schedulePanel, b_load, (screenWidth / 3) * 2, 470, 150, 30);
+        addButton(schedulePanel, b_save, (screenWidth / 3), 470, 160, 30);
         b_save.setVisible(false);
 
         // Handle button press events
@@ -104,15 +103,7 @@ class SchedulePanel extends ControlPanelInterface {
 
     private static void addSchedule() {
         // if any required fields are empty then display a message to the user and return
-
-        // FOR TESTING:
-        String date = "daaaate";
-
-        if (date == null) {
-            lbl_message.setText("Select a date");
-            return;
-        }
-        else if (duration == 0) {
+        if (duration == 0) {
             lbl_message.setText("Enter a duration");
             return;
         }
@@ -175,22 +166,62 @@ class SchedulePanel extends ControlPanelInterface {
     }
 
     private static void deleteSchedule() {
+        String schedule = (String) scheduleList.getSelectedValue();
+        user.setAction("Remove Billboard");
+        // Attempt connection to server
+        if (AttemptConnect()) {
+            // Try a login attempt
+            try {
+                // Send user object to server
+                objectStreamer.Send(user);
+                // send the username of the user to delete
+                dos.writeUTF(schedule);
+                // await confirmation that the user has been successfully deleted
+                if (dis.readBoolean()) {
+                    // remove user from list
+                    listUsers.users.remove(schedule);
+                    scheduleListModel.removeElement(schedule);
+                    // display message to the user
+                    lbl_message.setText("Schedule deleted");
+                    Log.Confirmation("Schedule successfully deleted");
+                }
+                // Post message to user if unable to delete user
+                else {
+                    lbl_message.setText("Schedule not deleted");
+                    Log.Error("Error when attempting to delete Schedule");
+                }
+            }
+            // catch any unanticipated exceptions and print to console
+            catch (IOException e) {
+                e.printStackTrace();
+                Log.Error("Failed to delete Schedule");
+            }
+            // Disconnect from server
+            AttemptDisconnect();
+        }
+        // Post message to user if unable to connect to server
+        else {
+            Log.Error("Unable to connect to server");
+        }
+        // clear all user input fields
+        resetFields();
     }
 
     private static void populateSchedule() {
-//        Log.Message(date.toString() + "     " + time.toString());
-//        // populate the schedule
-//        schedule = new Schedule(
-//                date.format(dateFormatter) + "." + time,
-//                (String) billboardList.getSelectedValue(),
-//                date,
-//                time,
-//                Duration.ofMinutes(duration),
-//                0);
+        String billboard = (String)billboardList.getSelectedValue();
+        String day = (String) cb_day.getSelectedItem();
+        // populate the schedule
+        schedule = new Schedule(
+                day + "_" + time + "_" + billboard,
+                billboard,
+                day,
+                time,
+                duration,
+                0);
     }
 
     private static void resetFields() {
-       // clearDate();  // Commented out for testing
+        clearDay();
         clearTime();
         clearDuration();
     }

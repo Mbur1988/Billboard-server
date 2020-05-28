@@ -66,8 +66,9 @@ public class ControlPanelInterface {
             EditUsersPanel.editUserScreen();
         }
 
-        // Add exit buttons to all panels
+        // Add exit and logout buttons to all panels
         Tools.addExitButton(screenWidth - 105, screenHeight - 60, 100, 30);
+        //Tools.addLogoutButton(screenWidth - 210, screenHeight - 60, 100, 30);
 
         controlPanelScreen.getContentPane().add(tabs);
         controlPanelScreen.setLayout(null);

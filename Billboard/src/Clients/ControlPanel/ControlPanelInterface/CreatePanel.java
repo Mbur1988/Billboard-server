@@ -26,7 +26,9 @@ import static Clients.ControlPanel.ControlPanel.*;
 import static Clients.ControlPanel.ControlPanelInterface.EditPanel.allListModel;
 import static Clients.ControlPanel.ControlPanelInterface.ListPanel.listModel;
 import static Clients.ControlPanel.ControlPanelInterface.SchedulePanel.billboardListModel;
+import static Clients.ControlPanel.ControlPanelInterface.SchedulePanel.scheduleListModel;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
+import static Clients.ControlPanel.LoginInterface.LoginInterface.getSchedulesList;
 import static Tools.ColorIndex.*;
 
 class CreatePanel extends ControlPanelInterface {
@@ -634,43 +636,37 @@ class CreatePanel extends ControlPanelInterface {
                 objectStreamer.Send(user);
                 // send the name of the billboard to be deleted from the database
                 dos.writeUTF(name);
-                // check if billboard scheduled
-                if (!dis.readBoolean()) {
-                    // check if deleted successfully
-                    if (dis.readBoolean()) {
-                        // remove the billboard from the list
-                        listUserBillboards.userBillboards.remove(name);
-                        listBillboards.billboards.remove(name);
-                        if (usersListModel != null) {
-                            usersListModel.removeElement(name);
-                        }
-                        if (billboardListModel != null) {
-                            billboardListModel.removeElement(name);
-                        }
-                        if (allListModel != null) {
-                            allListModel.removeElement(name);
-                        }
-                        else if (listModel != null) {
-                            listModel.removeElement(name);
-                        }
-                        // display confirmation message to the user and post log confirmation
-                        lbl_message.setText("Billboard deleted");
-                        Log.Confirmation("Billboard successfully deleted");
+                // check if deleted successfully
+                if (dis.readBoolean()) {
+                    // remove the billboard from the list
+                    listUserBillboards.userBillboards.remove(name);
+                    listBillboards.billboards.remove(name);
+                    if (usersListModel != null) {
+                        usersListModel.removeElement(name);
                     }
-                    // If billboard not deleted then display message to the user
-                    else {
-                        lbl_message.setText("Billboard not deleted");
-                        Log.Error("Error when attempting to delete billboard");
+                    if (billboardListModel != null) {
+                        billboardListModel.removeElement(name);
                     }
+                    if (allListModel != null) {
+                        allListModel.removeElement(name);
+                    } else if (listModel != null) {
+                        listModel.removeElement(name);
+                    }
+                    // display confirmation message to the user and post log confirmation
+                    lbl_message.setText("Billboard deleted");
+                    Log.Confirmation("Billboard successfully deleted");
+                    getSchedulesList();
+                    scheduleListModel.clear();
+                    scheduleListModel.addAll(listSchedules.schedules);
                 }
-                // If billboard currently scheduled then display message to the user
+                // If billboard not deleted then display message to the user
                 else {
-                    lbl_message.setText("Billboard is currently scheduled");
-                    Log.Error("Can't delete scheduled billboard");
+                    lbl_message.setText("Billboard not deleted");
+                    Log.Error("Error when attempting to delete billboard");
                 }
             }
             // catch any unanticipated exceptions and print to console
-            catch (IOException e) {
+            catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
                 Log.Error("Failed to delete billboard");
             }

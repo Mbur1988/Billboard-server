@@ -15,7 +15,9 @@ import static Clients.ControlPanel.ControlPanel.*;
 import static Clients.ControlPanel.ControlPanelInterface.CreatePanel.usersListModel;
 import static Clients.ControlPanel.ControlPanelInterface.ListPanel.listModel;
 import static Clients.ControlPanel.ControlPanelInterface.SchedulePanel.billboardListModel;
+import static Clients.ControlPanel.ControlPanelInterface.SchedulePanel.scheduleListModel;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
+import static Clients.ControlPanel.LoginInterface.LoginInterface.getSchedulesList;
 import static Tools.ColorIndex.*;
 
 class EditPanel extends ControlPanelInterface {
@@ -361,13 +363,15 @@ class EditPanel extends ControlPanelInterface {
                     }
                     if (allListModel != null) {
                         allListModel.removeElement(name);
-                    }
-                    else if (listModel != null) {
+                    } else if (listModel != null) {
                         listModel.removeElement(name);
                     }
                     // display confirmation message to the user and post log confirmation
                     lbl_message.setText("Billboard deleted");
                     Log.Confirmation("Billboard successfully deleted");
+                    getSchedulesList();
+                    scheduleListModel.clear();
+                    scheduleListModel.addAll(listSchedules.schedules);
                 }
                 // If billboard not deleted then display message to the user
                 else {
@@ -376,7 +380,7 @@ class EditPanel extends ControlPanelInterface {
                 }
             }
             // catch any unanticipated exceptions and print to console
-            catch (IOException e) {
+            catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
                 Log.Error("Failed to delete billboard");
             }

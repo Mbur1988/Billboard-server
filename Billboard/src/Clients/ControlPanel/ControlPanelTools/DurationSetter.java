@@ -6,22 +6,22 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.schedulePanel;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.screenWidth;
-import static Clients.ControlPanel.ControlPanelTools.DateChooser.minRec;
+import static Clients.ControlPanel.ControlPanelTools.DayChooser.minRec;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 
 public class DurationSetter {
 
-    public static long duration;
+    public static int duration = 0;
     private static JLabel lbl_duration;
     public static JTextField tf_duration;
 
     public static void setDuration() {
 
         lbl_duration = new JLabel("Set duration: ");
-        addLabel(schedulePanel, lbl_duration, ((screenWidth / 3)), 250, 180, 50);
+        addLabel(schedulePanel, lbl_duration, ((screenWidth / 3)), 380, 180, 50);
 
         tf_duration = new JTextField("duration (mins)");
-        addTextfield(schedulePanel, tf_duration, ((screenWidth / 3)), 300, 160, 40);
+        addTextfield(schedulePanel, tf_duration, ((screenWidth / 3)), 420, 160, 40);
 
         tf_duration.addFocusListener(new FocusListener() {
             @Override

@@ -136,9 +136,7 @@ public class LoginInterface {
             if (access[0]) {
                 getUserBillboardsList();
             }
-            if (access[1]) {
-                getBillboardsList();
-            }
+            getBillboardsList();
             if (access[2]) {
                 getSchedulesList();
             }
@@ -164,7 +162,7 @@ public class LoginInterface {
         listBillboards = new ListBillboards(list);
     }
 
-    private static void getSchedulesList() throws IOException, ClassNotFoundException {
+    public static void getSchedulesList() throws IOException, ClassNotFoundException {
         dos.writeUTF("List Schedules");
         if (dis.readBoolean()) {
             ArrayList<String> list = (ArrayList<String>) objectStreamer.Receive();

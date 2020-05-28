@@ -2,28 +2,28 @@ package Clients.ControlPanel.ControlPanelTools;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.time.LocalTime;
-import java.util.stream.IntStream;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.schedulePanel;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.screenWidth;
+import static Clients.ControlPanel.ControlPanelTools.DurationSetter.tf_duration;
+import static Clients.ControlPanel.ControlPanelTools.DurationSetter.duration;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
+import static java.lang.Integer.parseInt;
 
-public class DateChooser {
+public class DayChooser {
 
     // Variables required by the class
     private static final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     private static JLabel lbl_day;
     private static JLabel lbl_mins;
     private static JLabel lbl_recur;
-    private static JComboBox<String> cb_day;
+    public static JComboBox<String> cb_day;
     private static JRadioButton rb_none;
     private static JRadioButton rb_daily;
     private static JRadioButton rb_hourly;
     private static JRadioButton rb_mins;
     private static JButton b_upMins;
     private static JButton b_dwnMins;
-    public static int minRec;
-   // public static boolean minuteRecur;
+    public static int minRec = 999999;
 
     public static void selectDay() {
 
@@ -33,13 +33,13 @@ public class DateChooser {
         lbl_recur = new JLabel("Recur:");
 
         // Add labels to the panel
-        addLabel(schedulePanel, lbl_day, (screenWidth/3), 50, 300, 40);
-        addLabel(schedulePanel, lbl_recur, (screenWidth/3), 90, 300, 40);
-        addLabel(schedulePanel, lbl_mins, (screenWidth/3) + 365, 90, 50, 40);
+        addLabel(schedulePanel, lbl_day, (screenWidth/3), 90, 300, 40);
+        addLabel(schedulePanel, lbl_recur, (screenWidth/3), 130, 300, 40);
+        addLabel(schedulePanel, lbl_mins, (screenWidth/3) + 230, 250, 50, 40);
 
         // Create and add the combo box
         cb_day = new JComboBox<>(days);
-        addCombobox(schedulePanel, cb_day, (screenWidth/3) + 150, 50, 300, 40);
+        addCombobox(schedulePanel, cb_day, (screenWidth/3) + 130, 90, 200, 40);
 
         // Create radio buttons
         rb_none = new JRadioButton("None", true);
@@ -48,10 +48,10 @@ public class DateChooser {
         rb_mins = new JRadioButton("Mins:");
 
         // Add radio buttons
-        addRadioButton(schedulePanel, rb_none, (screenWidth/3) + 65, 90, 70, 40);
-        addRadioButton(schedulePanel, rb_daily, (screenWidth/3) + 135, 90, 70, 40);
-        addRadioButton(schedulePanel, rb_hourly, (screenWidth/3) + 205, 90, 80, 40);
-        addRadioButton(schedulePanel, rb_mins, (screenWidth/3) + 285, 90, 80, 40);
+        addRadioButton(schedulePanel, rb_none, (screenWidth/3) + 130, 130, 90, 40);
+        addRadioButton(schedulePanel, rb_daily, (screenWidth/3) + 130, 170, 90, 40);
+        addRadioButton(schedulePanel, rb_hourly, (screenWidth/3) + 130, 210, 90, 40);
+        addRadioButton(schedulePanel, rb_mins, (screenWidth/3) + 130, 250, 90, 40);
 
         // Create a group for the radio buttons
         ButtonGroup group = new ButtonGroup();
@@ -67,8 +67,8 @@ public class DateChooser {
         b_dwnMins = new JButton("-");
 
         // Add buttons
-        addButton(schedulePanel, b_upMins,(screenWidth/3) + 415, 95, 80, 15);
-        addButton(schedulePanel, b_dwnMins,(screenWidth/3) + 415, 115, 80, 15);
+        addButton(schedulePanel, b_upMins,(screenWidth/3) + 265, 250, 50, 20);
+        addButton(schedulePanel, b_dwnMins,(screenWidth/3) + 265, 270, 50, 20);
 
         // Set default state of the buttons
         b_upMins.setEnabled(false);
@@ -79,6 +79,26 @@ public class DateChooser {
             AbstractButton aButton = (AbstractButton) actionEvent.getSource();
             b_upMins.setEnabled(aButton.getText().equals("Mins:"));
             b_dwnMins.setEnabled(aButton.getText().equals("Mins:"));
+            if (aButton.getText().equals("None")) {
+                tf_duration.setText("");
+                duration = 0;
+                minRec = 999999;
+            }
+            else if (aButton.getText().equals("Daily")) {
+                tf_duration.setText("");
+                duration = 0;
+                minRec = 1440;
+            }
+            else if (aButton.getText().equals("Hourly")) {
+                tf_duration.setText("");
+                duration = 0;
+                minRec = 60;
+            }
+            else {
+                tf_duration.setText("");
+                duration = 0;
+                minRec = parseInt(lbl_mins.getText());
+            }
         };
 
         b_upMins.addActionListener(e -> {
@@ -107,6 +127,12 @@ public class DateChooser {
         rb_daily.addActionListener(rb_ActionListener);
         rb_hourly.addActionListener(rb_ActionListener);
         rb_mins.addActionListener(rb_ActionListener);
+    }
 
+    public static void clearDay() {
+        cb_day.setSelectedItem("Monday");
+        rb_none.setSelected(true);
+        minRec = 999999;
+        lbl_mins.setText("0");
     }
 }

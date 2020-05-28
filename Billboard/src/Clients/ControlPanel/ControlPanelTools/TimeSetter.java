@@ -1,6 +1,7 @@
 package Clients.ControlPanel.ControlPanelTools;
 
 import javax.swing.*;
+import java.sql.Time;
 import java.time.LocalTime;
 
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.schedulePanel;
@@ -9,9 +10,9 @@ import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 
 public class TimeSetter {
 
-    public static LocalTime time;
     private static int hour = 00;
     private static int min = 00;
+    public static LocalTime time = LocalTime.of(hour, min);
     private static JLabel lbl_time;
 
     public static void setTime() {
@@ -71,11 +72,11 @@ public class TimeSetter {
             lbl_time.setText("Hour: " + hour + "    " + "Min: " + min);
         });
 
-        addLabel(schedulePanel, lbl_time, ((screenWidth / 3)), 200, 200, 20);
-        addButton(schedulePanel, b_upHour,((screenWidth / 3)), 170, 80, 20);
-        addButton(schedulePanel, b_dwnHour,((screenWidth / 3)), 230, 80, 20);
-        addButton(schedulePanel, b_upMin,((screenWidth / 3) + 90), 170, 80, 20);
-        addButton(schedulePanel, b_dwnMin,((screenWidth / 3) + 90), 230, 80, 20);
+        addLabel(schedulePanel, lbl_time, ((screenWidth / 3)), 330, 200, 20);
+        addButton(schedulePanel, b_upHour,((screenWidth / 3)), 300, 80, 20);
+        addButton(schedulePanel, b_dwnHour,((screenWidth / 3)), 360, 80, 20);
+        addButton(schedulePanel, b_upMin,((screenWidth / 3) + 90), 300, 80, 20);
+        addButton(schedulePanel, b_dwnMin,((screenWidth / 3) + 90), 360, 80, 20);
     }
 
     public static void clearTime() {

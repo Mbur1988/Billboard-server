@@ -110,6 +110,84 @@ public class Tools {
     }
 
     /**
+     * addLogoutButton will add the exit button to each panel and utilise the one action
+     * listener to perform the close action.
+     *
+     * Called once in ControlPanelInterface.java.
+     *
+     * The parameters will ensure the button is always in the same location and size on every panel.
+     * @param x location of the button.
+     * @param y location of the button.
+     * @param width of the button.
+     * @param height of the button.
+     */
+    public static void addLogoutButton(int x, int y, int width, int height){
+
+        class LogoutButton implements ActionListener{
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (user.isVerified()) {
+                    user.setAction("Log Out");
+                    // Attempt connection to server
+                    if (AttemptConnect()) {
+                        // Try a login attempt
+                        try {
+                            // Send user object to server
+                            objectStreamer.Send(user);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            Log.Error("User attempt request failed");
+                        }
+                        // Disconnect from server
+                        AttemptDisconnect();
+                    }
+                    // Post message to user if unable to connect to server
+                    else {
+                        Log.Error("Unable to connect to server");
+                    }
+                    LoginInterface.loginScreen();
+                    ControlPanelInterface.controlPanelScreen.dispose();
+                }
+            }
+        }
+
+        // An individual button needs to be created for each panel.
+        // Java does not allow a button to have more than 1 parent class, meaning only the last
+        // .add() called would be implemented. The previous would be overwritten.
+
+        JButton b_LogoutCreate = new JButton("Logout");
+        b_LogoutCreate.setBounds(x, y, width, height);
+        b_LogoutCreate.addActionListener(new LogoutButton());
+
+        JButton b_LogoutEdit = new JButton("Logout");
+        b_LogoutEdit.setBounds(x, y, width, height);
+        b_LogoutEdit.addActionListener(new LogoutButton());
+
+        JButton b_LogoutList = new JButton("Logout");
+        b_LogoutList.setBounds(x, y, width, height);
+        b_LogoutList.addActionListener(new LogoutButton());
+
+        JButton b_LogoutSched = new JButton("Logout");
+        b_LogoutSched.setBounds(x, y, width, height);
+        b_LogoutSched.addActionListener(new LogoutButton());
+
+        JButton b_LogoutPW = new JButton("Logout");
+        b_LogoutPW.setBounds(x, y, width, height);
+        b_LogoutPW.addActionListener(new LogoutButton());
+
+        JButton b_LogoutEU = new JButton("Logout");
+        b_LogoutEU.setBounds(x, y, width, height);
+        b_LogoutEU.addActionListener(new LogoutButton());
+
+        ControlPanelInterface.createPanel.add(b_LogoutCreate);
+        ControlPanelInterface.editPanel.add(b_LogoutEdit);
+        ControlPanelInterface.listPanel.add(b_LogoutList);
+        ControlPanelInterface.schedulePanel.add(b_LogoutSched);
+        ControlPanelInterface.passwordPanel.add(b_LogoutPW);
+        ControlPanelInterface.editUserPanel.add(b_LogoutEU);
+    }
+
+    /**
      * addLabel places a label of chosen size, location and text onto the desired screen.
      *
      * @param frame Name of frame to add the label to in the format: class.frameName
