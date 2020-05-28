@@ -10,29 +10,20 @@ import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 
 public class DateChooser {
 
-    private static final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-//    private static final int[] hours = IntStream.range(0, 24).toArray(); // From 0 to 23
-//    private static final int[] minutes = IntStream.range(0, 60).toArray(); // From 0 to 59
-    private static int mins;
-
     // Variables required by the class
-    //private static JLabel lbl_none;
+    private static final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     private static JLabel lbl_day;
-    private static JLabel lbl_hour;
     private static JLabel lbl_mins;
-    private static JLabel lbl_duration;
     private static JLabel lbl_recur;
     private static JComboBox<String> cb_day;
-//    private static JComboBox<String> cb_hour;
-//    private static JComboBox<String> cb_min;
-//    private static JTextField tf_mins;
     private static JRadioButton rb_none;
     private static JRadioButton rb_daily;
     private static JRadioButton rb_hourly;
     private static JRadioButton rb_mins;
     private static JButton b_upMins;
     private static JButton b_dwnMins;
-    private static int min;
+    public static int minRec;
+    public static boolean minuteRecur;
 
     public static void selectDay() {
 
@@ -79,32 +70,37 @@ public class DateChooser {
         addButton(schedulePanel, b_upMins,(screenWidth/3) + 415, 95, 80, 15);
         addButton(schedulePanel, b_dwnMins,(screenWidth/3) + 415, 115, 80, 15);
 
+        // Set default state of the buttons
+        b_upMins.setEnabled(false);
+        b_dwnMins.setEnabled(false);
+
         // Create action listeners
         ActionListener rb_ActionListener = actionEvent -> {
             AbstractButton aButton = (AbstractButton) actionEvent.getSource();
             b_upMins.setEnabled(aButton.getText().equals("Mins:"));
             b_dwnMins.setEnabled(aButton.getText().equals("Mins:"));
+            minuteRecur = true;
         };
 
         b_upMins.addActionListener(e -> {
-            if (min <= 59) {
-                min ++;
+            if (minRec <= 59) {
+                minRec ++;
             }
-            if (min > 59) {
-                min = 0;
+            if (minRec > 59) {
+                minRec = 0;
             }
-            lbl_mins.setText("" + min);
+            lbl_mins.setText("" + minRec);
         });
 
         b_dwnMins.addActionListener(e -> {
-            if (min >= 0) {
-                min --;
+            if (minRec >= 0) {
+                minRec --;
             }
 
-            if (min < 0) {
-                min = 59;
+            if (minRec < 0) {
+                minRec = 59;
             }
-            lbl_mins.setText("" + min);
+            lbl_mins.setText("" + minRec);
         });
 
         // Add the action listener to the radio buttons]
