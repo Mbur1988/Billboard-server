@@ -9,8 +9,6 @@ import Tools.PropertyReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
-import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -895,44 +893,44 @@ public class MariaDB {
          * Creates a new scheduling table
          * name: name of the scheduled billboard
          * Billboard Name: Name of the billboard being Scheduled
-         * Data: Date to be scheduled
+         * day: day to be scheduled
          * time: time to be scheduled
-         * duration: how long the billboard will be shceduled for
+         * duration: how long the billboard will be scheduled for
          *
          * @throws SQLException
          */
         private void CreateSchedulingTable() throws SQLException {
-            statement.executeQuery("CREATE TABLE scheduling (name VARCHAR(64) UNIQUE KEY, billboardName VARCHAR(64), date DATE, time TIME, duration INT);");
+            statement.executeQuery("CREATE TABLE scheduling (name VARCHAR(64) UNIQUE KEY, billboardName VARCHAR(64), day VARCHAR(10), time TIME, duration INT, recur INT);");
             Log.Confirmation("Table created: scheduling");
         }
 
         /**
          * Adds a scheduling table to the scheduling database
          *
-         * @param name          : name of the schduling
+         * @param name          : name of the scheduling
          * @param billboardName :: Name of the billboard being Scheduled
-         * @param date          : Date to be scheduled
+         * @param day          : day to be scheduled
          * @param time          : Time to be scheduled
-         * @param duration      :: how long the billboard will be shceduled for
+         * @param duration      :: how long the billboard will be scheduled for
          * @throws SQLException
          */
         public boolean AddSchedule(String name,
                                    String billboardName,
-                                   LocalDate date,
+                                   String day,
                                    LocalTime time,
-                                   Duration duration) throws SQLException {
+                                   int duration,
+                                   int recur) throws SQLException {
             if (checkForSchedule(name)) {
                 return false;
             } else {
-                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `scheduling`(name, billboardName, date, time, duration) VALUES (?, ?, ?, ?, ?)");
-
-                Long storeDuration = duration.toMinutes();
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `scheduling`(name, billboardName, day, time, duration, recur) VALUES (?, ?, ?, ?, ?, ?)");
 
                 prepareAdd.setString(1, name);
                 prepareAdd.setString(2, billboardName);
-                prepareAdd.setDate(3, Date.valueOf(date));
+                prepareAdd.setString(3, day);
                 prepareAdd.setTime(4, Time.valueOf(time));
-                prepareAdd.setLong(5, storeDuration);
+                prepareAdd.setInt(5, duration);
+                prepareAdd.setInt(6, recur);
 
                 prepareAdd.executeUpdate();
                 return true;
@@ -949,15 +947,14 @@ public class MariaDB {
             if (checkForSchedule(schedule.getScheduleName())) {
                 return false;
             } else {
-                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `scheduling`(name, billboardName, date, time, duration) VALUES (?, ?, ?, ?, ?)");
-
-                Long storeDuration = schedule.getDuration().toMinutes();
+                PreparedStatement prepareAdd = connection.prepareStatement("INSERT INTO `scheduling`(name, billboardName, day, time, duration, recur) VALUES (?, ?, ?, ?, ?, ?)");
 
                 prepareAdd.setString(1, schedule.getScheduleName());
                 prepareAdd.setString(2, schedule.getBillboardName());
-                prepareAdd.setDate(3, Date.valueOf(schedule.getDate()));
+                prepareAdd.setString(3, schedule.getDay());
                 prepareAdd.setTime(4, Time.valueOf(schedule.getTime()));
-                prepareAdd.setLong(5, storeDuration);
+                prepareAdd.setInt(5, schedule.getDuration());
+                prepareAdd.setInt(6, schedule.getRecur());
 
                 prepareAdd.executeUpdate();
                 return true;
@@ -1005,12 +1002,12 @@ public class MariaDB {
          * @param name: name of the schduled billboard
          * @throws SQLException
          */
-        public Long getScheduleDuration(String name) throws SQLException {
+        public int getScheduleDuration(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
             if (result.next()) {
-                return result.getLong("duration");
+                return result.getInt("duration");
             } else {
-                return null;
+                return 0;
             }
         }
 
@@ -1030,15 +1027,15 @@ public class MariaDB {
         }
 
         /**
-         * Gets the date of the schedule
+         * Gets the day of the schedule
          * @param name name of the schduled billboard
          * @return
          * @throws SQLException
          */
-        public LocalDate getScheduleDate(String name) throws SQLException {
+        public String getScheduleDay(String name) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
             if (result.next()) {
-                return result.getDate("date").toLocalDate();
+                return result.getString("day");
             } else {
                 return null;
             }
@@ -1106,30 +1103,32 @@ public class MariaDB {
          * Method to edit a schedule in the scheduling database.
          * @param name          : name of the schduling
          * @param billboardName : Name of the billboard being Scheduled
-         * @param date          : Date to be scheduled
+         * @param day          : Day to be scheduled
          * @param time          : Time to be scheduled
          * @param duration      : how long the billboard will be shceduled for
          * @throws SQLException
          *
          */
-        public boolean edit(String name, String billboardName, LocalDate date, LocalTime time, Duration duration) throws SQLException {
+        public boolean edit(String name, String billboardName, String day, LocalTime time, Integer duration, Integer recur) throws SQLException {
             ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
-            Long storeDuration = duration.toMinutes();
             if (result.next()) {
                 if (billboardName == null) {
                     billboardName = scheduling.getScheduleBillboard(name);
                 }
-                if (date == null) {
-                    date = scheduling.getScheduleDate(name);
+                if (day == null) {
+                    day = scheduling.getScheduleDay(name);
                 }
                 if (time == null) {
                     time = scheduling.getScheduleTime(name).toLocalTime();
                 }
                 if (duration == null){
-                    storeDuration = scheduling.getScheduleDuration(name);
+                    duration = scheduling.getScheduleDuration(name);
+                }
+                if (recur == null){
+                    recur = scheduling.getScheduleDuration(name);
                 }
                 scheduling.deleteScheduled(name);
-                scheduling.AddSchedule(name, billboardName, date, time, duration);
+                scheduling.AddSchedule(name, billboardName, day, time, duration, recur);
                 return true;
             } else {
                 return false;

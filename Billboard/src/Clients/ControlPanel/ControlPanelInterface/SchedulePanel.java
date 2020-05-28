@@ -175,14 +175,15 @@ class SchedulePanel extends ControlPanelInterface {
     }
 
     private static void populateSchedule() {
-        Log.Message(date.toString() + "     " + time.toString());
-        // populate the schedule
-        schedule = new Schedule(
-                date.format(dateFormatter) + "." + time,
-                (String) billboardList.getSelectedValue(),
-                date,
-                time,
-                Duration.ofMinutes(duration));
+//        Log.Message(date.toString() + "     " + time.toString());
+//        // populate the schedule
+//        schedule = new Schedule(
+//                date.format(dateFormatter) + "." + time,
+//                (String) billboardList.getSelectedValue(),
+//                date,
+//                time,
+//                Duration.ofMinutes(duration),
+//                0);
     }
 
     private static void resetFields() {

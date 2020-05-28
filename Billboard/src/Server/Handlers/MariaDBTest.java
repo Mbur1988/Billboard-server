@@ -47,14 +47,8 @@ public class MariaDBTest {
     static byte[] salt;
     static boolean existing = false;
     static byte[] test = new byte[56];
-    static LocalDate testDate = LocalDate.of(2020, 5,24);
-    static LocalDate editTestDate = LocalDate.of(2021, 6,5);
-
     static LocalTime testTime = LocalTime.of(4, 24);
     static LocalTime editTestTime = LocalTime.of(1, 36);
-
-    static Duration testDuration = Duration.ZERO.plus(43,MINUTES);
-    static Duration editTestDuration = Duration.ZERO.plus(59,MINUTES);
 
     @BeforeEach
      void NewMariaDB() throws SQLException {
@@ -343,18 +337,18 @@ public class MariaDBTest {
         undertest.users.delete("user1");
     }
 
-    //**
-    //Test5 Retrieves all usernames from the user's database.
-    //**
-    @Test
-    public void allUserEntries() throws SQLException {
-        if (!undertest.users.checkForUser("user1")) {
-            undertest.users.add("user1", "password1", 1, HashCredentials.CreateSalt());
-        }
-        List<String> expected = Arrays.asList("admin", "user1");
-        assertEquals(undertest.users.getAllUsernames(), expected);
-        undertest.users.delete("user1");
-    }
+//    //**
+//    //Test5 Retrieves all usernames from the user's database.
+//    //**
+//    @Test
+//    public void allUserEntries() throws SQLException {
+//        if (!undertest.users.checkForUser("user1")) {
+//            undertest.users.add("user1", "password1", 1, HashCredentials.CreateSalt());
+//        }
+//        List<String> expected = Arrays.asList("admin", "user1");
+//        assertEquals(undertest.users.getAllUsernames(), expected);
+//        undertest.users.delete("user1");
+//    }
 
     //**
     //Test6 tests the edit of and existing user.
@@ -390,7 +384,7 @@ public class MariaDBTest {
 
     @Test
     public void addScheduling1() throws SQLException{
-        undertest.scheduling.AddSchedule("schedule1", "billboard1", testDate, testTime, testDuration);
+        undertest.scheduling.AddSchedule("schedule1", "billboard1", "Thursday", testTime, 1, 0);
     }
 
     @Test
@@ -414,6 +408,6 @@ public class MariaDBTest {
     @Test
     public void editTest1() throws SQLException{
 
-        undertest.scheduling.edit("schedule1", "editbillboard1", editTestDate, editTestTime, editTestDuration);
+        undertest.scheduling.edit("schedule1", "editbillboard1", "Thursday", editTestTime, 4, 4);
     }
 }
