@@ -1,6 +1,8 @@
 package Clients.ControlPanel.ControlPanelTools;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
+import java.time.LocalTime;
 import java.util.stream.IntStream;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.schedulePanel;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.screenWidth;
@@ -11,6 +13,7 @@ public class DateChooser {
     private static final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 //    private static final int[] hours = IntStream.range(0, 24).toArray(); // From 0 to 23
 //    private static final int[] minutes = IntStream.range(0, 60).toArray(); // From 0 to 59
+    private static int mins;
 
     // Variables required by the class
     //private static JLabel lbl_none;
@@ -22,29 +25,26 @@ public class DateChooser {
     private static JComboBox<String> cb_day;
 //    private static JComboBox<String> cb_hour;
 //    private static JComboBox<String> cb_min;
-    //private static JTextField tf_duration;
-    //private static JTextField tf_mins;
+//    private static JTextField tf_mins;
     private static JRadioButton rb_none;
     private static JRadioButton rb_daily;
     private static JRadioButton rb_hourly;
     private static JRadioButton rb_mins;
+    private static JButton b_upMins;
+    private static JButton b_dwnMins;
+    private static int min;
 
     public static void selectDay() {
 
-        // Create the labels
-        //lbl_none = new JLabel("None");
+        // Create labels
         lbl_day = new JLabel("Day:");
-//        lbl_hour = new JLabel("Hour:");
-//        lbl_mins = new JLabel("Minutes:");
-//        lbl_duration = new JLabel("Duration:");
+        lbl_mins = new JLabel("00");
         lbl_recur = new JLabel("Recur:");
 
-        // Add the labels to the panel
+        // Add labels to the panel
         addLabel(schedulePanel, lbl_day, (screenWidth/3), 50, 300, 40);
-//        addLabel(schedulePanel, lbl_hour, (screenWidth/3), 90, 300, 40);
-//        addLabel(schedulePanel, lbl_mins, (screenWidth/3), 130, 300, 40);
-//        addLabel(schedulePanel, lbl_duration, (screenWidth/3), 170, 300, 40);
         addLabel(schedulePanel, lbl_recur, (screenWidth/3), 90, 300, 40);
+        addLabel(schedulePanel, lbl_mins, (screenWidth/3) + 365, 90, 50, 40);
 
         // Create and add the combo box
         cb_day = new JComboBox<>(days);
@@ -57,8 +57,44 @@ public class DateChooser {
         rb_mins = new JRadioButton("Mins:");
 
         // Add radio buttons
-        addRadioButton(schedulePanel, rb_none, (screenWidth/3) + 60, 90, 150, 40);
-       // addRadioButton(schedulePanel, rb_daily, (screenWidth/3) + 100, 90, 150, 40);
+        addRadioButton(schedulePanel, rb_none, (screenWidth/3) + 65, 90, 70, 40);
+        addRadioButton(schedulePanel, rb_daily, (screenWidth/3) + 135, 90, 70, 40);
+        addRadioButton(schedulePanel, rb_hourly, (screenWidth/3) + 205, 90, 80, 40);
+        addRadioButton(schedulePanel, rb_mins, (screenWidth/3) + 285, 90, 80, 40);
+
+        // Create a group for the radio buttons
+        ButtonGroup group = new ButtonGroup();
+
+        // Add radio buttons to group
+        group.add(rb_none);
+        group.add(rb_daily);
+        group.add(rb_hourly);
+        group.add(rb_mins);
+
+        // Create buttons
+        b_upMins = new JButton("+");
+        b_dwnMins = new JButton("-");
+
+        // Add buttons
+        addButton(schedulePanel, b_upMins,(screenWidth/3) + 415, 95, 80, 15);
+        addButton(schedulePanel, b_dwnMins,(screenWidth/3) + 415, 115, 80, 15);
+        
+//        // Create action listeners
+//        ActionListener rb_ActionListener = actionEvent -> {
+//            AbstractButton aButton = (AbstractButton) actionEvent.getSource();
+//            b_fileSelect.setEnabled(aButton.getText().equals("File:"));
+//            tf_path.setText("");
+//        };
+
+        b_upMins.addActionListener(e -> {
+            if (min <= 59) {
+                min ++;
+            }
+            if (min > 59) {
+                min = 0;
+            }
+            lbl_mins.setText("" + min);
+        });
 
     }
 }
