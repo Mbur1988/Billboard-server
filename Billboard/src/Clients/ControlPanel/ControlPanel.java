@@ -3,8 +3,7 @@ package Clients.ControlPanel;
 import Clients.Client;
 import Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface;
 import Clients.ControlPanel.LoginInterface.LoginInterface;
-import SerializableObjects.Lists;
-import SerializableObjects.User;
+import SerializableObjects.*;
 import Tools.Log;
 
 import java.io.IOException;
@@ -12,17 +11,16 @@ import java.io.IOException;
 public class ControlPanel extends Client {
 
     public static User user;
-    public static Lists lists;
+    public static ListUserBillboards listUserBillboards = new ListUserBillboards();
+    public static ListBillboards listBillboards = new ListBillboards();
+    public static ListSchedules listSchedules = new ListSchedules();
+    public static ListUsers listUsers = new ListUsers();
 
     public static void main(String[] args) {
         Log.Message("Control panel started");
+        // Set the network configuration from the properties file
         SetNetworkConfig();
-
-        //** Uncomment the below line for testing of control panel. **//
-        //** Remember to comment it again before any pull request is made **//
-
-         //ControlPanelInterface.controlPanelScreen();
-
+        // Start the control panel at the login screen
         LoginInterface.loginScreen();
     }
 

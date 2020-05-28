@@ -1,8 +1,7 @@
 package Clients.ControlPanel.LoginInterface;
 
 import Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface;
-import SerializableObjects.Lists;
-import SerializableObjects.User;
+import SerializableObjects.*;
 import Tools.HashCredentials;
 import Tools.Log;
 import javax.swing.*;
@@ -10,6 +9,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import static Tools.UserAccess.dec2bool;
 import static Clients.ControlPanel.ControlPanel.*;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.screenHeight;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.screenWidth;
@@ -28,10 +30,6 @@ public class LoginInterface {
 
         Tools.addExitButton(screenWidth - 105, screenHeight - 60, 100, 30);
 
-//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//        int screenWidth = screenSize.width;
-//        int screenHeight = screenSize.height;
-
         loginScreen.setExtendedState(JFrame.MAXIMIZED_BOTH);
         loginScreen.setResizable(false);
 
@@ -41,12 +39,6 @@ public class LoginInterface {
 
         Tools.addLabel_frame(LoginInterface.loginScreen, "lbl_pw", "Password:", (screenWidth/2)-80,
                 screenHeight/2, 160, 20, "Courier", 1, 20, 0, 0);
-
-//        JLabel label_Password = new JLabel("Password:");    // Password label.
-//        label_Password.setFont(new Font("Courier", Font.BOLD, 20));
-//        label_Password.setHorizontalAlignment(JLabel.CENTER);
-//        label_Password.setVerticalAlignment(JLabel.CENTER);
-//        label_Password.setBounds((screenWidth/2)-80,screenHeight/2, 160,20);
 
         JPasswordField pw = new JPasswordField(); // Password entry field.
         pw.setBounds((screenWidth/2) - 50, screenHeight/2 + 30, 100, 30);
@@ -60,13 +52,8 @@ public class LoginInterface {
         JTextField un = new JTextField(); // Username entry field.
         un.setBounds((screenWidth/2) - 50, (screenHeight/2) - 60, 100, 30);
 
-//        Tools.addButton_frame(LoginInterface.loginScreen, "b_Login", "Login", (screenWidth/2) - 50,
-//                screenHeight/2 + 100, 100, 30);
         JButton b_Login = new JButton("Login"); // Login button.
         b_Login.setBounds((screenWidth/2) - 50, screenHeight/2 + 100, 100, 30);
-
-//        JButton b_Exit = new JButton("Exit"); // Exit button.
-//        b_Exit.setBounds(screenWidth - 105, screenHeight - 35, 100, 30);
 
         // Add elements to the screen.
         loginScreen.getContentPane().add(pw);
@@ -81,13 +68,6 @@ public class LoginInterface {
         loginScreen.setUndecorated(true);
         loginScreen.setVisible(true);
 
-//        b_Exit.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {            // Close the screen on exit.
-//                loginScreen.dispose();
-//            }
-//        });
-
         b_Login.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 // Retrieve username and password from user input
@@ -98,7 +78,7 @@ public class LoginInterface {
                 // Set the username and password variables of the static instance of user in ControlPanel class
                 user.setUsername(username);
                 user.setPassword(password);
-                user.setAction("loginAttempt");
+                user.setAction("LoginAttempt");
                 // Clear username and password fields for added security
                 un.setText("");
                 pw.setText("");
@@ -116,7 +96,7 @@ public class LoginInterface {
                         if (user.isVerified() && user.getId() != null) {
                             Log.Confirmation("User credentials verified by server");
                             Log.Message("Opening control panel interface");
-                            lists = (Lists) objectStreamer.Receive();
+                            getLists();
                             Log.Message("Lists object received form server");
                             // Open control panel screen
                             Log.Message("Opening control panel screen");
@@ -148,6 +128,56 @@ public class LoginInterface {
         });
 
         loginScreen.getRootPane().setDefaultButton(b_Login);
+    }
+
+    private static void getLists() {
+        boolean[] access = dec2bool(user.getAccess());
+        try {
+            if (access[0]) {
+                getUserBillboardsList();
+            }
+            if (access[1]) {
+                getBillboardsList();
+            }
+            if (access[2]) {
+                getSchedulesList();
+            }
+            if (access[3]) {
+                getUsersList();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void getUserBillboardsList() throws IOException, ClassNotFoundException {
+        dos.writeUTF("List Users Billboards");
+        if (dis.readBoolean()) {
+            ArrayList<String> list = (ArrayList<String>) objectStreamer.Receive();
+            listUserBillboards = new ListUserBillboards(list);
+        }
+    }
+
+    private static void getBillboardsList() throws IOException, ClassNotFoundException {
+        dos.writeUTF("List Billboards");
+        ArrayList<String> list = (ArrayList<String>) objectStreamer.Receive();
+        listBillboards = new ListBillboards(list);
+    }
+
+    private static void getSchedulesList() throws IOException, ClassNotFoundException {
+        dos.writeUTF("List Schedules");
+        if (dis.readBoolean()) {
+            ArrayList<String> list = (ArrayList<String>) objectStreamer.Receive();
+            listSchedules = new ListSchedules(list);
+        }
+    }
+
+    private static void getUsersList() throws IOException, ClassNotFoundException {
+        dos.writeUTF("List Users");
+        if (dis.readBoolean()) {
+            ArrayList<String> list = (ArrayList<String>) objectStreamer.Receive();
+            listUsers = new ListUsers(list);
+        }
     }
 
 }

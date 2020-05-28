@@ -134,7 +134,7 @@ class EditPanel extends ControlPanelInterface {
 
         // Create and add a default list model
         allListModel = new DefaultListModel();
-        allListModel.addAll(lists.billboards);
+        allListModel.addAll(listBillboards.billboards);
 
         // Create a new JList
         list = new JList(allListModel);
@@ -206,7 +206,7 @@ class EditPanel extends ControlPanelInterface {
             // populate the static instance "billboard" with the billboard data entered by the user
             populateBillboard();
             // set the action request to the server
-            user.setAction("saveBillboard");
+            user.setAction("Edit Billboard");
             // attempt connection to the server
             if (AttemptConnect()) {
                 // Send user object to server
@@ -264,7 +264,7 @@ class EditPanel extends ControlPanelInterface {
             return;
         }
         // set the action request to the server
-        user.setAction("getBillboard");
+        user.setAction("Get Billboard Information");
         // attempt connection to the server
         if (AttemptConnect()) {
             try {
@@ -340,7 +340,7 @@ class EditPanel extends ControlPanelInterface {
             return;
         }
         // set the action request to the server
-        user.setAction("delBillboard");
+        user.setAction("Delete Billboard");
         // Attempt connection to server
         if (AttemptConnect()) {
             try {
@@ -351,8 +351,8 @@ class EditPanel extends ControlPanelInterface {
                 // check if deleted successfully
                 if (dis.readBoolean()) {
                     // remove the billboard from the list
-                    lists.userBillboards.remove(name);
-                    lists.billboards.remove(name);
+                    listUserBillboards.userBillboards.remove(name);
+                    listBillboards.billboards.remove(name);
                     if (usersListModel != null) {
                         usersListModel.removeElement(name);
                     }

@@ -38,7 +38,7 @@ class ListPanel extends ControlPanelInterface {
 
         // Create and add a default list model
         listModel = new DefaultListModel();
-        listModel.addAll(lists.billboards);
+        listModel.addAll(listBillboards.billboards);
 
         // Create a new JList
         list = new JList(listModel);
@@ -62,7 +62,7 @@ class ListPanel extends ControlPanelInterface {
         // get the name of the billboard to load from the Jlist
         String name = (String) list.getSelectedValue();
         // set the action request to the server
-        user.setAction("getBillboard");
+        user.setAction("Get Billboard Information");
         // attempt connection to the server
         if (AttemptConnect()) {
             try {

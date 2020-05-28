@@ -45,10 +45,13 @@ public class Authorised {
      * @return a boolean value
      */
     public static boolean Check(String username, UUID uuid) {
-        if (ActiveUsers.get(username).equals(uuid)) {
-            return true;
-        }
-        else {
+        try {
+            if (ActiveUsers.get(username).equals(uuid)) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NullPointerException e) {
             return false;
         }
     }

@@ -39,7 +39,7 @@ public class Tools {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (user.isVerified()) {
-                    user.setAction("userExit");
+                    user.setAction("Log Out");
                     // Attempt connection to server
                     if (AttemptConnect()) {
                         // Try a login attempt

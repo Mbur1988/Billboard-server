@@ -13,7 +13,6 @@ import static Clients.ControlPanel.ControlPanelTools.DateChooser.*;
 import static Clients.ControlPanel.ControlPanelTools.DurationSetter.*;
 import static Clients.ControlPanel.ControlPanelTools.TimeSetter.*;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
-import static SerializableObjects.Lists.sortAdd;
 
 class SchedulePanel extends ControlPanelInterface {
 
@@ -63,9 +62,9 @@ class SchedulePanel extends ControlPanelInterface {
         billboardListModel = new DefaultListModel();
         scheduleListModel = new DefaultListModel();
 
-        billboardListModel.addAll(lists.billboards);
+        billboardListModel.addAll(listBillboards.billboards);
 
-        scheduleListModel.addAll(lists.schedules);
+        scheduleListModel.addAll(listSchedules.schedules);
 
         // Create a new JList
         billboardList = new JList(billboardListModel);
@@ -125,7 +124,7 @@ class SchedulePanel extends ControlPanelInterface {
             // populate the static instance "schedule" with the schedule data entered by the user
             populateSchedule();
             // set the action request to the server
-            user.setAction("addSchedule");
+            user.setAction("Schedule Billboard");
             // attempt connection to the server
             if (AttemptConnect()) {
                 // Send user object to server
@@ -135,9 +134,9 @@ class SchedulePanel extends ControlPanelInterface {
                 // Await confirmation that the schedule was added successfully
                 if (dis.readBoolean()) {
                     // add new schedule to the list schedules and resort it alphabetically
-                    sortAdd(lists.schedules, schedule.getScheduleName());
+                    listSchedules.sortAdd(schedule.getScheduleName());
                     scheduleListModel.clear();
-                    scheduleListModel.addAll(lists.schedules);
+                    scheduleListModel.addAll(listSchedules.schedules);
                     // display confirmation message to the user and post log confirmation
                     lbl_message.setText("Schedule added");
                     Log.Confirmation("New schedule added successfully");
