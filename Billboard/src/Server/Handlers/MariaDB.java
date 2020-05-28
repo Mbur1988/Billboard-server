@@ -1134,6 +1134,29 @@ public class MariaDB {
                 return false;
             }
         }
+
+        /**
+         * Method to get all schedules on a particular day.
+         * @param day :day of the scheduling
+         * Returns an array list with all schdules on the day specified
+         * array list contains the name of the schedule, the billboardName and Recurrence of the billboard.
+         */
+
+        public ArrayList<String> getDaySchedules(String day) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE day = '" + day + "';");
+            ArrayList<String> daySchedules = new ArrayList<>();
+            while (result.next()) {
+                    String scheduleDay = result.getString("name");
+                    String billboardName = result.getString("billboardName");
+                    int recur = result.getInt("recur");
+                    daySchedules.add(scheduleDay);
+                    daySchedules.add(billboardName);
+                    daySchedules.add(String.valueOf(recur));
+
+            }
+            return daySchedules;
+        }
+
     }
 }
 
