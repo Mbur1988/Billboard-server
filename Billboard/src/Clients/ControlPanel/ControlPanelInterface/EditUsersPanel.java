@@ -1,6 +1,6 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
-import Clients.ControlPanel.ControlPanelTools.UserAccess;
+import Tools.UserAccess;
 import SerializableObjects.User;
 import Tools.HashCredentials;
 import Tools.Log;
@@ -89,7 +89,7 @@ class EditUsersPanel extends ControlPanelInterface {
 
         // Create and add a default list model
         model = new DefaultListModel();
-        model.addAll(lists.users);
+        model.addAll(listUsers.users);
 
         // Create a new JList
         list = new JList(model);
@@ -152,7 +152,7 @@ class EditUsersPanel extends ControlPanelInterface {
         // populate the user class instance
         User newUser = new User(username, password, access);
         // set the action request to the server
-        user.setAction("addUser");
+        user.setAction("Create User");
         // attempt connection to the server
         if (AttemptConnect()) {
             // Try a login attempt
@@ -164,10 +164,10 @@ class EditUsersPanel extends ControlPanelInterface {
                 // Await confirmation that the user was added successfully
                 if (dis.readBoolean()) {
                     // add new user to the list of the current user's and re-sort it alphabetically
-                    lists.users.add(newUser.getUsername());
-                    Collections.sort(lists.users);
+                    listUsers.users.add(newUser.getUsername());
+                    Collections.sort(listUsers.users);
                     model.clear();
-                    model.addAll(lists.users);
+                    model.addAll(listUsers.users);
                     // display confirmation message to the user and post log confirmation
                     lbl_message.setText("User added");
                     Log.Confirmation("New user added successfully");
@@ -220,7 +220,7 @@ class EditUsersPanel extends ControlPanelInterface {
             password = HashCredentials.Hash(password);
         }
         // set the action request to the server
-        user.setAction("editUser");
+        user.setAction("Edit User");
         // Attempt connection to server
         if (AttemptConnect()) {
             // Try a login attempt
@@ -280,7 +280,7 @@ class EditUsersPanel extends ControlPanelInterface {
      */
     private static void loadUser() {
         String username = (String) list.getSelectedValue();
-        user.setAction("getAccess");
+        user.setAction("Get User Permissions");
         if (AttemptConnect()) {
             // Try a login attempt
             try {
@@ -328,7 +328,7 @@ class EditUsersPanel extends ControlPanelInterface {
             lbl_message.setText("Unable to delete your own account");
             return;
         }
-        user.setAction("deleteUser");
+        user.setAction("Delete User");
         // Attempt connection to server
         if (AttemptConnect()) {
             // Try a login attempt
@@ -340,7 +340,7 @@ class EditUsersPanel extends ControlPanelInterface {
                 // await confirmation that the user has been successfully deleted
                 if (dis.readBoolean()) {
                     // remove user from list
-                    lists.users.remove(username);
+                    listUsers.users.remove(username);
                     model.removeElement(username);
                     // display message to the user
                     lbl_message.setText("User deleted");

@@ -27,7 +27,6 @@ import static Clients.ControlPanel.ControlPanelInterface.EditPanel.allListModel;
 import static Clients.ControlPanel.ControlPanelInterface.ListPanel.listModel;
 import static Clients.ControlPanel.ControlPanelInterface.SchedulePanel.billboardListModel;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
-import static SerializableObjects.Lists.sortAdd;
 import static Tools.ColorIndex.*;
 
 class CreatePanel extends ControlPanelInterface {
@@ -148,7 +147,7 @@ class CreatePanel extends ControlPanelInterface {
 
         // Create and add a default list model
         usersListModel = new DefaultListModel();
-        usersListModel.addAll(lists.userBillboards);
+        usersListModel.addAll(listUserBillboards.userBillboards);
 
         // Create a new JList
         list = new JList(usersListModel);
@@ -263,7 +262,7 @@ class CreatePanel extends ControlPanelInterface {
             // populate the static instance "billboard" with the billboard data entered by the user
             populateBillboard();
             // set the action request to the server
-            user.setAction("addBillboard");
+            user.setAction("Create Billboard");
             // attempt connection to the server
             if (AttemptConnect()) {
                 // Send user object to server
@@ -273,23 +272,23 @@ class CreatePanel extends ControlPanelInterface {
                 // Await confirmation that the billboard was added successfully
                 if (dis.readBoolean()) {
                     // add new billboard to the list of the current user's billboards and resort it alphabetically
-                    sortAdd(lists.userBillboards, billboard.getName());
-                    sortAdd(lists.billboards, billboard.getName());
+                    listUserBillboards.sortAdd(billboard.getName());
+                    listBillboards.sortAdd(billboard.getName());
                     if(usersListModel != null) {
                         usersListModel.clear();
-                        usersListModel.addAll(lists.userBillboards);
+                        usersListModel.addAll(listUserBillboards.userBillboards);
                     }
                     if(billboardListModel != null) {
                         billboardListModel.clear();
-                        billboardListModel.addAll(lists.billboards);
+                        billboardListModel.addAll(listBillboards.billboards);
                     }
                     if(allListModel != null) {
                         allListModel.clear();
-                        allListModel.addAll(lists.billboards);
+                        allListModel.addAll(listBillboards.billboards);
                     }
                     else if (listModel != null) {
                         listModel.clear();
-                        listModel.addAll(lists.billboards);
+                        listModel.addAll(listBillboards.billboards);
                     }
                     // display confirmation message to the user and post log confirmation
                     lbl_message.setText("Billboard added");
@@ -331,7 +330,7 @@ class CreatePanel extends ControlPanelInterface {
             // populate the static instance "billboard" with the billboard data entered by the user
             populateBillboard();
             // set the action request to the server
-            user.setAction("saveBillboard");
+            user.setAction("Edit Billboard");
             // attempt connection to the server
             if (AttemptConnect()) {
                 // Send user object to server
@@ -550,7 +549,7 @@ class CreatePanel extends ControlPanelInterface {
             return;
         }
         // set the action request to the server
-        user.setAction("getBillboard");
+        user.setAction("Get Billboard Information");
         // attempt connection to the server
         if (AttemptConnect()) {
             try {
@@ -627,7 +626,7 @@ class CreatePanel extends ControlPanelInterface {
             return;
         }
         // set the action request to the server
-        user.setAction("deleteBillboard");
+        user.setAction("Delete Billboard");
         // Attempt connection to server
         if (AttemptConnect()) {
             try {
@@ -640,8 +639,8 @@ class CreatePanel extends ControlPanelInterface {
                     // check if deleted successfully
                     if (dis.readBoolean()) {
                         // remove the billboard from the list
-                        lists.userBillboards.remove(name);
-                        lists.billboards.remove(name);
+                        listUserBillboards.userBillboards.remove(name);
+                        listBillboards.billboards.remove(name);
                         if (usersListModel != null) {
                             usersListModel.removeElement(name);
                         }

@@ -1,18 +1,17 @@
 package Server.Handlers;
 
-import SerializableObjects.Billboard;
-import SerializableObjects.Lists;
-import SerializableObjects.Schedule;
-import SerializableObjects.User;
+import SerializableObjects.*;
 import Server.Trackers.Authorised;
 import Tools.HashCredentials;
 import Tools.Log;
 import Tools.ObjectStreamer;
+import Tools.UserAccess;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.UUID;
 import static Server.Server.mariaDB;
 
@@ -46,77 +45,97 @@ public class CPHandler extends ConnectionHandler {
         try {
             user = (User) objectStreamer.Receive();
             Log.Message("User object received from control panel");
-            // If the current control panel user is verified then handle the requested action
-            if (user.isVerified() && Authorised.Check(user.getUsername(), user.getId())) {
-                // Next, receive action command from control panel
-                switch(user.getAction()) {
-                    // Handle requested action
-                    case ("userExit"):
-                        Authorised.Remove(user.getUsername());
-                        break;
-                    case ("addUser"):
-                        AddUser();
-                        break;
-                    case ("editUser"):
-                        EditUser();
-                        break;
-                    case ("deleteUser"):
-                        DeleteUser();
-                        break;
-                    case ("changePassword"):
-                        ChangePassword();
-                        break;
-                    case ("getAccess"):
-                        GetAccess();
-                        break;
-                    case ("addBillboard"):
-                        AddBillboard();
-                        break;
-                    case ("getBillboard"):
-                        GetBillboard();
-                        break;
-                    case ("saveBillboard"):
-                        SaveBillboard();
-                        break;
-                    case ("deleteBillboard"):
-                        DeleteBillboard(false);
-                        break;
-                    case ("delBillboard"):
-                        DeleteBillboard(true);
-                        break;
-                    case ("addSchedule"):
-                        AddSchedule();
-                        break;
-                    case ("editSchedule"):
-                        EditSchedule();
-                        break;
-                    case ("deleteSchedule"):
-                        DeleteSchedule();
-                        break;
-                }
-            }
             // If the current control panel user is not verified then check credential validity
-            else if (!user.isVerified() && user.getAction().equals("loginAttempt")) {
+            if (!user.isVerified() && user.getAction().equals("LoginAttempt")) {
                 Log.Message("Login attempt received from control panel");
                 AttemptLogin();
                 objectStreamer.Send(user);
                 Log.Message("User object sent to control panel");
                 if (user.isVerified()) {
-                    Lists lists = new Lists(mariaDB.users.getAllUsernames(),
-                            mariaDB.billboards.getAllBillboards(),
-                            mariaDB.billboards.getAllBillboardsCurrent(user.getUsername()),
-                            mariaDB.scheduling.getAllSchedules());
-                    objectStreamer.Send(lists);
-                    Log.Message("Lists object sent to control panel");
+                    String request = dis.readUTF();
+                    if (request.equals("List Users Billboards")) {
+                        ListUsersBillboards();
+                        request = dis.readUTF();
+                    }
+                    if (request.equals("List Billboards")) {
+                        ListBillboards();
+                        request = dis.readUTF();
+                    }
+                    if (request.equals("List Schedules")) {
+                        ListSchedules();
+                        request = dis.readUTF();
+                    }
+                    if (request.equals("List Users")) {
+                        ListUsers();
+                    }
                 }
             }
+            // If the current control panel user is verified then handle the requested action
+            else if (user.isVerified() && Authorised.Check(user.getUsername(), user.getId())) {
+                // Next, receive action command from control panel
+                switch(user.getAction()) {
+                    // Handle requested action
+                    case ("List Users Billboards"):
+                        ListUsersBillboards();
+                        break;
+                    case ("List Billboards"):
+                        ListBillboards();
+                        break;
+                    case ("Get Billboard Information"):
+                        GetBillboardInformation();
+                        break;
+                    case ("Create Billboard"):
+                        CreateBillboard();
+                        break;
+                    case ("Edit Billboard"):
+                        EditBillboard();
+                        break;
+                    case ("Delete Billboard"):
+                        DeleteBillboard();
+                        break;
+                    case ("List Schedules"):
+                        ListSchedules();
+                        break;
+                    case ("View Schedule"):
+                        ViewSchedule();
+                        break;
+                    case ("Schedule Billboard"):
+                        ScheduleBillboard();
+                        break;
+                    case ("Remove Billboard"):
+                        RemoveBillboard();
+                        break;
+                    case ("List Users"):
+                        ListUsers();
+                        break;
+                    case ("Create User"):
+                        CreateUser();
+                        break;
+                    case ("Edit User"):
+                        EditUser();
+                        break;
+                    case ("Get User Permissions"):
+                        GetUserPermissions();
+                        break;
+                    case ("Set User Password"):
+                        SetUserPassword();
+                        break;
+                    case ("Delete User"):
+                        DeleteUser();
+                        break;
+                    case ("Log Out"):
+                        LogOut();
+                        break;
+                }
+            }
+
             // Close connection to control panel nicely
             socket.close();
             this.dis.close();
             this.dos.close();
             Log.Confirmation(socket.toString() + " closed successfully");
         }
-        catch (IOException | ClassNotFoundException | SQLException e) {
+        catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -165,11 +184,204 @@ public class CPHandler extends ConnectionHandler {
         user.setPassword("");
     }
 
+    private void ListUsersBillboards() {
+        try {
+            boolean[] access = UserAccess.dec2bool(user.getAccess());
+            if (!access[0]) {
+                sendFalse();
+                return;
+            }
+            sendTrue();
+            ArrayList<String> list = (mariaDB.billboards.getAllBillboardsCurrent(user.getUsername()));
+            objectStreamer.Send(list);
+        }
+        catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void ListBillboards() {
+        try {
+            ArrayList<String> list = (mariaDB.billboards.getAllBillboards());
+            objectStreamer.Send(list);
+        }
+        catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Gets an existing billboard from the database and sends it to the control panel
+     */
+    private void GetBillboardInformation() {
+        try {
+            String name = dis.readUTF();
+            Billboard billboard = mariaDB.billboards.getBillboard(name);
+            boolean confirm = (billboard != null);
+            dos.writeBoolean(confirm);
+            if (confirm) {
+                objectStreamer.Send(billboard);
+            }
+        } catch (IOException | SQLException e) {
+            sendFalse();
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Adds a new billboard to the database
+     */
+    private void CreateBillboard() {
+        try {
+            int access = mariaDB.users.getAccess(user.getUsername());
+            boolean[] Access = UserAccess.dec2bool(access);
+            Billboard newBillboard = (Billboard) objectStreamer.Receive();
+            Log.Message("User object received from control panel");
+            // to create a billboard, must have “Create Billboards” permission
+            if (Access[0]) {
+                dos.writeBoolean(mariaDB.billboards.AddBillboard(newBillboard));
+            }
+            else {
+                sendFalse();
+            }
+        }
+        catch (IOException | ClassNotFoundException | SQLException e) {
+            sendFalse();
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Saves changes to an existing billboard
+     */
+    private void EditBillboard() {
+        try {
+            int access = mariaDB.users.getAccess(user.getUsername());
+            boolean[] Access = UserAccess.dec2bool(access);
+            Billboard newBillboard = (Billboard) objectStreamer.Receive();
+            Log.Message("User object received from control panel");
+            // To edit own billboard, as long as it is not currently scheduled, must have “Create Billboards” permission
+            if (user.getUsername() == newBillboard.getCreatedBy() && !newBillboard.getScheduled() && Access[0]) {
+                dos.writeBoolean(mariaDB.billboards.edit(newBillboard));
+            }
+            // To edit a billboard that is currently scheduled, must have “Edit All Billboards” permission
+            else if (newBillboard.getScheduled() && Access[1]) {
+                dos.writeBoolean(mariaDB.billboards.edit(newBillboard));
+            }
+            // To edit another user’s billboard, must have “Edit All Billboards” permission
+            else if (user.getUsername() != newBillboard.getCreatedBy() && Access[1]) {
+                dos.writeBoolean(mariaDB.billboards.edit(newBillboard));
+            }
+            else {
+                sendFalse();
+            }
+        }
+        catch (IOException | ClassNotFoundException | SQLException e) {
+            sendFalse();
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Deletes a billboard
+     */
+    private void DeleteBillboard() {
+        try {
+            int access = mariaDB.users.getAccess(user.getUsername());
+            boolean[] Access = UserAccess.dec2bool(access);
+            String name = dis.readUTF();
+            Log.Message("String data received from control panel");
+            Billboard billboard = mariaDB.billboards.getBillboard(name);
+            // To delete any other billboards, including those currently scheduled, must have “Edit All Billboards” permission.
+            if (billboard.getScheduled() && Access[1]) {
+                dos.writeBoolean(mariaDB.billboards.DeleteBillboard(name));
+                return;
+            }
+            // To edit another user’s billboard, must have “Edit All Billboards” permission
+            else if (user.getUsername() != billboard.getCreatedBy() && Access[1]) {
+                dos.writeBoolean(mariaDB.billboards.DeleteBillboard(name));
+                return;
+            } else if (!billboard.getScheduled() && Access[0]) {
+                sendFalse();
+                dos.writeBoolean(mariaDB.billboards.DeleteBillboard(name));
+            } else {
+                sendFalse();
+            }
+        }
+        catch (IOException | SQLException e) {
+            sendFalse();
+            e.printStackTrace();
+        }
+    }
+
+    private void ListSchedules() {
+        try {
+            boolean[] access = UserAccess.dec2bool(user.getAccess());
+            if (!access[2]) {
+                sendFalse();
+                return;
+            }
+            sendTrue();
+            ArrayList<String> list = (mariaDB.scheduling.getAllSchedules());
+            objectStreamer.Send(list);
+        }
+        catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void ViewSchedule() {
+    }
+
+    /**
+     * Adds a new schedule to the database
+     */
+    private void ScheduleBillboard() {
+        try {
+            Schedule newSchedule = (Schedule) objectStreamer.Receive();
+            Log.Message("User object received from control panel");
+            dos.writeBoolean(mariaDB.scheduling.AddSchedule(newSchedule));
+        }
+        catch (IOException | ClassNotFoundException | SQLException e) {
+            sendFalse();
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Deletes and existing schedule from the database
+     */
+    private void RemoveBillboard() {
+
+    }
+
+    private void ListUsers() {
+        try {
+            boolean[] access = UserAccess.dec2bool(user.getAccess());
+            if (!access[3]) {
+                sendFalse();
+                return;
+            }
+            sendTrue();
+            ArrayList<String> list = (mariaDB.users.getAllUsernames());
+            objectStreamer.Send(list);
+        }
+        catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Method to add a new user to the users table in the database
      */
-    private void AddUser() {
+    private void CreateUser() {
         try {
+            int access = mariaDB.users.getAccess(user.getUsername());
+            boolean[] Access = UserAccess.dec2bool(access);
+            if (!Access[3]) {
+                sendFalse();
+                return;
+            }
             User newUser = (User) objectStreamer.Receive();
             Log.Message("User object received from control panel");
             byte[] salt = HashCredentials.CreateSalt();
@@ -191,9 +403,15 @@ public class CPHandler extends ConnectionHandler {
      */
     private void EditUser() {
         try {
+            int access = mariaDB.users.getAccess(user.getUsername());
+            boolean[] Access = UserAccess.dec2bool(access);
+            if (!Access[3]) {
+                sendFalse();
+                return;
+            }
             String username = dis.readUTF();
             String password = dis.readUTF();
-            int access = dis.read();
+            access = dis.read();
             boolean confirm = true;
             if (!password.equals("")) {
                 byte[] salt = HashCredentials.CreateSalt();
@@ -208,16 +426,19 @@ public class CPHandler extends ConnectionHandler {
     }
 
     /**
-     * Method to delete an existing user from the database
+     * Retrieves the access level of a user and sends it to the control panel
      */
-    private void DeleteUser() {
+    private void GetUserPermissions() {
         try {
-            String received = dis.readUTF();
-            Log.Message("String data received from control panel");
-            dos.writeBoolean(mariaDB.users.delete(received));
+            int access = mariaDB.users.getAccess(user.getUsername());
+            boolean[] Access = UserAccess.dec2bool(access);
+            if (!Access[3]) {
+                sendFalse();
+                return;
+            }
+            dos.write(mariaDB.users.getAccess(dis.readUTF()));
         }
         catch (IOException | SQLException e) {
-            sendFalse();
             e.printStackTrace();
         }
     }
@@ -225,7 +446,7 @@ public class CPHandler extends ConnectionHandler {
     /**
      * Method to change an existing users password
      */
-    private void ChangePassword() {
+    private void SetUserPassword() {
         try {
             String username = user.getUsername();
             String password = dis.readUTF();
@@ -243,7 +464,7 @@ public class CPHandler extends ConnectionHandler {
             }
             else {
                 Log.Confirmation("password incorrect");
-                dos.writeBoolean(false);
+                sendFalse();
             }
         } catch (IOException | SQLException e) {
             sendFalse();
@@ -252,82 +473,19 @@ public class CPHandler extends ConnectionHandler {
     }
 
     /**
-     * Retrieves the access level of a user and sends it to the control panel
+     * Method to delete an existing user from the database
      */
-    private void GetAccess() {
+    private void DeleteUser() {
         try {
-            dos.write(mariaDB.users.getAccess(dis.readUTF()));
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Adds a new billboard to the database
-     */
-    private void AddBillboard() {
-        try {
-            Billboard newBillboard = (Billboard) objectStreamer.Receive();
-            Log.Message("User object received from control panel");
-            dos.writeBoolean(mariaDB.billboards.AddBillboard(newBillboard));
-        }
-        catch (IOException | ClassNotFoundException | SQLException e) {
-            sendFalse();
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Gets an existing billboard from the database and sends it to the control panel
-     */
-    private void GetBillboard() {
-        try {
-            String name = dis.readUTF();
-            Billboard billboard = mariaDB.billboards.getBillboard(name);
-            boolean confirm = (billboard != null);
-            dos.writeBoolean(confirm);
-            if (confirm) {
-                objectStreamer.Send(billboard);
-            }
-        } catch (IOException | SQLException e) {
-            sendFalse();
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Saves changes to an existing billboard
-     */
-    private void SaveBillboard() {
-        try {
-            Billboard newBillboard = (Billboard) objectStreamer.Receive();
-            Log.Message("User object received from control panel");
-            dos.writeBoolean(mariaDB.billboards.edit(newBillboard));
-        }
-        catch (IOException | ClassNotFoundException e) {
-            sendFalse();
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Deletes a billboard
-     * @param skip boolean true to skip scheduled check
-     */
-    private void DeleteBillboard(boolean skip) {
-        try {
-            String name = dis.readUTF();
-            Log.Message("String data received from control panel");
-            if (skip) {
-                dos.writeBoolean(mariaDB.billboards.DeleteBillboard(name));
+            int access = mariaDB.users.getAccess(user.getUsername());
+            boolean[] Access = UserAccess.dec2bool(access);
+            if (!Access[3]) {
+                sendFalse();
                 return;
             }
-            // check to see if billboard is scheduled
-            boolean scheduled = mariaDB.billboards.getBillboardSchedule(name);
-            dos.writeBoolean(scheduled);
-            if (!scheduled) {
-                dos.writeBoolean(mariaDB.billboards.DeleteBillboard(name));
-            }
+            String received = dis.readUTF();
+            Log.Message("String data received from control panel");
+            dos.writeBoolean(mariaDB.users.delete(received));
         }
         catch (IOException | SQLException e) {
             sendFalse();
@@ -335,33 +493,13 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
-    /**
-     * Adds a new schedule to the database
-     */
-    private void AddSchedule() {
+    private void LogOut() {
+        Authorised.Remove(user.getUsername());
         try {
-            Schedule newSchedule = (Schedule) objectStreamer.Receive();
-            Log.Message("User object received from control panel");
-            dos.writeBoolean(mariaDB.scheduling.AddSchedule(newSchedule));
-        }
-        catch (IOException | ClassNotFoundException | SQLException e) {
-            sendFalse();
+            dos.writeBoolean(!Authorised.Check(user.getUsername(), user.getId()));
+        } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Edits an existing schedule from the database
-     */
-    private void EditSchedule() {
-
-    }
-
-    /**
-     * Deletes and existing schedule from the database
-     */
-    private void DeleteSchedule() {
-
     }
 
     /**
@@ -370,6 +508,17 @@ public class CPHandler extends ConnectionHandler {
     private void sendFalse() {
         try {
             dos.writeBoolean(false);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    /**
+     * Sends a true boolean over data output stream to indicate that an action has failed
+     */
+    private void sendTrue() {
+        try {
+            dos.writeBoolean(true);
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }

@@ -1,4 +1,6 @@
-package Clients.ControlPanel.ControlPanelTools;
+package Tools;
+
+import Clients.ControlPanel.ControlPanelTools.Tools;
 
 public class UserAccess {
 

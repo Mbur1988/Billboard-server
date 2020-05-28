@@ -90,7 +90,7 @@ class ChangePWPanel extends ControlPanelInterface {
         // hash the new password
         oldPassword = HashCredentials.Hash(oldPassword);
         // set the action request to the server
-        user.setAction("changePassword");
+        user.setAction("Set User Password");
         // attempt connection to the server
         if (AttemptConnect()) {
             // Try a login attempt
