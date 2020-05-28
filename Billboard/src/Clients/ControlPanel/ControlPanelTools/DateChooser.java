@@ -23,7 +23,7 @@ public class DateChooser {
     private static JButton b_upMins;
     private static JButton b_dwnMins;
     public static int minRec;
-    public static boolean minuteRecur;
+   // public static boolean minuteRecur;
 
     public static void selectDay() {
 
@@ -79,7 +79,6 @@ public class DateChooser {
             AbstractButton aButton = (AbstractButton) actionEvent.getSource();
             b_upMins.setEnabled(aButton.getText().equals("Mins:"));
             b_dwnMins.setEnabled(aButton.getText().equals("Mins:"));
-            minuteRecur = true;
         };
 
         b_upMins.addActionListener(e -> {
