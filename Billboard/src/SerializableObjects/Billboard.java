@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.Base64;
-
 import static java.awt.Font.BOLD;
 
 public class Billboard implements Serializable {
@@ -348,6 +347,9 @@ public class Billboard implements Serializable {
             {
                 BillboardScreen.dispose();
                 BillboardScreen = null;
+                if (!PreviewDisplay) {
+                    System.exit(0);
+                }
             }
         });
 

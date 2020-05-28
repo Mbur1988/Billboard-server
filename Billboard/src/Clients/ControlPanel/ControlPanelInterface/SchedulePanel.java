@@ -4,8 +4,9 @@ import SerializableObjects.Schedule;
 import Tools.Log;
 import javax.swing.*;
 import java.awt.*;
-import java.time.Duration;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.IntStream;
+
 import static Clients.Client.*;
 import static Clients.ControlPanel.ControlPanel.*;
 import static Clients.ControlPanel.ControlPanelTools.DateChooser.*;
@@ -17,6 +18,10 @@ import static SerializableObjects.Lists.sortAdd;
 class SchedulePanel extends ControlPanelInterface {
 
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    private static final int [] hours = IntStream.range(0, 24).toArray(); // From 0 to 23
+    private static final int [] minutes = IntStream.range(0, 60).toArray(); // From 0 to 59
+
     private static Schedule schedule;
     private static JLabel lbl_message;
     static DefaultListModel scheduleListModel;
@@ -175,14 +180,15 @@ class SchedulePanel extends ControlPanelInterface {
     }
 
     private static void populateSchedule() {
-        Log.Message(date.toString() + "     " + time.toString());
-        // populate the schedule
-        schedule = new Schedule(
-                date.format(dateFormatter) + "." + time,
-                (String) billboardList.getSelectedValue(),
-                date,
-                time,
-                Duration.ofMinutes(duration));
+//        Log.Message(date.toString() + "     " + time.toString());
+//        // populate the schedule
+//        schedule = new Schedule(
+//                date.format(dateFormatter) + "." + time,
+//                (String) billboardList.getSelectedValue(),
+//                date,
+//                time,
+//                Duration.ofMinutes(duration),
+//                0);
     }
 
     private static void resetFields() {
