@@ -78,13 +78,13 @@ public class DateChooser {
         // Add buttons
         addButton(schedulePanel, b_upMins,(screenWidth/3) + 415, 95, 80, 15);
         addButton(schedulePanel, b_dwnMins,(screenWidth/3) + 415, 115, 80, 15);
-        
-//        // Create action listeners
-//        ActionListener rb_ActionListener = actionEvent -> {
-//            AbstractButton aButton = (AbstractButton) actionEvent.getSource();
-//            b_fileSelect.setEnabled(aButton.getText().equals("File:"));
-//            tf_path.setText("");
-//        };
+
+        // Create action listeners
+        ActionListener rb_ActionListener = actionEvent -> {
+            AbstractButton aButton = (AbstractButton) actionEvent.getSource();
+            b_upMins.setEnabled(aButton.getText().equals("Mins:"));
+            b_dwnMins.setEnabled(aButton.getText().equals("Mins:"));
+        };
 
         b_upMins.addActionListener(e -> {
             if (min <= 59) {
@@ -95,6 +95,23 @@ public class DateChooser {
             }
             lbl_mins.setText("" + min);
         });
+
+        b_dwnMins.addActionListener(e -> {
+            if (min >= 0) {
+                min --;
+            }
+
+            if (min < 0) {
+                min = 59;
+            }
+            lbl_mins.setText("" + min);
+        });
+
+        // Add the action listener to the radio buttons]
+        rb_none.addActionListener(rb_ActionListener);
+        rb_daily.addActionListener(rb_ActionListener);
+        rb_hourly.addActionListener(rb_ActionListener);
+        rb_mins.addActionListener(rb_ActionListener);
 
     }
 }
