@@ -1,129 +1,64 @@
 package Clients.ControlPanel.ControlPanelTools;
 
-import java.awt.*;
-import java.time.LocalDate;
 import javax.swing.*;
-
+import java.util.stream.IntStream;
+import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.schedulePanel;
 import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.screenWidth;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
-import static Clients.ControlPanel.ControlPanelInterface.ControlPanelInterface.schedulePanel;
 
 public class DateChooser {
 
-    public static LocalDate date;
-    private static JLabel lbl_setDate;
+    private static final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+//    private static final int[] hours = IntStream.range(0, 24).toArray(); // From 0 to 23
+//    private static final int[] minutes = IntStream.range(0, 60).toArray(); // From 0 to 59
 
-    int month = java.util.Calendar.getInstance().get(java.util.Calendar.MONTH);
-    int year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);    // Is there a better way to do these???
+    // Variables required by the class
+    //private static JLabel lbl_none;
+    private static JLabel lbl_day;
+    private static JLabel lbl_hour;
+    private static JLabel lbl_mins;
+    private static JLabel lbl_duration;
+    private static JLabel lbl_recur;
+    private static JComboBox<String> cb_day;
+//    private static JComboBox<String> cb_hour;
+//    private static JComboBox<String> cb_min;
+    //private static JTextField tf_duration;
+    //private static JTextField tf_mins;
+    private static JRadioButton rb_none;
+    private static JRadioButton rb_daily;
+    private static JRadioButton rb_hourly;
+    private static JRadioButton rb_mins;
 
-    JLabel lbl_date = new JLabel("", JLabel.CENTER);
-    String day = "";
-    JDialog dlg_date;
+    public static void selectDay() {
 
-    JButton[] button = new JButton[49];
+        // Create the labels
+        //lbl_none = new JLabel("None");
+        lbl_day = new JLabel("Day:");
+//        lbl_hour = new JLabel("Hour:");
+//        lbl_mins = new JLabel("Minutes:");
+//        lbl_duration = new JLabel("Duration:");
+        lbl_recur = new JLabel("Recur:");
 
-    private void displayDate() {
-        for (int x = 7; x < button.length; x++)
-            button[x].setText("");
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
-                "MMMM yyyy");
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        cal.set(year, month, 1);
-        int weekDay = cal.get(java.util.Calendar.DAY_OF_WEEK);
-        int numDays = cal.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
-        for (int i = 6 + weekDay, day = 1; day <= numDays; i++, day++)
-            button[i].setText("" + day);
-        lbl_date.setText(sdf.format(cal.getTime()));
-        dlg_date.setTitle("Select date");
-    }
+        // Add the labels to the panel
+        addLabel(schedulePanel, lbl_day, (screenWidth/3), 50, 300, 40);
+//        addLabel(schedulePanel, lbl_hour, (screenWidth/3), 90, 300, 40);
+//        addLabel(schedulePanel, lbl_mins, (screenWidth/3), 130, 300, 40);
+//        addLabel(schedulePanel, lbl_duration, (screenWidth/3), 170, 300, 40);
+        addLabel(schedulePanel, lbl_recur, (screenWidth/3), 90, 300, 40);
 
-    private String setPickedDate() {
-        if (day.equals(""))
-            return day;
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
-                "yyyy-MM-dd");
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        cal.set(year, month, Integer.parseInt(day));
-        return sdf.format(cal.getTime());
-    }
+        // Create and add the combo box
+        cb_day = new JComboBox<>(days);
+        addCombobox(schedulePanel, cb_day, (screenWidth/3) + 150, 50, 300, 40);
 
-    private DateChooser(JPanel parent) {
-        dlg_date = new JDialog();
-        dlg_date.setModal(true);
+        // Create radio buttons
+        rb_none = new JRadioButton("None", true);
+        rb_daily = new JRadioButton("Daily");
+        rb_hourly = new JRadioButton("Hourly");
+        rb_mins = new JRadioButton("Mins:");
 
-        String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        // Add radio buttons
+        addRadioButton(schedulePanel, rb_none, (screenWidth/3) + 60, 90, 150, 40);
+       // addRadioButton(schedulePanel, rb_daily, (screenWidth/3) + 100, 90, 150, 40);
 
-        JPanel cal = new JPanel(new GridLayout(7, 7));
-        cal.setPreferredSize(new Dimension(500, 200));
-
-        for (int i = 0; i < button.length; i++) {
-                final int selection = i;
-
-                button[i] = new JButton();
-                button[i].setFocusPainted(false);
-
-                if (i > 6) {
-                    button[i].addActionListener(e -> {
-                        day = button[selection].getActionCommand();
-                        dlg_date.dispose();
-                    });
-                }
-
-                if (i < 7) {
-                    button[i].setText(days[i]);
-                    button[i].setForeground(Color.gray);  // colour can be changed...
-                }
-
-                cal.add(button[i]);
-
-        }
-
-        JPanel chooserWindow = new JPanel(new GridLayout(1, 3));
-
-        JButton b_prev = new JButton("<");
-
-        b_prev.addActionListener(e -> {
-            month--;
-            displayDate();
-        });
-
-        chooserWindow.add(b_prev);
-        chooserWindow.add(lbl_date);
-        JButton b_next = new JButton(">");
-
-        b_next.addActionListener(e -> {
-            month++;
-            displayDate();
-        });
-
-        chooserWindow.add(b_next);
-        displayDate();
-        dlg_date.add(cal, BorderLayout.CENTER);
-        dlg_date.add(chooserWindow, BorderLayout.NORTH);
-        dlg_date.pack();
-        dlg_date.setLocationRelativeTo(parent);
-        dlg_date.setVisible(true);
-    }
-
-    public static void chooseDate() {
-        JLabel lbl_date = new JLabel("Date:");
-        lbl_setDate = new JLabel("");
-
-        addLabel(schedulePanel, lbl_date, ((screenWidth / 3)),130,50,20);
-        addLabel(schedulePanel, lbl_setDate, ((screenWidth / 3) + 50),130,120,20);
-
-        JButton b_selDate = new JButton("Select Date");
-
-        addButton(schedulePanel, b_selDate, ((screenWidth / 3)),100,160,20);
-
-        b_selDate.addActionListener(e -> {
-            lbl_setDate.setText(new DateChooser(schedulePanel).setPickedDate());
-            date = LocalDate.parse(lbl_setDate.getText()); // This will store the date for anyone who needs it
-        });
-    }
-
-    public static void clearDate() {
-        lbl_setDate.setText("");
-        date = null;
     }
 }
