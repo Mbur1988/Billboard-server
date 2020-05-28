@@ -39,7 +39,7 @@ public class DurationSetter {
             public void insertUpdate(DocumentEvent e) {
                 try {
                     duration = Integer.parseInt(tf_duration.getText());
-                    checkDurationVsRecurrence.checkDVsR(minRec, duration);
+
                 } catch (NumberFormatException i) {
                     if (tf_duration != null) {
                         JOptionPane.showMessageDialog(schedulePanel,
@@ -48,13 +48,14 @@ public class DurationSetter {
                     }
                 }
                 lbl_duration.setText("Set duration: " + duration);
+                checkDurationVsRecurrence.checkDVsR(minRec, duration);
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 try {
                     duration = Integer.parseInt(tf_duration.getText());
-                    checkDurationVsRecurrence.checkDVsR(minRec, duration);
+
                 } catch (NumberFormatException i) {
                     if (tf_duration != null) {
 //                        JOptionPane.showMessageDialog(schedulePanel,
@@ -77,6 +78,7 @@ public class DurationSetter {
                     }
                 }
                 lbl_duration.setText("Set duration: " + duration);
+                checkDurationVsRecurrence.checkDVsR(minRec, duration);
             }
         });
     }
