@@ -19,6 +19,17 @@ public class Authorised {
     public static void Add(String username, UUID uuid) {
         if (!ActiveUsers.containsKey(username)) {
             ActiveUsers.put(username, uuid);
+            Log.Message("User: " + username + " added to authorised user list");
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            Remove(username);
+                        }
+                    },
+                    86400000
+            );
+            Log.Message("Started timer task to remove authorised user " + username + " after 24h");
         }
         else {
             Log.Error("User: " + username + " already authorised");
@@ -32,6 +43,7 @@ public class Authorised {
     public static void Remove(String username) {
         if (ActiveUsers.containsKey(username)) {
             ActiveUsers.remove(username);
+            Log.Message("User: " + username + " removed from authorised user list");
         }
         else {
             Log.Error("User: " + username + " not authorised");

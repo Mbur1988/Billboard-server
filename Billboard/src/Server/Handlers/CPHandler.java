@@ -141,15 +141,9 @@ public class CPHandler extends ConnectionHandler {
     }
 
     /**
-     * Method to validate the current user class instance.
-     * The password is salt-hashed using the salt stored in the database for that user.
-     * Once salt-hashed, if the password matches that stored in the database for that user then the user is validated
-     * and a confirmation log message will be printed to console.
-     * Validation comprises; setting the user verified boolean to true, assigning a random UUID to the user and
-     * updating the access level. The assigned UUID and username is also added to the 'authorised' list of the server.
-     * If the credentials of the current user can not be validated then a warning log entry is printed to console.
-     * Regardless of whether the user is validated or not, the password variable of the current user instance will be
-     * cleared for security.
+     * the Control Panel will send the Server a username and hashed password (see: User Authentication). The Server will
+     * either send back an error or a valid session token.
+     * (Permissions required: none.)
      */
     private void AttemptLogin() {
         // Get login credentials from user instance
@@ -184,10 +178,15 @@ public class CPHandler extends ConnectionHandler {
         user.setPassword("");
     }
 
+    /**
+     * the Server will send with a list of billboards created by the current user
+     * (Permissions required: “Create Billboards”.)
+     */
     private void ListUsersBillboards() {
         try {
             boolean[] access = UserAccess.dec2bool(user.getAccess());
             if (!access[0]) {
+                Log.Message("user: " + user.getUsername() + " not authorised to complete this request");
                 sendFalse();
                 return;
             }
@@ -200,6 +199,10 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
+    /**
+     * the Server will send with a list of all billboards
+     * (Permissions required: none.)
+     */
     private void ListBillboards() {
         try {
             ArrayList<String> list = (mariaDB.billboards.getAllBillboards());
@@ -242,6 +245,7 @@ public class CPHandler extends ConnectionHandler {
                 dos.writeBoolean(mariaDB.billboards.AddBillboard(newBillboard));
             }
             else {
+                Log.Message("user: " + user.getUsername() + " not authorised to complete this request");
                 sendFalse();
             }
         }
@@ -261,7 +265,7 @@ public class CPHandler extends ConnectionHandler {
             Billboard newBillboard = (Billboard) objectStreamer.Receive();
             Log.Message("User object received from control panel");
             // To edit own billboard, as long as it is not currently scheduled, must have “Create Billboards” permission
-            if (user.getUsername() == newBillboard.getCreatedBy() && !newBillboard.getScheduled() && Access[0]) {
+            if (user.getUsername().equals(newBillboard.getCreatedBy()) && !newBillboard.getScheduled() && Access[0]) {
                 dos.writeBoolean(mariaDB.billboards.edit(newBillboard));
             }
             // To edit a billboard that is currently scheduled, must have “Edit All Billboards” permission
@@ -269,7 +273,7 @@ public class CPHandler extends ConnectionHandler {
                 dos.writeBoolean(mariaDB.billboards.edit(newBillboard));
             }
             // To edit another user’s billboard, must have “Edit All Billboards” permission
-            else if (user.getUsername() != newBillboard.getCreatedBy() && Access[1]) {
+            else if (!user.getUsername().equals(newBillboard.getCreatedBy()) && Access[1]) {
                 dos.writeBoolean(mariaDB.billboards.edit(newBillboard));
             }
             else {
@@ -295,16 +299,22 @@ public class CPHandler extends ConnectionHandler {
             // To delete any other billboards, including those currently scheduled, must have “Edit All Billboards” permission.
             if (billboard.getScheduled() && Access[1]) {
                 dos.writeBoolean(mariaDB.billboards.DeleteBillboard(name));
+                mariaDB.scheduling.deleteScheduledBillboard(name);
+                ListSchedules();
                 return;
             }
             // To edit another user’s billboard, must have “Edit All Billboards” permission
-            else if (user.getUsername() != billboard.getCreatedBy() && Access[1]) {
+            else if (!user.getUsername().equals(billboard.getCreatedBy()) && Access[1]) {
                 dos.writeBoolean(mariaDB.billboards.DeleteBillboard(name));
+                mariaDB.scheduling.deleteScheduledBillboard(name);
+                ListSchedules();
                 return;
             } else if (!billboard.getScheduled() && Access[0]) {
-                sendFalse();
                 dos.writeBoolean(mariaDB.billboards.DeleteBillboard(name));
+                mariaDB.scheduling.deleteScheduledBillboard(name);
+                ListSchedules();
             } else {
+                Log.Message("user: " + user.getUsername() + " not authorised to complete this request");
                 sendFalse();
             }
         }
@@ -314,10 +324,14 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
+    /**
+     * Get a list of schedules
+     */
     private void ListSchedules() {
         try {
             boolean[] access = UserAccess.dec2bool(user.getAccess());
             if (!access[2]) {
+                Log.Message("user: " + user.getUsername() + " not authorised to complete this request");
                 sendFalse();
                 return;
             }
@@ -330,6 +344,9 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
+    /**
+     * Get the details of an existing schedule
+     */
     private void ViewSchedule() {
     }
 
@@ -338,9 +355,25 @@ public class CPHandler extends ConnectionHandler {
      */
     private void ScheduleBillboard() {
         try {
+            boolean[] access = UserAccess.dec2bool(user.getAccess());
+            if (!access[2]) {
+                Log.Message("user: " + user.getUsername() + " not authorised to complete this request");
+                sendFalse();
+            }
             Schedule newSchedule = (Schedule) objectStreamer.Receive();
             Log.Message("User object received from control panel");
             dos.writeBoolean(mariaDB.scheduling.AddSchedule(newSchedule));
+            mariaDB.billboards.edit(
+                    newSchedule.getBillboardName(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    true);
         }
         catch (IOException | ClassNotFoundException | SQLException e) {
             sendFalse();
@@ -352,13 +385,32 @@ public class CPHandler extends ConnectionHandler {
      * Deletes and existing schedule from the database
      */
     private void RemoveBillboard() {
-
+        try {
+            int access = mariaDB.users.getAccess(user.getUsername());
+            boolean[] Access = UserAccess.dec2bool(access);
+            if (!Access[2]) {
+                Log.Message("user: " + user.getUsername() + " not authorised to complete this request");
+                sendFalse();
+                return;
+            }
+            String received = dis.readUTF();
+            Log.Message("String data received from control panel");
+            dos.writeBoolean(mariaDB.scheduling.deleteScheduled(received));
+        }
+        catch (IOException | SQLException e) {
+            sendFalse();
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * Get a list of users
+     */
     private void ListUsers() {
         try {
             boolean[] access = UserAccess.dec2bool(user.getAccess());
             if (!access[3]) {
+                Log.Message("user: " + user.getUsername() + " not authorised to complete this request");
                 sendFalse();
                 return;
             }
@@ -379,6 +431,7 @@ public class CPHandler extends ConnectionHandler {
             int access = mariaDB.users.getAccess(user.getUsername());
             boolean[] Access = UserAccess.dec2bool(access);
             if (!Access[3]) {
+                Log.Message("user: " + user.getUsername() + " not authorised to complete this request");
                 sendFalse();
                 return;
             }
@@ -406,6 +459,7 @@ public class CPHandler extends ConnectionHandler {
             int access = mariaDB.users.getAccess(user.getUsername());
             boolean[] Access = UserAccess.dec2bool(access);
             if (!Access[3]) {
+                Log.Message("user: " + user.getUsername() + " not authorised to complete this request");
                 sendFalse();
                 return;
             }
@@ -433,6 +487,7 @@ public class CPHandler extends ConnectionHandler {
             int access = mariaDB.users.getAccess(user.getUsername());
             boolean[] Access = UserAccess.dec2bool(access);
             if (!Access[3]) {
+                Log.Message("user: " + user.getUsername() + " not authorised to complete this request");
                 sendFalse();
                 return;
             }
@@ -445,6 +500,9 @@ public class CPHandler extends ConnectionHandler {
 
     /**
      * Method to change an existing users password
+     * This change password method is only used to change the password of the current user therefore no access level
+     * check is required.
+     * The function to change another users password is handled in the EditUser() method
      */
     private void SetUserPassword() {
         try {
@@ -480,6 +538,7 @@ public class CPHandler extends ConnectionHandler {
             int access = mariaDB.users.getAccess(user.getUsername());
             boolean[] Access = UserAccess.dec2bool(access);
             if (!Access[3]) {
+                Log.Message("user: " + user.getUsername() + " not authorised to complete this request");
                 sendFalse();
                 return;
             }
@@ -493,6 +552,9 @@ public class CPHandler extends ConnectionHandler {
         }
     }
 
+    /**
+     * Removes the user from the authorised user list and returns confirmation
+     */
     private void LogOut() {
         Authorised.Remove(user.getUsername());
         try {
