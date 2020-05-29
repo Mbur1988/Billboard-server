@@ -3,7 +3,6 @@ package Clients.Viewer;
 import java.awt.*;
 import java.io.IOException;
 import java.util.concurrent.*;
-
 import Clients.Client;
 import SerializableObjects.Billboard;
 import Tools.Log;
@@ -37,16 +36,38 @@ public class Viewer extends Client {
         try {
             if (AttemptConnect()) {
 
-                //
-                // Receive current billboard here
-                //
+                if (dis.readBoolean()) {
+                    billboard = (Billboard) objectStreamer.Receive();
+                }
+                else {
+                    billboard = null;
+                }
 
-                billboard = new Billboard(); // temporary instance to enable showBillboard() call on line 51
                 // closing resources
                 Disconnect();
             } else {
-                billboard = new Billboard("Unable to Connect to Server", "Error Billboard", "Please Check Connection", null, null, Color.red, Color.white, Color.red, null, null);
-                billboard.setPicData(billboard.ConvertImageToData(ProjectPath.RootString() + "\\Resources\\Images\\Oops.jpg"));
+                billboard = new Billboard("Unable to Connect to Server",
+                        "Error Billboard",
+                        "Please Check Connection",
+                        null,
+                        billboard.ConvertImageToData(
+                                ProjectPath.RootString() + "\\Resources\\Images\\Oops.jpg"),
+                        Color.red,
+                        Color.white,
+                        Color.red,
+                        null,
+                        null);
+            }
+            if (billboard == null) {
+                billboard = new Billboard("EMPTY",
+                        "nil scheduled", null,
+                        null,
+                        null,
+                        Color.red,
+                        Color.white,
+                        Color.red,
+                        "",
+                        false);
             }
             billboard.showBillboard();
         } catch (Exception e) {

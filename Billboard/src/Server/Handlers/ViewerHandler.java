@@ -1,14 +1,16 @@
 package Server.Handlers;
 
+import SerializableObjects.Billboard;
 import Tools.Log;
 import Tools.ObjectStreamer;
 import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.Random;
 import static Server.Server.mariaDB;
 
 public class ViewerHandler extends ConnectionHandler {
+
+    private ObjectStreamer objectStreamer;
 
     /**
      * Class constructor
@@ -18,15 +20,28 @@ public class ViewerHandler extends ConnectionHandler {
      */
     public ViewerHandler(Socket socket, DataInputStream dis, DataOutputStream dos) {
         super(socket, dis, dos);
+        objectStreamer = new ObjectStreamer(socket);
     }
 
     //Override of the run function of parent class
     @Override
     public void run() {
         Log.Message(socket + " viewer handler started");
+        Billboard billboard = null;
+        try {
+            billboard = mariaDB.getCurrentBillboard();
+            if (billboard == null) {
+                dos.writeBoolean(false);
+            }
+            else {
+                dos.writeBoolean(true);
+                objectStreamer.Send(billboard);
+            }
+        } catch (SQLException | IOException throwables) {
+            throwables.printStackTrace();
+        }
 
 
-        
 
         // Create a new ObjectStreamHandler to send billboards to the viewer
         ObjectStreamer stream = new ObjectStreamer(socket);

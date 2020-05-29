@@ -1,13 +1,10 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
-import SerializableObjects.Billboard;
 import SerializableObjects.Schedule;
-import Tools.ColorIndex;
 import Tools.Log;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-
 import static Clients.Client.*;
 import static Clients.ControlPanel.ControlPanel.*;
 import static Clients.ControlPanel.ControlPanelTools.DayChooser.*;
@@ -223,7 +220,7 @@ class SchedulePanel extends ControlPanelInterface {
                 // await confirmation that the user has been successfully deleted
                 if (dis.readBoolean()) {
                     // remove user from list
-                    listUsers.users.remove(schedule);
+                    listSchedules.schedules.remove(schedule);
                     scheduleListModel.removeElement(schedule);
                     // display message to the user
                     lbl_message.setText("Schedule deleted");

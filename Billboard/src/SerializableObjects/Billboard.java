@@ -46,8 +46,8 @@ public class Billboard implements Serializable {
         this.infoColour = null;
         this.createdBy = null;
         this.scheduled = null;
-        BillboardScreenPanel = null;
-        BillboardScreen = null;
+        //BillboardScreenPanel = null;
+        //BillboardScreen = null;
     }
 
     /**
@@ -73,8 +73,8 @@ public class Billboard implements Serializable {
         this.infoColour = InfoColour;
         this.createdBy = createdBy;
         this.scheduled = scheduled;
-        BillboardScreenPanel = null;
-        BillboardScreen = null;
+        //BillboardScreenPanel = null;
+        //BillboardScreen = null;
 
     }
     // - - - - - - -     Workers    - - - - - - - - - //
@@ -92,7 +92,7 @@ public class Billboard implements Serializable {
         frame.setUndecorated(true);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //BillboardScreen.setContentPane(BillboardScreenPannel);
+        //BillboardScreen.setContentPane(BillboardScreenPanel);
         return frame;
     }
     /**
@@ -272,6 +272,12 @@ public class Billboard implements Serializable {
             BillboardScreenPanel.setBackground(getBackColour());
             BillboardScreenPanel.setOpaque(true);
             BillboardScreen.setContentPane(BillboardScreenPanel);
+        }
+        else {
+            BillboardScreenPanel.removeAll();
+            BillboardScreenPanel.revalidate();
+            BillboardScreenPanel.repaint();
+            BillboardScreenPanel.setBackground(getBackColour());
         }
 
         //msg only
