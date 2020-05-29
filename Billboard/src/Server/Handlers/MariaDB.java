@@ -9,6 +9,9 @@ import Tools.PropertyReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -171,6 +174,73 @@ public class MariaDB {
         }
     }
 
+    /**
+     * gets the billboard to display at the current time
+     * @return the current billboard to display
+     * @throws SQLException
+     */
+    public Billboard getCurrentBillboard() throws SQLException {
+
+        int currentDay = LocalDate.now().getDayOfWeek().getValue();
+        int scheduleDay;
+        int duration;
+        int recur;
+        LocalTime currentTime = LocalTime.now();
+        LocalTime scheduledStartTime;
+        LocalTime scheduledEndTime;
+
+        ResultSet result = statement.executeQuery("SELECT * FROM scheduling;");
+        while (result.next()) {
+            scheduleDay = getDayOfWeekAsInt(result.getString("day"));
+            scheduledStartTime = result.getTime("time").toLocalTime();
+            duration = result.getInt("duration");
+            recur = result.getInt("recur");
+
+            while (currentDay > scheduleDay || currentTime.compareTo(scheduledStartTime) >= 0) {
+                scheduledEndTime = scheduledStartTime.plusMinutes(duration);
+                if (currentDay == scheduleDay && currentTime.compareTo(scheduledEndTime) < 0) {
+                    return billboards.getBillboard(result.getString("billboardName"));
+                }
+                else if (recur <= 0) {
+                    break;
+                }
+                else {
+                    if(scheduledStartTime.getHour() > scheduledStartTime.plusMinutes(recur).getHour()) {
+                        scheduleDay++;
+                    }
+                    scheduledStartTime = scheduledStartTime.plusMinutes(recur);
+
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * returns the schedule day as an integer
+     * @param day the schedule day string
+     * @return the day as a integer
+     */
+    public static int getDayOfWeekAsInt(String day) {
+        switch (day) {
+            case "1. Monday":
+                return 1;
+            case "2. Tuesday":
+                return 2;
+            case "3. Wednesday":
+                return 3;
+            case "4. Thursday":
+                return 4;
+            case "5. Friday":
+                return 5;
+            case "6. Saturday":
+                return 6;
+            case "7. Sunday":
+                return 7;
+            default:
+                return -1;
+        }
+    }
 
 
     public class Users {
@@ -1230,7 +1300,6 @@ public class MariaDB {
             }
             return daySchedules;
         }
-
     }
 }
 

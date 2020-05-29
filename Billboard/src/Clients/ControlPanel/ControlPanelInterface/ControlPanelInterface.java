@@ -2,7 +2,6 @@ package Clients.ControlPanel.ControlPanelInterface;
 
 import Clients.ControlPanel.ControlPanelTools.Tools;
 import Tools.UserAccess;
-
 import javax.swing.*;
 import java.awt.*;
 import static Clients.ControlPanel.ControlPanel.user;
