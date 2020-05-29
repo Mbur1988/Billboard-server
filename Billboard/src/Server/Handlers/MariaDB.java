@@ -13,6 +13,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static Server.Server.mariaDB;
 import static Tools.ColorIndex.stringFromColor;
 import static java.lang.System.exit;
 
@@ -866,6 +867,26 @@ public class MariaDB {
             }
         }
 
+        /**
+         * Sets whether the specified billboard is scheduled or not
+         * @param name the billboard to edit
+         * @param scheduled the scheduled status
+         * @return boolean value of whether the change was successful
+         */
+        public boolean setScheduled(String name, boolean scheduled) {
+            return mariaDB.billboards.edit(
+                    name,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    scheduled);
+        }
+
         public boolean AddBillboardColour(Billboard billboard) throws SQLException {
             if (checkForBillboard(billboard.getName())) {
                 return false;
@@ -900,7 +921,7 @@ public class MariaDB {
          * @throws SQLException
          */
         private void CreateSchedulingTable() throws SQLException {
-            statement.executeQuery("CREATE TABLE scheduling (name VARCHAR(64) UNIQUE KEY, billboardName VARCHAR(64), day VARCHAR(10), time TIME, duration INT, recur INT);");
+            statement.executeQuery("CREATE TABLE scheduling (name VARCHAR(64) UNIQUE KEY, billboardName VARCHAR(64), day VARCHAR(12), time TIME, duration INT, recur INT);");
             Log.Confirmation("Table created: scheduling");
         }
 
@@ -982,6 +1003,22 @@ public class MariaDB {
         }
 
         /**
+         * Checks to see if scheduling table is already in the database.
+         *
+         * @param name: name of the schduled billboard
+         * @throws SQLException
+         */
+        public boolean checkForBillboard(String name) throws SQLException {
+            ResultSet result;
+            result = statement.executeQuery("SELECT * FROM scheduling WHERE billboardName = '" + name + "';");
+            if (result.next()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        /**
          * Gets the time for a specific shedule entry from the database.
          *
          * @param name: name of the schduled billboard
@@ -1012,8 +1049,8 @@ public class MariaDB {
         }
 
         /**
-         * Gets the billboard name for a specific shedule entry from the database.
-         * @param name: name of the schduled billboard
+         * Gets the billboard name for a specific schedule entry from the database.
+         * @param name: name of the scheduled billboard
          * @return
          * @throws SQLException
          */
@@ -1061,8 +1098,7 @@ public class MariaDB {
         }
 
         /**
-         * Deletes the specified schedule entry from the database
-         *
+         * Deletes all schedule fot the specified billboard from the schedule table
          * @param billboard: name of the scheduled billboard
          * @throws SQLException
          */

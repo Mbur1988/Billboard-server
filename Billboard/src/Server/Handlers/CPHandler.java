@@ -363,17 +363,7 @@ public class CPHandler extends ConnectionHandler {
             Schedule newSchedule = (Schedule) objectStreamer.Receive();
             Log.Message("User object received from control panel");
             dos.writeBoolean(mariaDB.scheduling.AddSchedule(newSchedule));
-            mariaDB.billboards.edit(
-                    newSchedule.getBillboardName(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    true);
+            mariaDB.billboards.setScheduled(newSchedule.getBillboardName(), true);
         }
         catch (IOException | ClassNotFoundException | SQLException e) {
             sendFalse();
@@ -395,7 +385,11 @@ public class CPHandler extends ConnectionHandler {
             }
             String received = dis.readUTF();
             Log.Message("String data received from control panel");
+            String scheduledBillboard = mariaDB.scheduling.getScheduleBillboard(received);
             dos.writeBoolean(mariaDB.scheduling.deleteScheduled(received));
+            if (!mariaDB.scheduling.checkForBillboard(scheduledBillboard)) {
+                mariaDB.billboards.setScheduled(scheduledBillboard, false);
+            }
         }
         catch (IOException | SQLException e) {
             sendFalse();

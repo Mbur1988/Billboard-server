@@ -661,7 +661,7 @@ class CreatePanel extends ControlPanelInterface {
                 }
                 // If billboard not deleted then display message to the user
                 else {
-                    lbl_message.setText("Billboard not deleted");
+                    lbl_message.setText("Billboard is scheduled");
                     Log.Error("Error when attempting to delete billboard");
                 }
             }

@@ -134,7 +134,7 @@ class SchedulePanel extends ControlPanelInterface {
                 }
                 // If schedule not added then display message to the user
                 else {
-                    lbl_message.setText("Check that schedule does not already exist");
+                    lbl_message.setText("Schedule already exists");
                     Log.Error("Error when attempting to add new schedule");
                 }
                 // Disconnect from server
@@ -210,9 +210,22 @@ class SchedulePanel extends ControlPanelInterface {
     private static void populateSchedule() {
         String billboard = (String)billboardList.getSelectedValue();
         String day = (String) cb_day.getSelectedItem();
+        String recur = "";
+        if (rb_none.isSelected()) {
+            recur = "never";
+        }
+        else if (rb_daily.isSelected()) {
+            recur = "daily";
+        }
+        else if (rb_hourly.isSelected()) {
+            recur = "hourly";
+        }
+        else if (rb_mins.isSelected()) {
+            recur = minRec + "mins";
+        }
         // populate the schedule
         schedule = new Schedule(
-                day + "_" + time + "_" + billboard,
+                day + "_" + time + "_repeats-" + recur + "_" + billboard,
                 billboard,
                 day,
                 time,
