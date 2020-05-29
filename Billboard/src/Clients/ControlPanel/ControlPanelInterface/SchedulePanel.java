@@ -1,6 +1,8 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
+import SerializableObjects.Billboard;
 import SerializableObjects.Schedule;
+import Tools.ColorIndex;
 import Tools.Log;
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +24,7 @@ class SchedulePanel extends ControlPanelInterface {
     private static JList scheduleList;
     private static JList billboardList;
     private static JButton b_add;
-    private static JButton b_save;
+    //private static JButton b_save;
     private static JButton b_clear;
     private static JButton b_load;
     private static JButton b_delete;
@@ -62,7 +64,6 @@ class SchedulePanel extends ControlPanelInterface {
         scheduleListModel = new DefaultListModel();
 
         billboardListModel.addAll(listBillboards.billboards);
-
         scheduleListModel.addAll(listSchedules.schedules);
 
         // Create a new JList
@@ -83,19 +84,19 @@ class SchedulePanel extends ControlPanelInterface {
         b_clear = new JButton("Clear All");
         b_delete = new JButton("Delete");
         b_load = new JButton("Load");
-        b_save = new JButton("Save");
+        //b_save = new JButton("Save");
 
         // Add buttons to panel
         addButton(schedulePanel, b_add, (screenWidth / 3), 470, 160, 30);
         addButton(schedulePanel, b_clear, ((screenWidth / 3) + 170), 470, 160, 30);
         addButton(schedulePanel, b_delete, ((screenWidth / 3) * 2) + 150, 470, 150, 30);
         addButton(schedulePanel, b_load, (screenWidth / 3) * 2, 470, 150, 30);
-        addButton(schedulePanel, b_save, (screenWidth / 3), 470, 160, 30);
-        b_save.setVisible(false);
+        //addButton(schedulePanel, b_save, (screenWidth / 3), 470, 160, 30);
+        //b_save.setVisible(false);
 
         // Handle button press events
         b_add.addActionListener(event -> addSchedule());
-        b_save.addActionListener(event -> saveSchedule());
+        //b_save.addActionListener(event -> saveSchedule());
         b_clear.addActionListener(event -> clearFields());
         b_load.addActionListener(event -> loadSchedule());
         b_delete.addActionListener(event -> deleteSchedule());
@@ -154,15 +155,58 @@ class SchedulePanel extends ControlPanelInterface {
         }
     }
 
-    private static void saveSchedule() {
-    }
-
     private static void clearFields() {
         resetFields();
         lbl_message.setText("");
     }
 
     private static void loadSchedule() {
+        // get the name of the billboard to load from the Jlist
+        String name = (String) scheduleList.getSelectedValue();
+        // ensure that there is a name selected
+        if (name.equals("")) {
+            lbl_message.setText("No schedule selected");
+            Log.Confirmation("No schedule selected");
+            return;
+        }
+        // set the action request to the server
+        user.setAction("View Schedule");
+        // attempt connection to the server
+        if (AttemptConnect()) {
+            try {
+                // Send user object to server
+                objectStreamer.Send(user);
+                // send the name of the billboard to retrieve from the database
+                dos.writeUTF(name);
+                // await confirmation that the billboard has been successfully retrieved from the database
+                if (dis.readBoolean()) {
+                    // receive the requested billboard as an object
+                    schedule = (Schedule) objectStreamer.Receive();
+                    // populate the user input fields with the schedule credentials
+                    billboardList.setSelectedValue(schedule.getBillboardName(), true);
+                    updateDay(schedule.getDay(), schedule.getRecur());
+                    updateTime(schedule.getTime());
+                    updateDuration(schedule.getDuration());
+                    // display message to the user
+                    lbl_message.setText("Schedule loaded");
+                }
+                // if the server was unable to load the billboard then notify the user
+                else {
+                    lbl_message.setText("Unable to load schedule");
+                }
+            }
+            // catch any unanticipated exceptions and print to console
+            catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                Log.Error("Failed to retrieve schedule credentials");
+            }
+            // Disconnect from server
+            AttemptDisconnect();
+        }
+        // Post message to user if unable to connect to server
+        else {
+            Log.Error("Unable to connect to server");
+        }
     }
 
     private static void deleteSchedule() {
@@ -210,27 +254,32 @@ class SchedulePanel extends ControlPanelInterface {
     private static void populateSchedule() {
         String billboard = (String)billboardList.getSelectedValue();
         String day = (String) cb_day.getSelectedItem();
-        String recur = "";
+        String recurStatus = "";
+        int recur = 0;
         if (rb_none.isSelected()) {
-            recur = "never";
+            recurStatus = "never";
+            recur = 0;
         }
         else if (rb_daily.isSelected()) {
-            recur = "daily";
+            recurStatus = "daily";
+            recur = 1440;
         }
         else if (rb_hourly.isSelected()) {
-            recur = "hourly";
+            recurStatus = "hourly";
+            recur = 60;
         }
         else if (rb_mins.isSelected()) {
-            recur = minRec + "mins";
+            recurStatus = minRec + "mins";
+            recur = minRec;
         }
         // populate the schedule
         schedule = new Schedule(
-                day + "_" + time + "_repeats-" + recur + "_" + billboard,
+                day + "_" + time + "_repeats-" + recurStatus + "_" + billboard,
                 billboard,
                 day,
                 time,
                 duration,
-                0);
+                recur);
     }
 
     private static void resetFields() {
