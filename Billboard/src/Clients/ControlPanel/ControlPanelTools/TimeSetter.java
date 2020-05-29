@@ -86,4 +86,10 @@ public class TimeSetter {
         time = LocalTime.of(hour, min);
     }
 
+    public static void updateTime(LocalTime newTime) {
+        time = newTime;
+        hour = time.getHour();
+        min = time.getMinute();
+        lbl_time.setText("Hour: " + hour + "    " + "Min: " + min);
+    }
 }

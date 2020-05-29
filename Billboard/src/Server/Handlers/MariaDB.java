@@ -1003,6 +1003,29 @@ public class MariaDB {
         }
 
         /**
+         * returns the specified schedule from the database
+         * @param name
+         * @return
+         * @throws SQLException
+         */
+        public Schedule getSchedule(String name) throws SQLException {
+            ResultSet result = statement.executeQuery("SELECT * FROM scheduling WHERE name = '" + name + "';");
+            if (result.next()) {
+                Schedule schedule = new Schedule(
+                        result.getString("name"),
+                        result.getString("billboardName"),
+                        result.getString("day"),
+                        result.getTime("time").toLocalTime(),
+                        result.getInt("duration"),
+                        result.getInt("recur"))   ;
+                return schedule;
+            }
+            else {
+                return null;
+            }
+        }
+
+        /**
          * Checks to see if scheduling table is already in the database.
          *
          * @param name: name of the schduled billboard

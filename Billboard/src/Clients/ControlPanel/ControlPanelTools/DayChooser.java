@@ -142,4 +142,21 @@ public class DayChooser {
         minRec = 999999;
         lbl_mins.setText("0");
     }
+
+    public static void updateDay(String newDay, int recurDuration) {
+        cb_day.setSelectedItem(newDay);
+        if (recurDuration == 0) {
+            rb_none.setSelected(true);
+        }
+        else if (recurDuration == 1440) {
+            rb_daily.setSelected(true);
+        }
+        else if (recurDuration == 60) {
+            rb_hourly.setSelected(true);
+        }
+        else {
+            rb_mins.setSelected(true);
+            lbl_mins.setText(String.valueOf(recurDuration));
+        }
+    }
 }

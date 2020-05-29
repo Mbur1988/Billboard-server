@@ -88,4 +88,10 @@ public class DurationSetter {
         tf_duration.setText(null);
         duration = 0;
     }
+
+    public static void updateDuration(int newDuration) {
+        duration = newDuration;
+        lbl_duration.setText("Set duration: " + duration);
+        tf_duration.setText(String.valueOf(duration));
+    }
 }

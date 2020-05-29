@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 import static Server.Server.mariaDB;
 
@@ -192,6 +193,7 @@ public class CPHandler extends ConnectionHandler {
             }
             sendTrue();
             ArrayList<String> list = (mariaDB.billboards.getAllBillboardsCurrent(user.getUsername()));
+            Collections.sort(list);
             objectStreamer.Send(list);
         }
         catch (IOException | SQLException e) {
@@ -206,6 +208,7 @@ public class CPHandler extends ConnectionHandler {
     private void ListBillboards() {
         try {
             ArrayList<String> list = (mariaDB.billboards.getAllBillboards());
+            Collections.sort(list);
             objectStreamer.Send(list);
         }
         catch (IOException | SQLException e) {
@@ -337,6 +340,7 @@ public class CPHandler extends ConnectionHandler {
             }
             sendTrue();
             ArrayList<String> list = (mariaDB.scheduling.getAllSchedules());
+            Collections.sort(list);
             objectStreamer.Send(list);
         }
         catch (IOException | SQLException e) {
@@ -348,6 +352,18 @@ public class CPHandler extends ConnectionHandler {
      * Get the details of an existing schedule
      */
     private void ViewSchedule() {
+        try {
+            String name = dis.readUTF();
+            Schedule schedule = mariaDB.scheduling.getSchedule(name);
+            boolean confirm = (schedule != null);
+            dos.writeBoolean(confirm);
+            if (confirm) {
+                objectStreamer.Send(schedule);
+            }
+        } catch (IOException | SQLException e) {
+            sendFalse();
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -410,6 +426,7 @@ public class CPHandler extends ConnectionHandler {
             }
             sendTrue();
             ArrayList<String> list = (mariaDB.users.getAllUsernames());
+            Collections.sort(list);
             objectStreamer.Send(list);
         }
         catch (IOException | SQLException e) {
