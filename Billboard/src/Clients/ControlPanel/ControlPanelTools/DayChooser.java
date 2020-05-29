@@ -12,15 +12,22 @@ import static java.lang.Integer.parseInt;
 public class DayChooser {
 
     // Variables required by the class
-    private static final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    private static final String[] days = {
+            "1. Monday",
+            "2. Tuesday",
+            "3. Wednesday",
+            "4. Thursday",
+            "5. Friday",
+            "6. Saturday",
+            "7. Sunday"};
     private static JLabel lbl_day;
     private static JLabel lbl_mins;
     private static JLabel lbl_recur;
     public static JComboBox<String> cb_day;
-    private static JRadioButton rb_none;
-    private static JRadioButton rb_daily;
-    private static JRadioButton rb_hourly;
-    private static JRadioButton rb_mins;
+    public static JRadioButton rb_none;
+    public static JRadioButton rb_daily;
+    public static JRadioButton rb_hourly;
+    public static JRadioButton rb_mins;
     private static JButton b_upMins;
     private static JButton b_dwnMins;
     public static int minRec = 999999;
