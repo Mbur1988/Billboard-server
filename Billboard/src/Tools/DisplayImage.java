@@ -16,29 +16,17 @@ public class DisplayImage {
     static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     static int screenWidth = screenSize.width;
     static int screenHeight = screenSize.height;
-//    /**
-//     * TODO DELETE ME--->
-//     * TEST RUNNER
-//     * This class is to display an image in the screen in a frame.
-//     * @param arg file path or URL (include www. or http)
-//     * @throws Exception on incorrect
-//     *
-//     */
 
-//    public static void main(String[] arg) throws Exception
-//    {
-//        //DisplayImage abc = new DisplayImage("C:\\sally.jpg");
-//    }
-    // // // //<----TODO DELETE ME
+
 
     /**
-     * Displat Image takes string of URL or
+     * Display Image takes string of URL or
      *
-     * @param filePath
-     * @throws Exception
+     * @param filePath is the location of the file to be displayed
+     * @throws Exception IO exception
      */
     public DisplayImage(String filePath) throws Exception {
-        if (filePath.substring(0,3) == "www." || filePath.substring(0, 3) == "http") {
+        if (filePath.substring(0, 3) == "www.") {
 
         } else {
             BufferedImage img = ImageIO.read(new File(filePath));
@@ -61,7 +49,7 @@ public class DisplayImage {
      * This is the function that will be used to read data in byte array form and convert it to an image.
      *
      * @param data byte[] of an image to be used.
-     * @throws Exception
+     * @throws Exception IO Exception if no data.
      */
     public DisplayImage(byte[] data) throws Exception {
 
