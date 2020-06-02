@@ -298,7 +298,7 @@ class CreatePanel extends ControlPanelInterface {
                 }
                 // If billboard not added then display message to the user
                 else {
-                    lbl_message.setText("Check that Billboard does not already exist");
+                    lbl_message.setText("Duplicate billboard name");
                     Log.Error("Error when attempting to add new billboard");
                 }
                 // Disconnect from server
@@ -307,14 +307,15 @@ class CreatePanel extends ControlPanelInterface {
             // Post message to user if unable to connect to server
             else {
                 Log.Error("Unable to connect to server");
+                lbl_message.setText("Unable to connect to server");
             }
             // clear all user input fields
             resetFields();
-        }
         // catch any unanticipated exceptions and print to console
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            Log.Error("Add billboard attempt request failed");
+            Log.Error("Check details are correct");
+            lbl_message.setText("Error: check details are correct");
         }
     }
 
@@ -354,6 +355,7 @@ class CreatePanel extends ControlPanelInterface {
             }
             // Post message to user if unable to connect to server
             else {
+                lbl_message.setText("Unable to connect to server");
                 Log.Error("Unable to connect to server");
             }
             // clear all user input fields
@@ -363,6 +365,7 @@ class CreatePanel extends ControlPanelInterface {
         catch (Exception e) {
             e.printStackTrace();
             Log.Error("Add billboard attempt request failed");
+            lbl_message.setText("Error: check details are correct");
         }
     }
 
@@ -533,8 +536,9 @@ class CreatePanel extends ControlPanelInterface {
             lbl_message.setText("Billboard exported");
         }
         // catch any unanticipated exceptions and print to console
-        catch (TransformerException | ParserConfigurationException | IOException e) {
+        catch (Exception e) {
             e.printStackTrace();
+            lbl_message.setText("Error: check details are correct");
         }
     }
 
@@ -689,6 +693,7 @@ class CreatePanel extends ControlPanelInterface {
             billboard.previewBillboard();
         } catch (Exception e) {
             e.printStackTrace();
+            lbl_message.setText("Error: check details are correct");
         }
     }
 
@@ -696,7 +701,7 @@ class CreatePanel extends ControlPanelInterface {
      * Populates the static billboard instance with the user inputted data
      * @throws IOException Signals that an I/O exception of some sort has occurred
      */
-    private static void populateBillboard() throws IOException {
+    private static void populateBillboard() throws Exception {
         // create picture staging variables
         String picURL = null;
         byte[] picDATA = null;
