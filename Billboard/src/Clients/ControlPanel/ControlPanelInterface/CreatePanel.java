@@ -314,7 +314,7 @@ class CreatePanel extends ControlPanelInterface {
         // catch any unanticipated exceptions and print to console
         } catch (Exception e) {
             e.printStackTrace();
-            Log.Error("Check details are correct");
+            Log.Error("Add billboard attempt request failed");
             lbl_message.setText("Error: check details are correct");
         }
     }
