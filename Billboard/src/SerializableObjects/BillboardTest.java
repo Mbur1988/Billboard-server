@@ -40,7 +40,6 @@ public class BillboardTest {
 
     @BeforeEach
     @Test
-        // Billboard = newBillboard(String msg, String info, String picURL, String picDATA, String MsgColour,String BackColour, String InfoColour)
     void newBillboard() {
 
         underTestFull = new Billboard("TEST MsG", "name", "TEST INFO", "https://dazedimg-dazedgroup.netdna-ssl.com/830/azure/dazed-prod/1150/0/1150228.jpg",
@@ -577,14 +576,14 @@ public class BillboardTest {
     }
 //    /**               ----------FAILED UNEQUIVOCALLY SO FIXED------------
 //     * Test 40,
-//     *      After edditng the frame to have colour as above we have lost Picture display so we will test it here
+//     *      After editng the frame to have colour as above we have lost Picture display so we will test it here
 //     */
 //    @Test
 //    public void DisplayImageTester() throws Exception {
 //        JFrame TestFrame = underTestEmpty.createFrame();
 //        byte[] Data = underTestEmpty.ConvertImageToData("testAddress");
 //        JLabel testLab =  DisplayImage.DisplayImageLabel(Data);
-//        //new DisplayImage("E:\\DND\\TEST.jpg");
+//        //new DisplayImage("testAddress");
 //
 //        Thread.sleep((2000));
 //        TestFrame.add(testLab);
