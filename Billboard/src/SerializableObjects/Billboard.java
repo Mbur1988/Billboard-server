@@ -95,6 +95,7 @@ public class Billboard implements Serializable {
         //BillboardScreen.setContentPane(BillboardScreenPanel);
         return frame;
     }
+
     /**
      * Creates a Panel as the back ground of the screen,
      * @return returns a JPanel that is used primarily for the background of the Billboard.
@@ -186,6 +187,7 @@ public class Billboard implements Serializable {
         }
 
     }
+
     /**
      * This method finds the image that is stored at the location of the Filepath and creates an image in the system
      * @param Filepath location of image to use
@@ -517,7 +519,7 @@ public class Billboard implements Serializable {
      * @return image in byte[] form
      * @throws IOException If FilePath does not exist in directory
      */
-    public static byte[] ConvertImageToData(String filePath) throws IOException {
+    public static byte[] ConvertImageToData(String filePath) throws Exception {
         BufferedImage bImage = ImageIO.read(new File(filePath));
         String formatName = "jpg";
         if (filePath.length() > 3) {
