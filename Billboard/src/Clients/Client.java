@@ -107,7 +107,7 @@ public class Client {
 
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             Log.Error("Unable to connect to server");
             return false;
         }

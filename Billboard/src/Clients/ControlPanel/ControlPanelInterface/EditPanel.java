@@ -336,7 +336,7 @@ class EditPanel extends ControlPanelInterface {
         // get the name of the billboard to delete from the Jlist
         String name = (String) list.getSelectedValue();
         // ensure that there is a name selected
-        if (name.equals("")) {
+        if (name == null || name.equals("")) {
             lbl_message.setText("No billboard selected");
             Log.Confirmation("No billboard selected");
             return;
