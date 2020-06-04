@@ -80,31 +80,31 @@ public class MariaDBTest {
 //    //**
 //    //Test1 to check if test1 billboard is added to the database correctly. Get billboard method is called to confirm addition.
 //    //**
-//    @Test
-//    public void AddTest() throws SQLException {
-//        if (!undertest.billboards.checkForBillboard("test1")) {
-//            undertest.billboards.addBillboard("test1", "msg", "info", "picURL", new byte[]{0, 1, 2}, "msgColour", "backColour", "infoColour");
-//        }
-//            assertEquals(undertest.billboards.checkForBillboard("test1"), true);
-//    }
+    @Test
+    public void AddTest() throws SQLException {
+        if (!undertest.billboards.checkForBillboard("test1")) {
+            undertest.billboards.AddBillboard("test1", "msg", "info", "picURL", new byte[]{0, 1, 2}, "msgColour", "backColour", "infoColour", "admin", true);
+        }
+            assertEquals(undertest.billboards.checkForBillboard("test1"), true);
+    }
 //
 //    //**
 //    //Test2 to check if billboard method is called to confirm additions.
 //    //**
-//    @Test
-//    public void GetTest1() throws SQLException{
-//        undertest.billboards.getBillboard();
-//    }
+    @Test
+    public void GetTest1() throws SQLException{
+        undertest.billboards.getBillboard("test1");
+    }
 //
 //    //**
 //    //Test5 to check if deleteBillboard method correctly deletes the right billboard. Get billboard method is called to confirm addition.
 //    //**
 //
-//    @Test
-//    public void DeleteTest1() throws SQLException {
-//        undertest.billboards.deleteBillboard("test1");
-//        undertest.billboards.getBillboard();
-//    }
+    @Test
+    public void DeleteTest1() throws SQLException {
+        undertest.billboards.DeleteBillboard("test1");
+        undertest.billboards.getBillboard("test1");
+    }
 //
 //    //**
 //    //Test6 to check if deleteBillboard method correctly deletes the right billboard. Get billboard method is called to confirm addition.
