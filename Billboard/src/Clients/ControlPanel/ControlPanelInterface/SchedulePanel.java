@@ -21,7 +21,6 @@ class SchedulePanel extends ControlPanelInterface {
     private static JList scheduleList;
     private static JList billboardList;
     private static JButton b_add;
-    //private static JButton b_save;
     private static JButton b_clear;
     private static JButton b_load;
     private static JButton b_delete;
@@ -93,7 +92,6 @@ class SchedulePanel extends ControlPanelInterface {
 
         // Handle button press events
         b_add.addActionListener(event -> addSchedule());
-        //b_save.addActionListener(event -> saveSchedule());
         b_clear.addActionListener(event -> clearFields());
         b_load.addActionListener(event -> loadSchedule());
         b_delete.addActionListener(event -> deleteSchedule());
@@ -161,7 +159,7 @@ class SchedulePanel extends ControlPanelInterface {
         // get the name of the billboard to load from the Jlist
         String name = (String) scheduleList.getSelectedValue();
         // ensure that there is a name selected
-        if (name.equals("")) {
+        if (name == null || name.equals("")) {
             lbl_message.setText("No schedule selected");
             Log.Confirmation("No schedule selected");
             return;

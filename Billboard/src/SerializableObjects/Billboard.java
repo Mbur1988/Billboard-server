@@ -520,6 +520,7 @@ public class Billboard implements Serializable {
      * @throws IOException If FilePath does not exist in directory
      */
     public static byte[] ConvertImageToData(String filePath) throws Exception {
+        filePath = filePath.trim();
         BufferedImage bImage = ImageIO.read(new File(filePath));
         String formatName = "jpg";
         if (filePath.length() > 3) {
@@ -547,6 +548,7 @@ public class Billboard implements Serializable {
      * @throws IOException in case
      */
     public static byte[] UrlToData(String input) throws IOException {
+        input = input.trim();
         URL url = new URL(input);
         BufferedImage image = ImageIO.read(url);
         String formatName = "jpg";

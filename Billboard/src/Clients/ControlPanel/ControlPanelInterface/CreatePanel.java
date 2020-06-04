@@ -14,7 +14,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -158,6 +157,7 @@ class CreatePanel extends ControlPanelInterface {
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setBounds(screenWidth / 2 - 100, 100, 300, 400);
         createPanel.add(scrollPane);
+
 
         // Create buttons
         b_fileSelect = new JButton("Select File");
@@ -367,6 +367,8 @@ class CreatePanel extends ControlPanelInterface {
             Log.Error("Add billboard attempt request failed");
             lbl_message.setText("Error: check details are correct");
         }
+        b_save.setVisible(false);
+        b_add.setVisible(true);
     }
 
     /**
@@ -549,7 +551,7 @@ class CreatePanel extends ControlPanelInterface {
         // get the name of the billboard to load from the Jlist
         String name = (String) list.getSelectedValue();
         // ensure that there is a name selected
-        if (name.equals("")) {
+        if (name == null || name.equals("")) {
             lbl_message.setText("No billboard selected");
             Log.Confirmation("No billboard selected");
             return;

@@ -35,14 +35,8 @@ public class Viewer extends Client {
     public static void RequestUpdate() {
         try {
             if (AttemptConnect()) {
-
-                if (dis.readBoolean()) {
-                    billboard = (Billboard) objectStreamer.Receive();
-                }
-                else {
-                    billboard = null;
-                }
-
+                // receive current billboard
+                billboard = (Billboard) objectStreamer.Receive();
                 // closing resources
                 Disconnect();
             } else {
@@ -58,20 +52,10 @@ public class Viewer extends Client {
                         null,
                         null);
             }
-            if (billboard == null) {
-                billboard = new Billboard("EMPTY",
-                        "nil scheduled", null,
-                        null,
-                        null,
-                        Color.red,
-                        Color.white,
-                        Color.red,
-                        "",
-                        false);
-            }
+            // Display billboard
             billboard.showBillboard();
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
