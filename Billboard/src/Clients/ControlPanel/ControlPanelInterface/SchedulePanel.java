@@ -206,6 +206,12 @@ class SchedulePanel extends ControlPanelInterface {
 
     private static void deleteSchedule() {
         String schedule = (String) scheduleList.getSelectedValue();
+        // ensure that there is a name selected
+        if (schedule == null || schedule.equals("")) {
+            lbl_message.setText("No schedule selected");
+            Log.Confirmation("No schedule selected");
+            return;
+        }
         user.setAction("Remove Billboard");
         // Attempt connection to server
         if (AttemptConnect()) {

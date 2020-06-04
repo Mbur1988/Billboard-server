@@ -329,6 +329,11 @@ class EditUsersPanel extends ControlPanelInterface {
      */
     private static void deleteUser() {
         String username = (String) list.getSelectedValue();
+        if (username == null || username.equals("")) {
+            lbl_message.setText("No user selected");
+            Log.Confirmation("No user selected");
+            return;
+        }
         if (username.equals(user.getUsername())) {
             lbl_message.setText("Unable to delete your own account");
             return;
