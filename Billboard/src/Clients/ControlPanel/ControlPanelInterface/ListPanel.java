@@ -1,19 +1,11 @@
 package Clients.ControlPanel.ControlPanelInterface;
 
 import SerializableObjects.Billboard;
-import Tools.ColorIndex;
 import Tools.Log;
-import Tools.ObjectStreamer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-
-import static Clients.Client.dis;
-import static Clients.Client.dos;
-import static Clients.Client.objectStreamer;
+import static Clients.Client.*;
 import static Clients.ControlPanel.ControlPanel.*;
 import static Clients.ControlPanel.ControlPanel.AttemptDisconnect;
 import static Clients.ControlPanel.ControlPanelTools.Tools.addButton;
@@ -61,6 +53,10 @@ class ListPanel extends ControlPanelInterface {
     private static void previewBb() {
         // get the name of the billboard to load from the Jlist
         String name = (String) list.getSelectedValue();
+        if (name == null || name.equals("")) {
+            Log.Confirmation("No billboard selected");
+            return;
+        }
         // set the action request to the server
         user.setAction("Get Billboard Information");
         // attempt connection to the server

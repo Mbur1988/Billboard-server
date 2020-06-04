@@ -280,6 +280,11 @@ class EditUsersPanel extends ControlPanelInterface {
      */
     private static void loadUser() {
         String username = (String) list.getSelectedValue();
+        if (username == null || username.equals("")) {
+            lbl_message.setText("No user selected");
+            Log.Confirmation("No user selected");
+            return;
+        }
         user.setAction("Get User Permissions");
         if (AttemptConnect()) {
             // Try a login attempt

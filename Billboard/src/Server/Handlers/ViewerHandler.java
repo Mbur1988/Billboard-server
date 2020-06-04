@@ -41,15 +41,6 @@ public class ViewerHandler extends ConnectionHandler {
             throwables.printStackTrace();
         }
 
-
-
-        // Create a new ObjectStreamHandler to send billboards to the viewer
-        ObjectStreamer stream = new ObjectStreamer(socket);
-
-        //
-        // Send currently scheduled billboard to client here
-        //
-
         // Close connection nicely
         try {
             socket.close();
