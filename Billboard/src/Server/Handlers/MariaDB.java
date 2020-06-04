@@ -489,47 +489,6 @@ public class MariaDB {
             //getBillboard();
         }
 
-        /**
-         * Adds a default test billboard to the billboard table.
-         * <p>
-         * name the name of the billboard being added
-         * msg  msg of the displaying billboard being added
-         * info information about the billboard being added
-         * picURL Picture url included in the billboard
-         * picData data of the picture included in the billboard to be added
-         * msgColour The colour of msg in the billboard
-         * backColour The back colour of the billboard
-         * infoColour The colour of the information of the billboard
-         * username Current user adding the billboard
-         * scheduled Boolean to determine if a billboard is scheduled
-         * Logs confirmation that the billboard was added
-         * @throws SQLException
-         */
-        public void CreateDefaultBillboard() throws SQLException {
-            String name = "testBoard";
-            String msg = "database test";
-            String info = "admin test";
-            String picURL = "test pic";
-            byte[] picData = new byte[200];
-            String msgColour = "Red";
-            String backColour = "Green";
-            String infoColour = "Blue";
-            String username = "admin";
-            boolean scheduled = true;
-            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `billboards`(name, msg, info, picURL, picData, msgColour, backColour, infoColour, username, scheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            pstmt.setString(1, name);
-            pstmt.setString(2, msg);
-            pstmt.setString(3, info);
-            pstmt.setString(4, picURL);
-            pstmt.setBytes(5, picData);
-            pstmt.setString(6, msgColour);
-            pstmt.setString(7, backColour);
-            pstmt.setString(8, infoColour);
-            pstmt.setString(9, username);
-            pstmt.setBoolean(10, scheduled);
-            pstmt.executeUpdate();
-            Log.Confirmation("Billboard Created: Test Board");
-        }
 
         /**
          * Adds a new billboard to the billboard table as long as the username does not already exist
