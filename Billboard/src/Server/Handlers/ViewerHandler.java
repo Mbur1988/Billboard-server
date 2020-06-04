@@ -3,6 +3,9 @@ package Server.Handlers;
 import SerializableObjects.Billboard;
 import Tools.Log;
 import Tools.ObjectStreamer;
+import Tools.ProjectPath;
+
+import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
@@ -31,13 +34,20 @@ public class ViewerHandler extends ConnectionHandler {
         try {
             billboard = mariaDB.getCurrentBillboard();
             if (billboard == null) {
-                dos.writeBoolean(false);
+                billboard = new Billboard("No billboard scheduled",
+                        "Error Billboard",
+                        "Nothing Scheduled",
+                        null,
+                        billboard.ConvertImageToData(
+                                ProjectPath.RootString() + "\\Resources\\Images\\Oops.jpg"),
+                        Color.red,
+                        Color.white,
+                        Color.red,
+                        null,
+                        null);
             }
-            else {
-                dos.writeBoolean(true);
-                objectStreamer.Send(billboard);
-            }
-        } catch (SQLException | IOException throwables) {
+            objectStreamer.Send(billboard);
+        } catch (Exception throwables) {
             throwables.printStackTrace();
         }
 
