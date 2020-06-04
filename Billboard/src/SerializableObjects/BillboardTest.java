@@ -40,7 +40,6 @@ public class BillboardTest {
 
     @BeforeEach
     @Test
-        // Billboard = newBillboard(String msg, String info, String picURL, String picDATA, String MsgColour,String BackColour, String InfoColour)
     void newBillboard() {
 
         underTestFull = new Billboard("TEST MsG", "name", "TEST INFO", "https://dazedimg-dazedgroup.netdna-ssl.com/830/azure/dazed-prod/1150/0/1150228.jpg",
@@ -459,6 +458,7 @@ public class BillboardTest {
     /**
      * Test 44,
      *      Tests making a JTextArea with msg and info in it
+     *      Before running this test ensure that lines 349-362 of Billboard class are commented out
      */
     @Test
     public void MsgAndInfoLabels() throws Exception {
@@ -475,6 +475,7 @@ public class BillboardTest {
     /**
      * Test 45,
      *      Tests making a JTextArea with msg and info in it
+     *      Before running this test ensure that lines 349-362 of Billboard class are commented out
      */
     @Test
     public void MsgAndImageLabels() throws Exception {
@@ -491,6 +492,7 @@ public class BillboardTest {
     /**
      * Test 46,
      *      Tests image alone in show billboard
+     *      Before running this test ensure that lines 349-362 of Billboard class are commented out
      */
     @Test
     public void ImageLabels() throws Exception {
@@ -504,6 +506,7 @@ public class BillboardTest {
     /**
      * Test 45,
      *      information and image tests in show billboard
+     *      Before running this test ensure that lines 349-362 of Billboard class are commented out
      */
     @Test
     public void InfoAndImageLabels() throws Exception {
@@ -524,6 +527,7 @@ public class BillboardTest {
     /**
      * Test 37,
      *      make a Display Billboard function in Billboard class
+     *      Before running this test ensure that lines 349-362 of Billboard class are commented out
      */
     @Test
     public void ShowBillboardTest() throws Exception {
@@ -541,10 +545,10 @@ public class BillboardTest {
     }
     /**
      * Test 38,
-     *      clear all in field using function WishhyWassyTheBillyBoardy()
+     *      clear all in field using function ClearBillboard()
      */
     @Test
-    public void WishhyWassyTheBillyBoardyTest(){
+    public void ClearBillboardTest(){
 
         underTestFull.clearBillboard();
         assertNull(underTestEmpty.getMsg());
@@ -559,6 +563,7 @@ public class BillboardTest {
     /**
      * Test 39,
      *      checking the color of the background
+     *      Before running this test ensure that lines 349-362 of Billboard class are commented out
      */
     @Test
     public void ShowBillboardColourTest() throws Exception {
@@ -577,14 +582,14 @@ public class BillboardTest {
     }
 //    /**               ----------FAILED UNEQUIVOCALLY SO FIXED------------
 //     * Test 40,
-//     *      After edditng the frame to have colour as above we have lost Picture display so we will test it here
+//     *      After editng the frame to have colour as above we have lost Picture display so we will test it here
 //     */
 //    @Test
 //    public void DisplayImageTester() throws Exception {
 //        JFrame TestFrame = underTestEmpty.createFrame();
 //        byte[] Data = underTestEmpty.ConvertImageToData("testAddress");
 //        JLabel testLab =  DisplayImage.DisplayImageLabel(Data);
-//        //new DisplayImage("E:\\DND\\TEST.jpg");
+//        //new DisplayImage("testAddress");
 //
 //        Thread.sleep((2000));
 //        TestFrame.add(testLab);
@@ -667,6 +672,7 @@ public class BillboardTest {
     /**
      * Test 44,
      *      adjust displaying text if only msg
+     *      Before running this test ensure that lines 349-362 of Billboard class are commented out
      */
     @Test
     public void TestInfoOnly() throws Exception {
@@ -679,6 +685,7 @@ public class BillboardTest {
     }    /**
      * Test 44,
      *      adjust displaying text if only msg
+     *      Before running this test ensure that lines 349-362 of Billboard class are commented out
      */
     @Test
     public void TestImageOnly() throws Exception {
@@ -692,6 +699,7 @@ public class BillboardTest {
     /**
      * Test 44,
      *      adjust displaying text if only msg
+     *      Before running this test ensure that lines 349-362 of Billboard class are commented out
      */
     @Test
     public void TestImageBounds() throws Exception {
@@ -705,6 +713,7 @@ public class BillboardTest {
     /**
      * Test 48,
      *      test the message colour
+     *      Before running this test ensure that lines 349-362 of Billboard class are commented out
      */
     @Test
     public void MsgColourTest() throws Exception {
@@ -719,6 +728,7 @@ public class BillboardTest {
     /**
      * Test 49,
      *      test the info colour
+     *      Before running this test ensure that lines 349-362 of Billboard class are commented out
      */
     @Test
     public void InfoColourTest() throws Exception {

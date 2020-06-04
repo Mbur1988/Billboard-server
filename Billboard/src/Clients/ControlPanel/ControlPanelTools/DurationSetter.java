@@ -12,7 +12,7 @@ import static Clients.ControlPanel.ControlPanelTools.Tools.*;
 public class DurationSetter {
 
     public static int duration = 0;
-    private static JLabel lbl_duration;
+    public static JLabel lbl_duration;
     public static JTextField tf_duration;
 
     public static void setDuration() {
@@ -47,8 +47,9 @@ public class DurationSetter {
                                 "Input Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                lbl_duration.setText("Set duration: " + duration);
                 checkDurationVsRecurrence.checkDVsR(minRec, duration);
+                lbl_duration.setText("Set duration: " + duration);
+
             }
 
             @Override
@@ -77,8 +78,9 @@ public class DurationSetter {
                                 "Input Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                lbl_duration.setText("Set duration: " + duration);
                 checkDurationVsRecurrence.checkDVsR(minRec, duration);
+                lbl_duration.setText("Set duration: " + duration);
+
             }
         });
     }

@@ -95,6 +95,7 @@ public class Billboard implements Serializable {
         //BillboardScreen.setContentPane(BillboardScreenPanel);
         return frame;
     }
+
     /**
      * Creates a Panel as the back ground of the screen,
      * @return returns a JPanel that is used primarily for the background of the Billboard.
@@ -186,6 +187,7 @@ public class Billboard implements Serializable {
         }
 
     }
+
     /**
      * This method finds the image that is stored at the location of the Filepath and creates an image in the system
      * @param Filepath location of image to use
@@ -281,24 +283,24 @@ public class Billboard implements Serializable {
         }
 
         //msg only
-        if(getMsg() != null && getInfo() == null && (getPicUrl() == null && getPicData() == null)){
+        if((getMsg() != null || getMsg() != "") && (getInfo() == null || getInfo().equals("")) && (getPicUrl() == null || getPicUrl() == "") && getPicData() == null){
             JLabel MessageText = CreateTextArea("message", msg,"msg only");
             MessageText.setForeground(msgColour);
             BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
         }
         //info only
-        else if(getMsg() == null && getInfo() != null && (getPicUrl() == null && getPicData() == null)){
+        else if((getMsg() == null || getMsg().equals("")) && (getInfo() != null || getInfo() != "" ) && (getPicUrl() == null || getPicUrl() == "") && getPicData() == null){
             JLabel InfoText = CreateTextArea("info", info,"info only");
             InfoText.setForeground(infoColour);
             BillboardScreen.add(InfoText, BorderLayout.PAGE_START);
         }
         //image only
-        else if(msg == null && info == null && (picDATA != null || picURL != null)){
+        else if((getMsg() == null || getMsg().equals("")) && (getInfo() == null || getInfo().equals("")) && (picDATA != null || picURL != null)){
             JLabel imageDisplay = CreateImageData(getPicData(), "Image Only");
             BillboardScreen.getContentPane().add(imageDisplay, BorderLayout.CENTER);
         }
         //msg and image
-        else if(msg != null && info == null && (picDATA != null) || (picURL != null)){
+        else if((getMsg() != null || getMsg() != "") && (getInfo() == null || getInfo() == "") && (getPicUrl() == null || getPicUrl() == "") && getPicData() == null){
             JLabel MessageText = CreateTextArea("message", msg, "msg and pic");
             MessageText.setForeground(msgColour);
             BillboardScreen.add(MessageText, BorderLayout.PAGE_START);
@@ -307,7 +309,7 @@ public class Billboard implements Serializable {
             BillboardScreen.getContentPane().add(imageDisplay);
         }
         //info and image
-        else if(msg == null && info != null && (picDATA != null || picURL != null)){
+        else if((getMsg() == null || getMsg()== "") &&(getInfo() != null || getInfo() != "" ) && (getPicUrl() == null || getPicUrl() =="") && getPicData() == null){
             JLabel imageDisplay = CreateImageData(getPicData(), "info and pic");
             BillboardScreen.getContentPane().add(imageDisplay);
             JLabel InfoText = CreateTextArea("info", info, "info and pic");
@@ -315,7 +317,7 @@ public class Billboard implements Serializable {
             BillboardScreen.add(InfoText, BorderLayout.PAGE_END);
         }
         //info and msg
-        else if(msg != null && info != null && (picDATA == null && picURL == null)){
+        else if(msg != null && info != null &&(getPicUrl() == null || getPicUrl() == "") && getPicData() == null){
             JLabel MessageText = CreateTextArea("message", msg, "msg and info");
             MessageText.setForeground(msgColour);
             JLabel InfoText = CreateTextArea("info", info, "msg and info");
@@ -464,7 +466,7 @@ public class Billboard implements Serializable {
 
     /**
      * sets name of Billboard
-     * @param name
+     * @param name  Takes in the String Name and sets it into the Billboard name property
      */
     public void setName(String name) {this.name = name;}
 
@@ -515,9 +517,9 @@ public class Billboard implements Serializable {
      * Converts a image from the file path to a byte array
      * @param filePath image to be converted
      * @return image in byte[] form
-     * @throws IOException
+     * @throws IOException If FilePath does not exist in directory
      */
-    public static byte[] ConvertImageToData(String filePath) throws IOException {
+    public static byte[] ConvertImageToData(String filePath) throws Exception {
         BufferedImage bImage = ImageIO.read(new File(filePath));
         String formatName = "jpg";
         if (filePath.length() > 3) {
@@ -542,7 +544,7 @@ public class Billboard implements Serializable {
      * Takes URL from the interwebs and converts to a Byte[] for use with display image.
      * @param input URL in a string format
      * @return byte[] of image.
-     * @throws Exception in case
+     * @throws IOException in case
      */
     public static byte[] UrlToData(String input) throws IOException {
         URL url = new URL(input);

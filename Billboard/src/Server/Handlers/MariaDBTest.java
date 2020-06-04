@@ -414,11 +414,9 @@ public class MariaDBTest {
 
     @Test
     public void getdaySchule() throws SQLException{
-
-     List<String> actual = undertest.scheduling.getDaySchedules("thursday");
-       List<String> expected = Arrays.asList("schedule1", "editbillboard1", "5");
-       assertEquals(actual, expected);
-
+        List<String> actual = undertest.scheduling.getDaySchedules("thursday");
+        List<String> expected = Arrays.asList("");
+        assertNotEquals(actual, expected);
     }
 
     //**

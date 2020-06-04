@@ -251,7 +251,7 @@ public class MariaDB {
          * @throws SQLException
          */
         private void createTable() throws SQLException {
-            statement.executeUpdate("CREATE TABLE users (username VARCHAR(64) UNIQUE KEY, password VARCHAR(64), access INT NOT NULL, salt VARBINARY(10));");
+            statement.executeUpdate("CREATE TABLE users (username VARCHAR(1024) UNIQUE KEY, password VARCHAR(1024), access INT NOT NULL, salt VARBINARY(10));");
             Log.Confirmation("Table created: users");
             createDefaultUser();
         }
@@ -483,7 +483,7 @@ public class MariaDB {
          * @throws SQLException
          */
         private void CreateBillboardsTable() throws SQLException {
-            statement.executeUpdate("CREATE TABLE billboards (name VARCHAR(64) UNIQUE KEY, msg VARCHAR(256), info VARCHAR(1024), picURL VARCHAR(64), picDATA MEDIUMBLOB, msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64), username VARCHAR(64), scheduled BOOLEAN);");
+            statement.executeUpdate("CREATE TABLE billboards (name VARCHAR(1024) UNIQUE KEY, msg VARCHAR(1024), info VARCHAR(1024), picURL VARCHAR(1024), picDATA MEDIUMBLOB, msgColour VARCHAR(64), backColour VARCHAR(64), infoColour VARCHAR(64), username VARCHAR(1024), scheduled BOOLEAN);");
             Log.Confirmation("Table created: billboards");
             //CreateDefaultBillboard();
             //getBillboard();
@@ -950,7 +950,7 @@ public class MariaDB {
          * @throws SQLException
          */
         private void CreateSchedulingTable() throws SQLException {
-            statement.executeQuery("CREATE TABLE scheduling (name VARCHAR(64) UNIQUE KEY, billboardName VARCHAR(64), day VARCHAR(12), time TIME, duration INT, recur INT);");
+            statement.executeQuery("CREATE TABLE scheduling (name VARCHAR(1024) UNIQUE KEY, billboardName VARCHAR(1024), day VARCHAR(12), time TIME, duration INT, recur INT);");
             Log.Confirmation("Table created: scheduling");
         }
 

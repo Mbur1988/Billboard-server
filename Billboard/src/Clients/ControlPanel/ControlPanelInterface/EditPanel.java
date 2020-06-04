@@ -411,7 +411,7 @@ class EditPanel extends ControlPanelInterface {
      * Populates the static billboard instance with the user inputted data
      * @throws IOException Signals that an I/O exception of some sort has occurred
      */
-    private static void populateBillboard() throws IOException {
+    private static void populateBillboard() throws Exception {
         // create picture staging variables
         String picURL = null;
         byte[] picDATA = null;
