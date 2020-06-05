@@ -412,21 +412,28 @@ class CreatePanel extends ControlPanelInterface {
             Element info = (Element) root.getElementsByTagName("information").item(0);
             // set the background colour combo box using the appropriate attribute
             String colour = root.getAttribute("background");
-            Color color = Color.decode(colour);
-            cb_bgColor.setSelectedItem(ColorIndex.stringFromColor(color));
+            Color color = null;
+            if (!colour.equals("")) {
+                color = Color.decode(colour);
+                cb_bgColor.setSelectedItem(ColorIndex.stringFromColor(color));
+            }
             // set the message text and colour if the message node exists
             if (message != null) {
                 tf_title.setText(message.getTextContent());
-                colour = message.getAttribute("colour");
-                color = Color.decode(colour);
-                cb_titleColor.setSelectedItem(ColorIndex.stringFromColor(color));
+                if (!colour.equals("")) {
+                    colour = message.getAttribute("colour");
+                    color = Color.decode(colour);
+                    cb_titleColor.setSelectedItem(ColorIndex.stringFromColor(color));
+                }
             }
             // set the info text and colour if the info node exists
             if (info != null) {
                 tf_info.setText(info.getTextContent());
-                colour = info.getAttribute("colour");
-                color = Color.decode(colour);
-                cb_infoColor.setSelectedItem(ColorIndex.stringFromColor(color));
+                if (!colour.equals("")) {
+                    colour = info.getAttribute("colour");
+                    color = Color.decode(colour);
+                    cb_infoColor.setSelectedItem(ColorIndex.stringFromColor(color));
+                }
             }
             // check whether the picture node exists
             if (picture != null) {
@@ -436,10 +443,10 @@ class CreatePanel extends ControlPanelInterface {
                     tf_path.setText(picture.getAttribute("url"));
                 }
                 // if the picture node attribute is file then add the image data to billboard and display message
-                else if (picture.hasAttribute("file")) {
+                else if (picture.hasAttribute("data")) {
                     rb_file.setSelected(true);
                     tf_path.setText("Loaded image data");
-                    String pic64 = picture.getAttribute("file");
+                    String pic64 = picture.getAttribute("data");
                     // convert picture format from base64 to byte array
                     byte[] picData = billboard.SixFourToByte(pic64);
                     billboard.setPicData(picData);
@@ -508,7 +515,7 @@ class CreatePanel extends ControlPanelInterface {
                 }
                 // if the picture is from a file then add the picture in base64 format
                 else {
-                    picture.setAttribute("file", billboard.BytesToSixFour(billboard.getPicData()));
+                    picture.setAttribute("data", billboard.BytesToSixFour(billboard.getPicData()));
                 }
                 // append the picture element to the root element
                 root.appendChild(picture);

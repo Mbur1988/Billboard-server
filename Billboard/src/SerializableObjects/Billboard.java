@@ -522,9 +522,10 @@ public class Billboard implements Serializable {
     public static byte[] ConvertImageToData(String filePath) throws Exception {
         filePath = filePath.trim();
         BufferedImage bImage = ImageIO.read(new File(filePath));
-        String formatName = "jpg";
-        if (filePath.length() > 3) {
-            formatName = filePath.substring(filePath.length() - 3);
+        String formatName = "png";
+        String end = filePath.substring(filePath.length() - 3);
+        if (filePath.length() > 3 && (end.equals("jpg") || end.equals("bmp"))) {
+            formatName = end;
         }
         return ByteArrayHelper(bImage, formatName);
     }
@@ -551,9 +552,10 @@ public class Billboard implements Serializable {
         input = input.trim();
         URL url = new URL(input);
         BufferedImage image = ImageIO.read(url);
-        String formatName = "jpg";
-        if (input.length() > 3) {
-            formatName = input.substring(input.length() - 3);
+        String formatName = "png";
+        String end = input.substring(input.length() - 3);
+        if (input.length() > 3 && (end.equals("jpg") || end.equals("bmp"))) {
+            formatName = end;
         }
         return ByteArrayHelper(image, formatName);
     }
