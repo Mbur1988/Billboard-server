@@ -21,7 +21,7 @@ public class DayChooser {
             "6. Saturday",
             "7. Sunday"};
     private static JLabel lbl_day;
-    private static JLabel lbl_mins;
+    public static JLabel lbl_mins;
     private static JLabel lbl_recur;
     public static JComboBox<String> cb_day;
     public static JRadioButton rb_none;

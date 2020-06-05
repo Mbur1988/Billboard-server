@@ -11,6 +11,7 @@ import static Clients.ControlPanel.ControlPanelTools.DayChooser.*;
 import static Clients.ControlPanel.ControlPanelTools.DurationSetter.*;
 import static Clients.ControlPanel.ControlPanelTools.TimeSetter.*;
 import static Clients.ControlPanel.ControlPanelTools.Tools.*;
+import static java.lang.Integer.parseInt;
 
 class SchedulePanel extends ControlPanelInterface {
 
@@ -270,8 +271,8 @@ class SchedulePanel extends ControlPanelInterface {
             recur = 60;
         }
         else if (rb_mins.isSelected()) {
-            recurStatus = minRec + "mins";
-            recur = minRec;
+            recurStatus = parseInt(lbl_mins.getText()) + "mins";
+            recur = parseInt(lbl_mins.getText());
         }
         // populate the schedule
         schedule = new Schedule(
